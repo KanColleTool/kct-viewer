@@ -9,4 +9,4 @@ before_install:
 install: sudo apt-get install -q qt5-qmake libqt5webkit5-dev qtdeclarative5-dev qt5-default
 script:
   - cd src && qmake -spec linux-${CC} && make
-  - cd ../test && qmake -spec linux-${CC} && make && ./kancolletool-viewer-test
+  - cd ../tests && qmake -spec linux-${CC} && make && ./kancolletool-viewer-test
