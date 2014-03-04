@@ -1,6 +1,6 @@
 QT += core webkitwidgets testlib
 
-TARGET = KCTViewerTest
+TARGET = kancolle-viewer-test
 CONFIG += testcase
 
 include(../KCTViewer.pri)
