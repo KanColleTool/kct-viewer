@@ -1,0 +1,37 @@
+# Hidden OS files
+.DS_Store
+
+# C++ and Qt Temporaries
+*.o
+moc_*.cpp
+*.moc
+qrc_*.cpp
+ui_*.h
+*.pro.user
+*.stash
+object_script*
+
+# Pods
+Pods
+
+# Editor User Data
+xcuserdata
+*.sublime-workspace
+
+# Editor Temporaries
+*~
+[#]*[#]
+.\#*
+
+# Built Products
+Makefile*
+KCT Viewer.app
+KCTViewer.exe
+kancolletool-viewer
+kancolletool-viewer-test
+
+targets/archlinux/*
+!targets/archlinux/PKGBUILD
+
+/build-*
+/dist

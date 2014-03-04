@@ -1,0 +1,12 @@
+language: cpp
+compiler: clang
+cache: apt
+before_install:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+  - sudo apt-get update -qq
+install: sudo apt-get install -q qt5-qmake libqt5webkit5-dev qtdeclarative5-dev qt5-default
+script:
+  - cd src && qmake -spec linux-${CC} && make
+  - cd ../test && qmake -spec linux-${CC} && make && ./kancolletool-viewer-test
