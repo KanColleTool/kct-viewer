@@ -7,6 +7,4 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
 install: sudo apt-get install -q qt5-qmake libqt5webkit5-dev qtdeclarative5-dev qt5-default
-script:
-  - cd src && qmake -spec linux-${CC} && make
-  - cd ../tests && qmake -spec linux-${CC} && make && ./kancolletool-viewer-test
+script: qmake -spec linux-${CC} && make check
