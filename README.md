@@ -1,7 +1,7 @@
 KanColleTool Viewer
 ===================
 
-[![Build Status](https://travis-ci.org/KanColleTool/viewer.png?branch=master)](https://travis-ci.org/KanColleTool/viewer)
+[![Build Status](https://travis-ci.org/KanColleTool/kct-viewer.png?branch=master)](https://travis-ci.org/KanColleTool/kct-viewer)
 
 This is the viewer for (KanColleTool)[/KanColleTool/tool].
 
