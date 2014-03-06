@@ -19,8 +19,4 @@ INSTALLS += binaries
 
 SOURCES += main.cpp
 
-RESOURCES += ../resources.qrc
-
-OTHER_FILES += \
-	../KCTViewer.rc \
-	../resources/index.html
+RESOURCES += ../resources/resources.qrc

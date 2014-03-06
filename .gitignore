@@ -33,5 +33,5 @@ kancolletool-viewer-test
 targets/archlinux/*
 !targets/archlinux/PKGBUILD
 
-/build-*
-/dist
+/build/
+/bin/

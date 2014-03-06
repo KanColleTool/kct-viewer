@@ -25,6 +25,8 @@ SOURCES += \
 
 FORMS += ../resources/KVSettingsDialog.ui
 
-UI_DIR = uics
-MOC_DIR = mocs
-OBJECTS_DIR = objs
+UI_DIR = ../build/uics
+RCC_DIR = ../build/rccs
+MOC_DIR = ../build/mocs
+OBJECTS_DIR = ../build/objs
+DESTDIR = ../bin

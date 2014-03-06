@@ -107,7 +107,7 @@ void KVMainWindow::loadTranslation(QString language)
 
 void KVMainWindow::loadBundledIndex()
 {
-	QFile file(":/resources/index.html");
+	QFile file(":/index.html");
 	if(file.open(QIODevice::ReadOnly))
 	{
 		webView->setHtml(file.readAll(), apiLink);
