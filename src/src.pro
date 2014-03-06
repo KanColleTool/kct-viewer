@@ -8,14 +8,14 @@ include(../KCTViewer.pri)
 
 win32: LIBS += -lws2_32 -lmswsock
 
+ICON = ../resources/icons/KCTViewer.ico
 RC_FILE = ../KCTViewer.rc
 
 macx: TARGET = "KCT Viewer"
 unix:!macx: TARGET = kancolletool-viewer
 
-binaries.path = $PREFIX/usr/bin
-binaries.files = kancolletool-viewer
-INSTALLS += binaries
+target.path = $$PREFIX/bin
+INSTALLS += target
 
 SOURCES += main.cpp
 

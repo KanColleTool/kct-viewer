@@ -6,6 +6,8 @@ VERSION = 0.8.4
 INCLUDEPATH += . ..
 WARNINGS += -Wall
 
+isEmpty(PREFIX): PREFIX=/usr
+
 HEADERS += \
 	../src/KVMainWindow.h \
 	../src/KVSettingsDialog.h \
