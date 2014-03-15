@@ -8,6 +8,10 @@
 
 #include "KVNetworkAccessManager.h"
 
+namespace Ui {
+	class KVMainWindow;
+}
+
 class KVMainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -42,13 +46,14 @@ private slots:
 	//void onAPIError(KVProxyServer::APIStatus error);
 
 protected:
-	QWebView *webView;
-
 	KVNetworkAccessManager *wvManager, manager;
 	QNetworkDiskCache *cache;
 
 	QString server, apiToken;
 	QUrl apiLink;
+	
+private:
+	Ui::KVMainWindow *ui;
 };
 
 #endif

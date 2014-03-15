@@ -1,4 +1,5 @@
 #include "KVMainWindow.h"
+#include "ui_KVMainWindow.h"
 #include <QMenuBar>
 #include <QMenu>
 #include <QWebFrame>
@@ -21,29 +22,23 @@
 #include "KVTranslator.h"
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
-	QMainWindow(parent, flags)
+	QMainWindow(parent, flags),
+	ui(new Ui::KVMainWindow)
 {
-	this->setWindowTitle("KanColleTool Viewer");
-
-	// Set up the window and menus and stuff
-	QMenuBar *menuBar = new QMenuBar(this);
-
-	QMenu *viewerMenu = menuBar->addMenu("Viewer");
-	viewerMenu->addAction("Change API Link", this, SLOT(askForAPILink()), Qt::CTRL + Qt::Key_L);
-	viewerMenu->addAction("Settings", this, SLOT(openSettings()));
-	viewerMenu->addAction("Clear Cache", this, SLOT(clearCache()));
-	viewerMenu->addSeparator();
-	viewerMenu->addAction("Refresh", this, SLOT(loadBundledIndex()), Qt::CTRL + Qt::Key_R);
-	viewerMenu->addAction("Quit", qApp, SLOT(quit()), Qt::CTRL + Qt::Key_Q);
-
-	QMenu *helpMenu = menuBar->addMenu("Help");
-	helpMenu->addAction("About", this, SLOT(showAbout()));
-	// Updates on Linux are handled by the package manager
-#if !defined(Q_OS_LINUX)
-	helpMenu->addAction("Check for Updates", this, SLOT(checkForUpdates()));
+	ui->setupUi(this);
+	
+	connect(ui->actionEnterAPILink, SIGNAL(triggered()), this, SLOT(askForAPILink()));
+	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
+	connect(ui->actionClearCache, SIGNAL(triggered()), this, SLOT(clearCache()));
+	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
+	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(ui->actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
+	
+	// On Linux, updates are handled by the package manager
+#ifdef Q_OS_LINUX
+	ui->actionCheckForUpdates->setVisible(false);
 #endif
-
-	this->setMenuBar(menuBar);
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -56,37 +51,34 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	cache->setMaximumCacheSize(1073741824);
 	wvManager->setCache(cache);
 
-	// Load settings from the settings file
-	this->loadSettings(true);
-
 	// Set up the web view, using our custom Network Access Manager
-	webView = new QWebView(this);
-	webView->page()->setNetworkAccessManager(wvManager);
+	ui->webView->page()->setNetworkAccessManager(wvManager);
 
 	// The context menu only contains "Reload" anyways
-	webView->setContextMenuPolicy(Qt::PreventContextMenu);
+	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
 	// These are so large that they create a need for themselves >_>
-	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
-	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
-	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+	connect(ui->webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
+	connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
 	// To set the window size right, we have to first set the central widget (which we set to
 	// the web view)'s size to a fixed size, ask the window to auto-adjust to that, and then
 	// fix its size to what it adjusted itself to. A bit clumsy, but it works, and won't stop
 	// us from adding any additional elements to the window, as this will account for ANYTHING.
-	this->setCentralWidget(webView);
+	/*this->setCentralWidget(webView);
 	this->centralWidget()->setFixedSize(800, 480);
 	this->adjustSize();
-	this->setFixedSize(this->width(), this->height());
+	this->setFixedSize(this->width(), this->height());*/
 
 	// Check for updates
 	// Updates on Linux are handled by the package manager
 #if !defined(Q_OS_LINUX)
 	this->checkForUpdates();
 #endif
-
+	
+	this->loadSettings(true);
 	this->loadBundledIndex();
 }
 
@@ -110,7 +102,7 @@ void KVMainWindow::loadBundledIndex()
 	QFile file(":/index.html");
 	if(file.open(QIODevice::ReadOnly))
 	{
-		webView->setHtml(file.readAll(), apiLink);
+		ui->webView->setHtml(file.readAll(), apiLink);
 	}
 	else
 	{
@@ -291,7 +283,7 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 void KVMainWindow::setHTMLAPILink()
 {
 	qDebug() << "Updating web view credentials to" << server << "-" << apiToken;
-	webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
+	ui->webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
 }
 
 /*void KVMainWindow::onAPIError(KVProxyServer::APIStatus error)

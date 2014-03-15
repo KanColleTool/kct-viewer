@@ -40,7 +40,8 @@ HEADERS  += KVMainWindow.h \
 	KVUtil.h
 
 FORMS += \
-	KVSettingsDialog.ui
+	KVSettingsDialog.ui \
+    KVMainWindow.ui
 
 RESOURCES += resources.qrc
 
