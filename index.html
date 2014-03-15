@@ -6,6 +6,8 @@
 		 html, body, embed, object { padding: 0; margin: 0; }
 		</style>
 		<script type="text/javascript">
+		 var useDirectRendering = false;
+
 		 function setCredentials(server, token) {
 			 setAPILink("http://" + server + "/kcs/mainD2.swf?api_token=" + token + "&api_starttime=" + new Date().getTime());
 		 }
@@ -23,7 +25,12 @@
 			 e.setAttribute("background", "#000000");
 			 e.setAttribute("width", "800");
 			 e.setAttribute("height", "480");
-			 e.setAttribute("wmode", "direct");
+			 
+			 // Note: this breaks on some platforms, including Windows
+			 // We have to investigate when this can be safely enabled
+			 if(useDirectRendering)
+				 e.setAttribute("wmode", "direct");
+			 
 			 document.body.appendChild(e);
 		 }
 		</script>
