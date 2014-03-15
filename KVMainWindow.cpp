@@ -63,14 +63,11 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
 	connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
-	// To set the window size right, we have to first set the central widget (which we set to
-	// the web view)'s size to a fixed size, ask the window to auto-adjust to that, and then
-	// fix its size to what it adjusted itself to. A bit clumsy, but it works, and won't stop
-	// us from adding any additional elements to the window, as this will account for ANYTHING.
-	/*this->setCentralWidget(webView);
-	this->centralWidget()->setFixedSize(800, 480);
+	// Auto-adjust the window to fit its contents, and lock it to that size
+	// As the web view is locked to 800x480, this will simply account for
+	// differences in the menu bar size and such, and prevent resizing
 	this->adjustSize();
-	this->setFixedSize(this->width(), this->height());*/
+	this->setFixedSize(this->width(), this->height());
 
 	// Check for updates
 	// Updates on Linux are handled by the package manager
