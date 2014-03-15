@@ -47,6 +47,18 @@
     </property>
     <item>
      <widget class="QWebView" name="webView">
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>480</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>800</width>
+        <height>480</height>
+       </size>
+      </property>
       <property name="url">
        <url>
         <string>about:blank</string>
