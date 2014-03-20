@@ -1,4 +1,5 @@
 #include "KVMainWindow.h"
+#include "ui_KVMainWindow.h"
 #include <QMenuBar>
 #include <QMenu>
 #include <QWebFrame>
@@ -21,29 +22,24 @@
 #include "KVTranslator.h"
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
-	QMainWindow(parent, flags)
+	QMainWindow(parent, flags),
+	translationMsgBox(0),
+	ui(new Ui::KVMainWindow)
 {
-	this->setWindowTitle("KanColleTool Viewer");
+	ui->setupUi(this);
 
-	// Set up the window and menus and stuff
-	QMenuBar *menuBar = new QMenuBar(this);
+	connect(ui->actionEnterAPILink, SIGNAL(triggered()), this, SLOT(askForAPILink()));
+	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
+	connect(ui->actionClearCache, SIGNAL(triggered()), this, SLOT(clearCache()));
+	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
+	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(ui->actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
 
-	QMenu *viewerMenu = menuBar->addMenu("Viewer");
-	viewerMenu->addAction("Change API Link", this, SLOT(askForAPILink()), Qt::CTRL + Qt::Key_L);
-	viewerMenu->addAction("Settings", this, SLOT(openSettings()));
-	viewerMenu->addAction("Clear Cache", this, SLOT(clearCache()));
-	viewerMenu->addSeparator();
-	viewerMenu->addAction("Refresh", this, SLOT(loadBundledIndex()), Qt::CTRL + Qt::Key_R);
-	viewerMenu->addAction("Quit", qApp, SLOT(quit()), Qt::CTRL + Qt::Key_Q);
-
-	QMenu *helpMenu = menuBar->addMenu("Help");
-	helpMenu->addAction("About", this, SLOT(showAbout()));
-	// Updates on Linux are handled by the package manager
-#if !defined(Q_OS_LINUX)
-	helpMenu->addAction("Check for Updates", this, SLOT(checkForUpdates()));
+	// On Linux, updates are handled by the package manager
+#ifdef Q_OS_LINUX
+	ui->actionCheckForUpdates->setVisible(false);
 #endif
-
-	this->setMenuBar(menuBar);
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -56,28 +52,21 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	cache->setMaximumCacheSize(1073741824);
 	wvManager->setCache(cache);
 
-	// Load settings from the settings file
-	this->loadSettings(true);
-
 	// Set up the web view, using our custom Network Access Manager
-	webView = new QWebView(this);
-	webView->page()->setNetworkAccessManager(wvManager);
+	ui->webView->page()->setNetworkAccessManager(wvManager);
 
 	// The context menu only contains "Reload" anyways
-	webView->setContextMenuPolicy(Qt::PreventContextMenu);
+	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
 	// These are so large that they create a need for themselves >_>
-	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
-	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
-	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+	connect(ui->webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
+	connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
-	// To set the window size right, we have to first set the central widget (which we set to
-	// the web view)'s size to a fixed size, ask the window to auto-adjust to that, and then
-	// fix its size to what it adjusted itself to. A bit clumsy, but it works, and won't stop
-	// us from adding any additional elements to the window, as this will account for ANYTHING.
-	this->setCentralWidget(webView);
-	this->centralWidget()->setFixedSize(800, 480);
+	// Auto-adjust the window to fit its contents, and lock it to that size
+	// As the web view is locked to 800x480, this will simply account for
+	// differences in the menu bar size and such, and prevent resizing
 	this->adjustSize();
 	this->setFixedSize(this->width(), this->height());
 
@@ -87,6 +76,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->checkForUpdates();
 #endif
 
+	this->loadSettings(true);
 	this->loadBundledIndex();
 }
 
@@ -99,8 +89,10 @@ void KVMainWindow::checkForUpdates()
 void KVMainWindow::loadTranslation(QString language)
 {
 	KVTranslator *translator = KVTranslator::instance();
-	if(translator->loaded()) return;
+	if(translator->isLoaded()) return;
 
+	connect(translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
+	connect(translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
 	connect(translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
 	translator->loadTranslation(language);
 }
@@ -110,7 +102,7 @@ void KVMainWindow::loadBundledIndex()
 	QFile file(":/index.html");
 	if(file.open(QIODevice::ReadOnly))
 	{
-		webView->setHtml(file.readAll(), apiLink);
+		ui->webView->setHtml(file.readAll(), apiLink);
 	}
 	else
 	{
@@ -268,12 +260,30 @@ void KVMainWindow::onLoadFinished(bool ok)
 	if(ok) this->setHTMLAPILink();
 }
 
+void KVMainWindow::onWaitingForTranslation()
+{
+	translationMsgBox = new QMessageBox(this);
+	translationMsgBox->setWindowTitle("Waiting for Translation");
+	translationMsgBox->setText("Waiting for the translation to load. This should only take a couple moments...");
+	translationMsgBox->setStandardButtons(QMessageBox::NoButton);
+	translationMsgBox->show();
+}
+
+void KVMainWindow::onTranslationLoaded()
+{
+	if(translationMsgBox) {
+		translationMsgBox->accept();
+		translationMsgBox->deleteLater();
+		translationMsgBox = 0;
+	}
+}
+
 void KVMainWindow::onTranslationLoadFailed(QString error)
 {
 	qDebug() << "Translation failed to load:" << error;
 
 	QMessageBox::StandardButton button;
-	if(KVTranslator::instance()->loaded()) {
+	if(KVTranslator::instance()->isLoaded()) {
 		button = QMessageBox::warning(this, "Couldn't load network translation", "This might mean that your connection is bad. However, a cached translation has been loaded. Would you like to retry loading the translation from the network?", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);
 	} else {
 		button = QMessageBox::warning(this, "Couldn't load translation", "This might mean that your connection is bad. You can continue without translation, but the game will be in Japanese.", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);
@@ -291,7 +301,7 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 void KVMainWindow::setHTMLAPILink()
 {
 	qDebug() << "Updating web view credentials to" << server << "-" << apiToken;
-	webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
+	ui->webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
 }
 
 /*void KVMainWindow::onAPIError(KVProxyServer::APIStatus error)

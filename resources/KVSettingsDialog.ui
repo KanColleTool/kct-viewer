@@ -67,13 +67,6 @@ If you would like to provide an alternate translation, contact us and we'll work
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Proxy Settings:</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QCheckBox" name="proxyCheckbox">
      <property name="text">
       <string>Enable proxy</string>

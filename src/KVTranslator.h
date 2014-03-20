@@ -22,7 +22,7 @@ class KVTranslator : public QObject
 
 public:
 	static KVTranslator* instance();
-	bool loaded();
+	bool isLoaded();
 
 public slots:
 	void loadTranslation(QString language = "en");
@@ -39,6 +39,7 @@ protected:
 signals:
 	void loadFinished();
 	void loadFailed(QString error);
+	void waitingForLoad();
 
 private slots:
 	void translationRequestFinished();
@@ -69,7 +70,7 @@ private:
 		const QByteArray readAll();
 	};
 
-	bool isLoaded;
+	enum { created, loading, loaded, failed } state;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
 	QVariantMap translation;

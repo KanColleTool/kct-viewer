@@ -25,7 +25,7 @@ SOURCES += \
 	../src/KVTranslator_p.cpp \
 	../src/KVUtil.cpp
 
-FORMS += ../resources/KVSettingsDialog.ui
+FORMS += ../resources/KVSettingsDialog.ui ../resources/KVMainWindow.ui
 
 UI_DIR = ../build/uics
 RCC_DIR = ../build/rccs

@@ -19,14 +19,11 @@
 KVTranslator* KVTranslator::m_instance = 0;
 
 // -- Singleton Instance
-KVTranslator* KVTranslator::instance()
-{
+KVTranslator* KVTranslator::instance() {
 	static QMutex mutex;
-	if(!m_instance)
-	{
+	if(!m_instance) {
 		mutex.lock();
-		if(!m_instance)
-			m_instance = new KVTranslator;
+		if(!m_instance) m_instance = new KVTranslator;
 		mutex.unlock();
 	}
 
@@ -36,40 +33,36 @@ KVTranslator* KVTranslator::instance()
 
 
 KVTranslator::KVTranslator(QObject *parent):
-	QObject(parent), isLoaded(false)
-{
+	QObject(parent), state(created) {
 	cacheFile.setFileName(QDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).filePath("translation.json"));
 }
 
-KVTranslator::~KVTranslator()
-{
+KVTranslator::~KVTranslator() {
 
 }
 
-bool KVTranslator::loaded()
-{
-	return isLoaded;
+bool KVTranslator::isLoaded() {
+	return state == loaded;
 }
 
-void KVTranslator::loadTranslation(QString language)
-{
-	if(cacheFile.open(QIODevice::ReadOnly | QIODevice::Unbuffered)) {
+void KVTranslator::loadTranslation(QString language) {
+	state = loading;
+
+	if(cacheFile.exists()) {
+		cacheFile.open(QIODevice::ReadOnly | QIODevice::Unbuffered);
 		parseTranslationData(cacheFile.readAll());
 		cacheFile.close();
-	} else {
-		qDebug() << "Couldn't read from translation cache";
 	}
 
 	QNetworkReply *reply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
 	connect(reply, SIGNAL(finished()), this, SLOT(translationRequestFinished()));
 }
 
-void KVTranslator::translationRequestFinished()
-{
+void KVTranslator::translationRequestFinished() {
 	// Read the response body
 	QNetworkReply *reply(qobject_cast<QNetworkReply*>(QObject::sender()));
-	if(reply->error() != QNetworkReply::NoError)
-	{
+	if(reply->error() != QNetworkReply::NoError) {
+		state = failed;
 		emit loadFailed(QString("Network Error: %1").arg(reply->errorString()));
 		return;
 	}
@@ -77,7 +70,7 @@ void KVTranslator::translationRequestFinished()
 
 	if(parseTranslationData(body)) {
 		qDebug() << "Network translation loaded!";
-		if(cacheFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		if(cacheFile.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
 			cacheFile.write(body);
 			cacheFile.close();
 		} else {
@@ -86,13 +79,12 @@ void KVTranslator::translationRequestFinished()
 	}
 }
 
-bool KVTranslator::parseTranslationData(const QByteArray &data)
-{
+bool KVTranslator::parseTranslationData(const QByteArray &data) {
 	// Parse the JSON
 	QJsonParseError error;
 	QJsonDocument doc(QJsonDocument::fromJson(data, &error));
-	if(error.error != QJsonParseError::NoError)
-	{
+	if(error.error != QJsonParseError::NoError) {
+		state = failed;
 		emit loadFailed(QString("JSON Error: %1").arg(error.errorString()));
 		return false;
 	}
@@ -100,8 +92,8 @@ bool KVTranslator::parseTranslationData(const QByteArray &data)
 
 	// Check the response
 	int success = (int) root.value("success").toDouble();
-	if(success != 1)
-	{
+	if(success != 1) {
+		state = failed;
 		emit loadFailed(QString("API Error %1").arg(success));
 		return false;
 	}
@@ -109,17 +101,22 @@ bool KVTranslator::parseTranslationData(const QByteArray &data)
 	// Parse the translation data
 	translation = root.value("translation").toObject().toVariantMap();
 
-	isLoaded = true;
+	state = loaded;
 	emit loadFinished();
 	return true;
 }
 
 QString KVTranslator::translate(const QString &line) const {
-	if(!isLoaded) {
-		QEventLoop loop;
+	// Block until translation is loaded
+	QEventLoop loop;
+	switch(state){
+	case created:
+	case failed: return line;
+	case loading:
 		loop.connect(this, SIGNAL(loadFinished()), SLOT(quit()));
 		loop.connect(this, SIGNAL(loadFailed(QString)), SLOT(quit()));
 		loop.exec();
+	case loaded: break;
 	}
 
 	QString realLine = unescape(line);
@@ -130,15 +127,14 @@ QString KVTranslator::translate(const QString &line) const {
 	QVariant value = translation.value(key);
 	if(value.isValid()) {
 		//qDebug() << "TL:" << realLine << "->" << value.toString();
-		return jsonEscape(value.toString());
+		return value.toString();
 	} else {
 		//qDebug() << "No TL:" << realLine;
 		return line;
 	}
 }
 
-QString KVTranslator::fixTime(const QString &time) const
-{
+QString KVTranslator::fixTime(const QString &time) const {
 	QDateTime realTime = QDateTime::fromString(time, "yyyy-MM-dd hh:mm:ss");
 	if(!realTime.isValid()) return time;
 	realTime.addSecs(-32400);
@@ -296,10 +292,8 @@ QByteArray KVTranslator::translateJson(QByteArray json) const {
 	return ret;
 }
 
-QJsonValue KVTranslator::_walk(QJsonValue value, QString key) const
-{
-	switch(value.type())
-	{
+QJsonValue KVTranslator::_walk(QJsonValue value, QString key) const {
+	switch(value.type()) {
 		case QJsonValue::Object:
 		{
 			QJsonObject obj = value.toObject();
