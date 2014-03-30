@@ -159,14 +159,16 @@ void KVMainWindow::askForAPILink(bool reload)
 		this->loadBundledIndex();
 }
 
-void KVMainWindow::openSettings() {
+void KVMainWindow::openSettings()
+{
 	KVSettingsDialog *settingsDialog = new KVSettingsDialog(this);
 	connect(settingsDialog, SIGNAL(apply()), SLOT(implementSettings()));
 	connect(settingsDialog, SIGNAL(finished(int)), settingsDialog, SLOT(deleteLater()));
 	settingsDialog->show();
 }
 
-void KVMainWindow::loadSettings(bool start) {
+void KVMainWindow::loadSettings(bool start)
+{
 	QSettings settings;
 
 	server = settings.value("server").toString();
@@ -186,7 +188,8 @@ void KVMainWindow::loadSettings(bool start) {
 	this->implementSettings(start);
 }
 
-void KVMainWindow::implementSettings(bool start) {
+void KVMainWindow::implementSettings(bool start)
+{
 	QSettings settings;
 
 	bool translation = settings.value("viewerTranslation", kDefaultTranslation).toBool();
@@ -195,6 +198,8 @@ void KVMainWindow::implementSettings(bool start) {
 		if(translation) loadTranslation();
 		if(!start) loadBundledIndex();
 	}
+
+	showTaskbarProgress = settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool();
 
 	if(settings.value("proxy", kDefaultProxy).toBool()) {
 		wvManager->setProxy(QNetworkProxy(
@@ -295,7 +300,7 @@ void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
 {
 	//qDebug() << "Progress:" << progress << "/" << total;
 #ifdef Q_OS_WIN
-	if(total > 0 && progress < total)
+	if(showTaskbarProgress && total > 0 && progress < total)
 	{
 		taskbarButton->progress()->show();
 

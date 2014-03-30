@@ -10,8 +10,8 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui(new Ui::KVSettingsDialog) {
 	ui->setupUi(this);
 
-	ui->translationCheckbox->setChecked(
-		settings.value("viewerTranslation", kDefaultTranslation).toBool());
+	ui->translationCheckbox->setChecked(settings.value("viewerTranslation", kDefaultTranslation).toBool());
+	ui->taskbarProgressCheckbox->setChecked(settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool());
 	ui->proxyCheckbox->setChecked(settings.value("proxy", kDefaultProxy).toBool());
 	ui->proxyServerEdit->setText(settings.value("proxyServer", kDefaultProxyServer).toString());
 	ui->proxyPortBox->setValue(settings.value("proxyPort", kDefaultProxyPort).toInt());
@@ -29,6 +29,10 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 
 #ifdef __APPLE__
 	ui->buttonBox->setStandardButtons(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+#endif
+
+#if !defined(Q_OS_WIN)
+	ui->windowsOnlyContainer->hide();
 #endif
 
 	this->on_proxyCheckbox_stateChanged(ui->proxyCheckbox->checkState());
@@ -49,6 +53,7 @@ void KVSettingsDialog::accept() {
 
 void KVSettingsDialog::applySettings() {
 	settings.setValue("viewerTranslation", ui->translationCheckbox->isChecked());
+	settings.setValue("taskbarProgress", ui->taskbarProgressCheckbox->isChecked());
 	settings.setValue("proxy", ui->proxyCheckbox->isChecked());
 	settings.setValue("proxyServer", ui->proxyServerEdit->text());
 	settings.setValue("proxyPort", ui->proxyPortBox->value());
