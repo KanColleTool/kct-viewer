@@ -89,6 +89,7 @@ void KVMainWindow::postConstructorSetup()
 	// This has to be done while we have a run loop, otherwise windowHandle() will return 0
 	taskbarButton = new QWinTaskbarButton(this);
 	taskbarButton->setWindow(this->windowHandle());
+	taskbarButton->progress()->setRange(0, 10000);
 #endif
 }
 
@@ -294,9 +295,24 @@ void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
 {
 	//qDebug() << "Progress:" << progress << "/" << total;
 #ifdef Q_OS_WIN
-	taskbarButton->progress()->setVisible(total > 0 && progress < total);
-	taskbarButton->progress()->setRange(0, total);
-	taskbarButton->progress()->setValue(progress);
+	if(total > 0 && progress < total)
+	{
+		taskbarButton->progress()->show();
+
+		// This is all to make sure it doesn't jump around all over the place,
+		// since the game likes starting new requests halfways through loading
+		// screens for some reason...
+		int oldValue = taskbarButton->progress()->value();
+		float fProgress = (float)progress;
+		float fTotal = (float)total;
+		float fValue = fProgress/fTotal;
+		float newValue = fValue * 10000.0;
+		qDebug() << "Progress:" << oldValue << "->" << newValue;
+		if(newValue > oldValue)
+			taskbarButton->progress()->setValue(ceil(newValue));
+	}
+	else
+		taskbarButton->progress()->hide();
 #endif
 }
 
