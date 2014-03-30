@@ -90,6 +90,11 @@ If you would like to provide an alternate translation, contact us and we'll work
       </item>
       <item>
        <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>This will display the game's loading progress in the Windows Taskbar.&lt;br /&gt;This will be displayed every time the game loads &lt;i&gt;anything&lt;/i&gt;, so disable it if it gets annoying.</string>
         </property>
