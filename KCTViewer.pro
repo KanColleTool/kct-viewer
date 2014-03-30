@@ -40,7 +40,8 @@ HEADERS  += KVMainWindow.h \
 	KVNetworkAccessManager.h \
 	KVNetworkReply.h \
 	KVTranslator.h \
-	KVUtil.h
+	KVUtil.h \
+	KVDefaults.h
 
 FORMS += \
 	KVSettingsDialog.ui \
