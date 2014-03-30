@@ -8,6 +8,10 @@
 
 #include "KVNetworkAccessManager.h"
 
+#ifdef Q_OS_WIN
+	#include <QtWinExtras>
+#endif
+
 namespace Ui {
 	class KVMainWindow;
 }
@@ -18,6 +22,9 @@ class KVMainWindow : public QMainWindow
 
 public:
 	KVMainWindow(QWidget *parent=0, Qt::WindowFlags flags=0);
+
+protected slots:
+	void postConstructorSetup();
 
 protected:
 	void loadTranslation(QString language="en");
@@ -38,6 +45,7 @@ private slots:
 	void onLoadStarted();
 	void onLoadFinished(bool ok);
 	void onTranslationLoadFailed(QString error);
+	void onTrackedProgressChanged(qint64 progress, qint64 total);
 
 	void setHTMLAPILink();
 
@@ -51,6 +59,10 @@ protected:
 
 	QString server, apiToken;
 	QUrl apiLink;
+
+#ifdef Q_OS_WIN
+	QWinTaskbarButton *taskbarButton;
+#endif
 	
 private:
 	Ui::KVMainWindow *ui;

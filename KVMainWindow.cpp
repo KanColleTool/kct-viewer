@@ -44,6 +44,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	// Without a cache, the game takes ages to load.
 	// Without a proxy, we can't do cool things like translating the game.
 	wvManager = new KVNetworkAccessManager(this);
+	connect(wvManager, SIGNAL(trackedProgressChanged(qint64,qint64)), this, SLOT(onTrackedProgressChanged(qint64,qint64)));
 
 	// Set up a cache; a larger-than-normal disk cache is quite enough for our purposes
 	cache = new QNetworkDiskCache(this);
@@ -74,9 +75,23 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 #if !defined(Q_OS_LINUX)
 	this->checkForUpdates();
 #endif
+
+	// Schedule a call to the post-constructor setup
+	QTimer::singleShot(0, this, SLOT(postConstructorSetup()));
 	
 	this->loadSettings(true);
 	this->loadBundledIndex();
+}
+
+void KVMainWindow::postConstructorSetup()
+{
+#ifdef Q_OS_WIN
+	// This has to be done while we have a run loop, otherwise windowHandle() will return 0
+	taskbarButton = new QWinTaskbarButton(this);
+	taskbarButton->setWindow(this->windowHandle());
+
+	Q_ASSERT(taskbarButton->window() != 0);
+#endif
 }
 
 void KVMainWindow::checkForUpdates()
@@ -275,6 +290,16 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 	// To retry, just send the request again.
 	if(button == QMessageBox::Retry)
 		this->loadTranslation();
+}
+
+void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
+{
+	//qDebug() << "Progress:" << progress << "/" << total;
+#ifdef Q_OS_WIN
+	taskbarButton->progress()->setVisible(total > 0 && progress < total);
+	taskbarButton->progress()->setRange(0, total);
+	taskbarButton->progress()->setValue(progress);
+#endif
 }
 
 void KVMainWindow::setHTMLAPILink()
