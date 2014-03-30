@@ -89,8 +89,6 @@ void KVMainWindow::postConstructorSetup()
 	// This has to be done while we have a run loop, otherwise windowHandle() will return 0
 	taskbarButton = new QWinTaskbarButton(this);
 	taskbarButton->setWindow(this->windowHandle());
-
-	Q_ASSERT(taskbarButton->window() != 0);
 #endif
 }
 
