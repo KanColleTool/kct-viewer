@@ -27,8 +27,8 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 
 	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, request, outgoingData);
 
-	// If the request if for an SWF file, track it and report progress
-	if(req.url().path().endsWith(".swf"))
+	// If the request if for an SWF or MP3 file, track it and report progress
+	if(req.url().path().endsWith(".swf") || req.url().path().endsWith(".mp3"))
 	{
 		connect(reply, SIGNAL(metaDataChanged()), this, SLOT(trackedGETMetaDataChanged()));
 		connect(reply, SIGNAL(readyRead()), this, SLOT(trackedGETReadyRead()));
