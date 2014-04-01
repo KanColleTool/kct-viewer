@@ -312,7 +312,7 @@ void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
 		float fTotal = (float)total;
 		float fValue = fProgress/fTotal;
 		float newValue = fValue * 10000.0;
-		qDebug() << "Progress:" << oldValue << "->" << newValue;
+		//qDebug() << "Progress:" << oldValue << "->" << newValue;
 		if(newValue > oldValue)
 			taskbarButton->progress()->setValue(ceil(newValue));
 	}
