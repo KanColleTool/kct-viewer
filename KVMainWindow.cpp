@@ -317,7 +317,10 @@ void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
 			taskbarButton->progress()->setValue(ceil(newValue));
 	}
 	else
+	{
+		taskbarButton->progress()->setValue(0);
 		taskbarButton->progress()->hide();
+	}
 #endif
 }
 
