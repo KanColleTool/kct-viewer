@@ -30,6 +30,7 @@ INSTALLS += binaries
 SOURCES += main.cpp \
 	KVMainWindow.cpp \
 	KVSettingsDialog.cpp \
+	KVWebView.cpp \
 	KVNetworkAccessManager.cpp \
 	KVNetworkReply.cpp \
 	KVTranslator.cpp \
@@ -37,6 +38,7 @@ SOURCES += main.cpp \
 
 HEADERS  += KVMainWindow.h \
 	KVSettingsDialog.h \
+	KVWebView.h \
 	KVNetworkAccessManager.h \
 	KVNetworkReply.h \
 	KVTranslator.h \

@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QNetworkDiskCache>
 
+#include "KVWebView.h"
 #include "KVNetworkAccessManager.h"
 
 #ifdef Q_OS_WIN
@@ -54,6 +55,8 @@ private slots:
 	//void onAPIError(KVProxyServer::APIStatus error);
 
 protected:
+	KVWebView *webView;
+
 	KVNetworkAccessManager *wvManager, manager;
 	QNetworkDiskCache *cache;
 

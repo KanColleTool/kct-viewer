@@ -52,17 +52,23 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	cache->setMaximumCacheSize(1073741824);
 	wvManager->setCache(cache);
 
+	// Can't set this up in the designer, since it doesn't like QWebView subclasses
+	// Like, I literally can't promote QWebView widgets, go figure
+	webView = new KVWebView(this);
+	webView->setFixedSize(800, 480);
+	this->centralWidget()->layout()->addWidget(webView);
+
 	// Set up the web view, using our custom Network Access Manager
-	ui->webView->page()->setNetworkAccessManager(wvManager);
+	webView->page()->setNetworkAccessManager(wvManager);
 
 	// The context menu only contains "Reload" anyways
-	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
+	webView->setContextMenuPolicy(Qt::PreventContextMenu);
 	// These are so large that they create a need for themselves >_>
-	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
-	connect(ui->webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
-	connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
+	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
 	// Auto-adjust the window to fit its contents, and lock it to that size
 	// As the web view is locked to 800x480, this will simply account for
@@ -113,7 +119,7 @@ void KVMainWindow::loadBundledIndex()
 	QFile file(":/index.html");
 	if(file.open(QIODevice::ReadOnly))
 	{
-		ui->webView->setHtml(file.readAll(), apiLink);
+		webView->setHtml(file.readAll(), apiLink);
 	}
 	else
 	{
@@ -327,7 +333,7 @@ void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
 void KVMainWindow::setHTMLAPILink()
 {
 	qDebug() << "Updating web view credentials to" << server << "-" << apiToken;
-	ui->webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
+	webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
 }
 
 /*void KVMainWindow::onAPIError(KVProxyServer::APIStatus error)
