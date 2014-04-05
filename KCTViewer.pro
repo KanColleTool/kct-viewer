@@ -23,7 +23,7 @@ VERSION = 0.8.7
 macx: TARGET = "KCT Viewer"
 unix:!macx: TARGET = kancolletool-viewer
 
-binaries.path = $$PREFIX/usr/bin
+binaries.path = $$PREFIX/bin
 binaries.files = kancolletool-viewer
 INSTALLS += binaries
 
