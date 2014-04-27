@@ -18,7 +18,7 @@ win32: {
 RC_FILE = KCTViewer.rc
 
 # This is updated by the version bump script
-VERSION = 0.8.7
+VERSION = 0.9.0
 
 macx: TARGET = "KCT Viewer"
 unix:!macx: TARGET = kancolletool-viewer
