@@ -18,7 +18,6 @@ HEADERS += \
 	../src/KVUtil.h
 
 SOURCES += \
-	../src/main.cpp
 	../src/KVMainWindow.cpp \
 	../src/KVSettingsDialog.cpp \
 	../src/KVWebView.cpp \
