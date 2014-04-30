@@ -45,6 +45,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	// Without a cache, the game takes ages to load.
 	// Without a proxy, we can't do cool things like translating the game.
 	wvManager = new KVNetworkAccessManager(this);
+	connect(wvManager, SIGNAL(trackedProgressChanged(qint64,qint64)), this, SLOT(onTrackedProgressChanged(qint64,qint64)));
 
 	// Set up a cache; a larger-than-normal disk cache is quite enough for our purposes
 	cache = new QNetworkDiskCache(this);
@@ -52,17 +53,23 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	cache->setMaximumCacheSize(1073741824);
 	wvManager->setCache(cache);
 
+	// Can't set this up in the designer, since it doesn't like QWebView subclasses
+	// Like, I literally can't promote QWebView widgets, go figure
+	webView = new KVWebView(this);
+	webView->setFixedSize(800, 480);
+	this->centralWidget()->layout()->addWidget(webView);
+
 	// Set up the web view, using our custom Network Access Manager
-	ui->webView->page()->setNetworkAccessManager(wvManager);
+	webView->page()->setNetworkAccessManager(wvManager);
 
 	// The context menu only contains "Reload" anyways
-	ui->webView->setContextMenuPolicy(Qt::PreventContextMenu);
+	webView->setContextMenuPolicy(Qt::PreventContextMenu);
 	// These are so large that they create a need for themselves >_>
-	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-	ui->webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
-	connect(ui->webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
-	connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
+	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
 
 	// Auto-adjust the window to fit its contents, and lock it to that size
 	// As the web view is locked to 800x480, this will simply account for
@@ -76,8 +83,21 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->checkForUpdates();
 #endif
 
+	// Schedule a call to the post-constructor setup
+	QTimer::singleShot(0, this, SLOT(postConstructorSetup()));
+
 	this->loadSettings(true);
 	this->loadBundledIndex();
+}
+
+void KVMainWindow::postConstructorSetup()
+{
+#ifdef Q_OS_WIN
+	// This has to be done while we have a run loop, otherwise windowHandle() will return 0
+	taskbarButton = new QWinTaskbarButton(this);
+	taskbarButton->setWindow(this->windowHandle());
+	taskbarButton->progress()->setRange(0, 10000);
+#endif
 }
 
 void KVMainWindow::checkForUpdates()
@@ -102,7 +122,7 @@ void KVMainWindow::loadBundledIndex()
 	QFile file(":/index.html");
 	if(file.open(QIODevice::ReadOnly))
 	{
-		ui->webView->setHtml(file.readAll(), apiLink);
+		webView->setHtml(file.readAll(), apiLink);
 	}
 	else
 	{
@@ -148,14 +168,16 @@ void KVMainWindow::askForAPILink(bool reload)
 		this->loadBundledIndex();
 }
 
-void KVMainWindow::openSettings() {
+void KVMainWindow::openSettings()
+{
 	KVSettingsDialog *settingsDialog = new KVSettingsDialog(this);
 	connect(settingsDialog, SIGNAL(apply()), SLOT(implementSettings()));
 	connect(settingsDialog, SIGNAL(finished(int)), settingsDialog, SLOT(deleteLater()));
 	settingsDialog->show();
 }
 
-void KVMainWindow::loadSettings(bool start) {
+void KVMainWindow::loadSettings(bool start)
+{
 	QSettings settings;
 
 	server = settings.value("server").toString();
@@ -175,7 +197,8 @@ void KVMainWindow::loadSettings(bool start) {
 	this->implementSettings(start);
 }
 
-void KVMainWindow::implementSettings(bool start) {
+void KVMainWindow::implementSettings(bool start)
+{
 	QSettings settings;
 
 	bool translation = settings.value("viewerTranslation", kDefaultTranslation).toBool();
@@ -184,6 +207,8 @@ void KVMainWindow::implementSettings(bool start) {
 		if(translation) loadTranslation();
 		if(!start) loadBundledIndex();
 	}
+
+	showTaskbarProgress = settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool();
 
 	if(settings.value("proxy", kDefaultProxy).toBool()) {
 		wvManager->setProxy(QNetworkProxy(
@@ -298,10 +323,38 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 		this->loadTranslation();
 }
 
+void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
+{
+	//qDebug() << "Progress:" << progress << "/" << total;
+#ifdef Q_OS_WIN
+	if(showTaskbarProgress && total > 0 && progress < total)
+	{
+		taskbarButton->progress()->show();
+
+		// This is all to make sure it doesn't jump around all over the place,
+		// since the game likes starting new requests halfways through loading
+		// screens for some reason...
+		int oldValue = taskbarButton->progress()->value();
+		float fProgress = (float)progress;
+		float fTotal = (float)total;
+		float fValue = fProgress/fTotal;
+		float newValue = fValue * 10000.0;
+		//qDebug() << "Progress:" << oldValue << "->" << newValue;
+		if(newValue > oldValue)
+			taskbarButton->progress()->setValue(ceil(newValue));
+	}
+	else
+	{
+		taskbarButton->progress()->setValue(0);
+		taskbarButton->progress()->hide();
+	}
+#endif
+}
+
 void KVMainWindow::setHTMLAPILink()
 {
 	qDebug() << "Updating web view credentials to" << server << "-" << apiToken;
-	ui->webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
+	webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
 }
 
 /*void KVMainWindow::onAPIError(KVProxyServer::APIStatus error)

@@ -1,7 +1,7 @@
 CONFIG += c++11
 
 # This is updated by the version bump script
-VERSION = 0.8.4
+VERSION = 0.9.0
 
 INCLUDEPATH += . ..
 WARNINGS += -Wall
@@ -10,6 +10,7 @@ isEmpty(PREFIX): PREFIX=/usr
 
 HEADERS += \
 	../src/KVMainWindow.h \
+	../src/KVWebView.h \
 	../src/KVSettingsDialog.h \
 	../src/KVNetworkAccessManager.h \
 	../src/KVNetworkReply.h \
@@ -17,8 +18,10 @@ HEADERS += \
 	../src/KVUtil.h
 
 SOURCES += \
+	../src/main.cpp
 	../src/KVMainWindow.cpp \
 	../src/KVSettingsDialog.cpp \
+	../src/KVWebView.cpp \
 	../src/KVNetworkAccessManager.cpp \
 	../src/KVNetworkReply.cpp \
 	../src/KVTranslator.cpp \

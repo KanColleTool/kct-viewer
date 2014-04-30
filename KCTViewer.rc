@@ -4,8 +4,8 @@
     IDI_ICON1           ICON    DISCARDABLE "resources/KCTViewer.ico"
 
     VS_VERSION_INFO     VERSIONINFO
-    FILEVERSION         0, 8, 7, 0
-    PRODUCTVERSION      0, 8, 7, 0
+    FILEVERSION         0, 9, 0, 0
+    PRODUCTVERSION      0, 9, 0, 0
     FILEFLAGSMASK       0x3fL
     FILEFLAGS           0
     FILEOS              VOS_NT_WINDOWS32
@@ -21,12 +21,12 @@
             BLOCK   "040904b0"
             BEGIN
                 VALUE   "CompanyName",      "KanColleTool\0"
-                VALUE   "FileDescription",  "KCT Viewer\0"
+                VALUE   "FileDescription",  "KanColleTool Viewer\0"
                 VALUE   "FileVersion",      KCT_VERSION "\0"
                 VALUE   "InternalName",     "KCTViewer\0"
                 VALUE   "LegalCopyright",   "Copyright 2014 by the KanColleTool team\0"
                 VALUE   "OriginalFilename", "KCTViewer.exe\0"
-                VALUE   "ProductName",      "KCT Viewer\0"
+                VALUE   "ProductName",      "KanColleTool Viewer\0"
                 VALUE   "ProductVersion",   KCT_VERSION "\0"
             END
         END
