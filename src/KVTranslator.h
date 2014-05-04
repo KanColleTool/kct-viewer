@@ -22,28 +22,55 @@ class KVTranslator : public QObject
 
 public:
 	static KVTranslator* instance();
-	bool loaded();
+	bool isLoaded();
 
 public slots:
 	void loadTranslation(QString language = "en");
 
 	QString translate(const QString &line) const;
 	QString fixTime(const QString &time) const;
-	QString translateJson(const QString &json) const;
+	QByteArray translateJson(QByteArray json) const;
 
 protected:
 	bool parseTranslationData(const QByteArray &data);
 	QJsonValue _walk(QJsonValue value, QString key="") const;
+	static QString jsonEscape(const QString &str);
 
 signals:
 	void loadFinished();
 	void loadFailed(QString error);
+	void waitingForLoad();
 
 private slots:
 	void translationRequestFinished();
 
 private:
-	bool isLoaded;
+	enum JsonContext {
+		Start, End,
+		Object, Array,
+		Key, AfterKey,
+		Value, NonString, String, AfterValue,
+		Invalid
+	};
+
+	struct JsonState {
+		JsonContext context;
+		int start, arri;
+		JsonState();
+		JsonState(JsonContext c, int s, int ai=-1);
+		operator QString() const;
+	};
+
+	struct Reader {
+		int i;
+		const QByteArray &data;
+		Reader(const QByteArray &json);
+
+		const QByteArray readTo(int e);
+		const QByteArray readAll();
+	};
+
+	enum { created, loading, loaded, failed } state;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
 	QVariantMap translation;

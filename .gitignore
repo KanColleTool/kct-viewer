@@ -2,11 +2,6 @@
 .DS_Store
 
 # C++ and Qt Temporaries
-*.o
-moc_*.cpp
-*.moc
-qrc_*.cpp
-ui_*.h
 *.pro.user
 *.stash
 object_script*
@@ -25,13 +20,6 @@ xcuserdata
 
 # Built Products
 Makefile*
-KCT Viewer.app
-KCTViewer.exe
-kancolletool-viewer
-kancolletool-viewer-test
 
-targets/archlinux/*
-!targets/archlinux/PKGBUILD
-
-/build-*
-/dist
+/build/
+/bin/

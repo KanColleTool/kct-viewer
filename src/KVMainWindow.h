@@ -45,6 +45,8 @@ private slots:
 	void onVersionCheckFinished();
 	void onLoadStarted();
 	void onLoadFinished(bool ok);
+	void onWaitingForTranslation();
+	void onTranslationLoaded();
 	void onTranslationLoadFailed(QString error);
 	void onTrackedProgressChanged(qint64 progress, qint64 total);
 
@@ -59,6 +61,7 @@ protected:
 
 	KVNetworkAccessManager *wvManager, manager;
 	QNetworkDiskCache *cache;
+	QMessageBox *translationMsgBox;
 
 	QString server, apiToken;
 	QUrl apiLink;
@@ -68,7 +71,7 @@ protected:
 #ifdef Q_OS_WIN
 	QWinTaskbarButton *taskbarButton;
 #endif
-	
+
 private:
 	Ui::KVMainWindow *ui;
 };

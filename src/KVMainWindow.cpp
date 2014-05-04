@@ -23,10 +23,11 @@
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
+	translationMsgBox(0),
 	ui(new Ui::KVMainWindow)
 {
 	ui->setupUi(this);
-	
+
 	connect(ui->actionEnterAPILink, SIGNAL(triggered()), this, SLOT(askForAPILink()));
 	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
 	connect(ui->actionClearCache, SIGNAL(triggered()), this, SLOT(clearCache()));
@@ -34,7 +35,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
 	connect(ui->actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
-	
+
 	// On Linux, updates are handled by the package manager
 #ifdef Q_OS_LINUX
 	ui->actionCheckForUpdates->setVisible(false);
@@ -84,7 +85,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 
 	// Schedule a call to the post-constructor setup
 	QTimer::singleShot(0, this, SLOT(postConstructorSetup()));
-	
+
 	this->loadSettings(true);
 	this->loadBundledIndex();
 }
@@ -108,8 +109,10 @@ void KVMainWindow::checkForUpdates()
 void KVMainWindow::loadTranslation(QString language)
 {
 	KVTranslator *translator = KVTranslator::instance();
-	if(translator->loaded()) return;
+	if(translator->isLoaded()) return;
 
+	connect(translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
+	connect(translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
 	connect(translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
 	translator->loadTranslation(language);
 }
@@ -282,12 +285,30 @@ void KVMainWindow::onLoadFinished(bool ok)
 	if(ok) this->setHTMLAPILink();
 }
 
+void KVMainWindow::onWaitingForTranslation()
+{
+	translationMsgBox = new QMessageBox(this);
+	translationMsgBox->setWindowTitle("Waiting for Translation");
+	translationMsgBox->setText("Waiting for the translation to load. This should only take a couple moments...");
+	translationMsgBox->setStandardButtons(QMessageBox::NoButton);
+	translationMsgBox->show();
+}
+
+void KVMainWindow::onTranslationLoaded()
+{
+	if(translationMsgBox) {
+		translationMsgBox->accept();
+		translationMsgBox->deleteLater();
+		translationMsgBox = 0;
+	}
+}
+
 void KVMainWindow::onTranslationLoadFailed(QString error)
 {
 	qDebug() << "Translation failed to load:" << error;
 
 	QMessageBox::StandardButton button;
-	if(KVTranslator::instance()->loaded()) {
+	if(KVTranslator::instance()->isLoaded()) {
 		button = QMessageBox::warning(this, "Couldn't load network translation", "This might mean that your connection is bad. However, a cached translation has been loaded. Would you like to retry loading the translation from the network?", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);
 	} else {
 		button = QMessageBox::warning(this, "Couldn't load translation", "This might mean that your connection is bad. You can continue without translation, but the game will be in Japanese.", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);
