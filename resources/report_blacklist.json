@@ -1,0 +1,5 @@
+{
+	"/api_start2": ["api_filename"],
+	"/api_get_member/basic": ["api_nickname"],
+	"/api_port/port": ["api_nickname"]
+}
