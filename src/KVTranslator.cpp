@@ -143,8 +143,27 @@ QString KVTranslator::fixTime(const QString &time) const {
 	return realTime.toString("yyyy-MM-dd hh:mm:ss");
 }
 
-QByteArray KVTranslator::translateJson(QByteArray json) const {
-	Reader r(json);
+QByteArray KVTranslator::translateJson(QByteArray json) const
+{
+	// Skip BOM if present
+	if(json.length() >= 3 && (unsigned char)json.at(0) == 0xEF && (unsigned char)json.at(1) == 0xBB && (unsigned char)json.at(2) == 0xBF)
+		json = json.mid(3);
+
+	bool hasPrefix = json.startsWith("svdata=");
+
+	QJsonDocument doc = QJsonDocument::fromJson(json.mid(hasPrefix ? 7 : 0));
+	QJsonValue val = this->_walk(QJsonValue(doc.object()));
+	//qDebug() << val;
+	doc = QJsonDocument(val.toObject());
+
+#if QT_VERSION >= 0x050100
+	QByteArray ret = doc.toJson(QJsonDocument::Compact);
+#else
+	QByteArray ret = doc.toJson();
+#endif
+	return (hasPrefix ? "svdata=" + ret : ret);
+
+	/*Reader r(json);
 	QStack<JsonState> state;
 	state.reserve(5);
 	state.push(JsonState(End, 0));
@@ -289,7 +308,7 @@ QByteArray KVTranslator::translateJson(QByteArray json) const {
 	}
 
 	ret.append(r.readAll());
-	return ret;
+	return ret;*/
 }
 
 QJsonValue KVTranslator::_walk(QJsonValue value, QString key) const {
