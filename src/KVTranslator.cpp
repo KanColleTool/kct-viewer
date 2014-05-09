@@ -136,7 +136,7 @@ QString KVTranslator::translate(const QString &line, QString lastPathComponent, 
 	QString realLine = unescape(line);
 
 	// Check if the string is empty
-	if(realLine.isEmpty())
+	if(realLine.isEmpty() || realLine == "-")
 		return line;
 
 	// Check if the line is numeric
