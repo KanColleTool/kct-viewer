@@ -3,8 +3,6 @@ TEMPLATE = app
 
 include(../KCTViewer.pri)
 
-win32: LIBS += -lws2_32 -lmswsock
-
 ICON = ../resources/icons/KCTViewer.ico
 RC_FILE = ../KCTViewer.rc
 

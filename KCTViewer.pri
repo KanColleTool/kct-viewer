@@ -1,5 +1,10 @@
-QT     += core gui webkitwidgets winextras
+QT     += core gui webkitwidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+win32: {
+	QT += winextras
+	LIBS += -lws2_32 -lmswsock
+}
 
 CONFIG += c++11
 
