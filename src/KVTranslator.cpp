@@ -187,6 +187,8 @@ QString KVTranslator::translate(const QString &line, QString lastPathComponent, 
 			req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 			QByteArray body = QString("value=%1").arg(realLine).toUtf8();
 			manager.post(req, body);
+
+			translation.insert(crcString, QVariant::Invalid);
 		}
 
 		return line;
