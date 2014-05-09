@@ -1,15 +1,9 @@
-QT       += core gui webkitwidgets
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
 TARGET = KCTViewer
 TEMPLATE = app
 
 include(../KCTViewer.pri)
 
-win32: {
-	QT += winextras
-	LIBS += -lws2_32 -lmswsock
-}
+win32: LIBS += -lws2_32 -lmswsock
 
 ICON = ../resources/icons/KCTViewer.ico
 RC_FILE = ../KCTViewer.rc

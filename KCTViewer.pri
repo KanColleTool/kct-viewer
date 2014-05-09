@@ -1,3 +1,6 @@
+QT     += core gui webkitwidgets winextras
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 CONFIG += c++11
 
 # This is updated by the version bump script
