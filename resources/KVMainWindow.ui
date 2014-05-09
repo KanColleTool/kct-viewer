@@ -60,7 +60,6 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
-    <addaction name="actionCheckForUpdates"/>
    </widget>
    <addaction name="menuViewer"/>
    <addaction name="menuHelp"/>

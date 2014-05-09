@@ -34,12 +34,6 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-	connect(ui->actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
-
-	// On Linux, updates are handled by the package manager
-#ifdef Q_OS_LINUX
-	ui->actionCheckForUpdates->setVisible(false);
-#endif
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
