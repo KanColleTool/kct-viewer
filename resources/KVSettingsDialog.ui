@@ -28,6 +28,20 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="reportUntranslatedCheckbox">
+       <property name="text">
+        <string>Report untranslated lines</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QLabel" name="label">
      <property name="font">
       <font>

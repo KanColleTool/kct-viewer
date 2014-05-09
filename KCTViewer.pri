@@ -23,7 +23,8 @@ HEADERS += \
 	../src/KVNetworkAccessManager.h \
 	../src/KVNetworkReply.h \
 	../src/KVTranslator.h \
-	../src/KVUtil.h
+	../src/KVUtil.h \
+	../src/KVDefaults.h
 
 SOURCES += \
 	../src/KVMainWindow.cpp \
@@ -34,6 +35,9 @@ SOURCES += \
 	../src/KVTranslator.cpp \
 	../src/KVTranslator_p.cpp \
 	../src/KVUtil.cpp
+
+OTHER_FILES += \
+	../resources/report_blacklist.json
 
 FORMS += ../resources/KVSettingsDialog.ui ../resources/KVMainWindow.ui
 

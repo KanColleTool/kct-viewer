@@ -24,16 +24,18 @@ public:
 	static KVTranslator* instance();
 	bool isLoaded();
 
+	bool reportUntranslated;
+
 public slots:
 	void loadTranslation(QString language = "en");
 
-	QString translate(const QString &line) const;
-	QString fixTime(const QString &time) const;
-	QByteArray translateJson(QByteArray json) const;
+	QString translate(const QString &line, QString lastPathComponent, QString key);
+	QByteArray translateJson(QByteArray json, QString lastPathComponent = "");
+	QString fixTime(const QString &time);
 
 protected:
 	bool parseTranslationData(const QByteArray &data);
-	QJsonValue _walk(QJsonValue value, QString key="") const;
+	QJsonValue _walk(QJsonValue value, QString lastPathComponent, QString key="");
 	static QString jsonEscape(const QString &str);
 
 signals:
@@ -73,7 +75,7 @@ private:
 	enum { created, loading, loaded, failed } state;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
-	QVariantMap translation;
+	QVariantMap translation, reportBlacklist;
 
 private:
 	// Singleton stuff

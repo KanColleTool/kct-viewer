@@ -208,6 +208,8 @@ void KVMainWindow::implementSettings(bool start)
 		if(!start) loadBundledIndex();
 	}
 
+	KVTranslator::instance()->reportUntranslated = settings.value("reportUntranslated", kDefaultReportUntranslated).toBool();
+
 	showTaskbarProgress = settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool();
 
 	if(settings.value("proxy", kDefaultProxy).toBool()) {

@@ -1,5 +1,6 @@
 {
 	"api_start2": ["api_filename"],
 	"basic": ["api_nickname"],
-	"port": ["api_nickname"]
+	"port": ["api_nickname"],
+	"practice": ["api_enemy_name", "api_enemy_comment"]
 }

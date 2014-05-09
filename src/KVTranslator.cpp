@@ -15,6 +15,7 @@
 #include <QNetworkReply>
 #include <QDebug>
 #include "KVUtil.h"
+#include "KVDefaults.h"
 
 KVTranslator* KVTranslator::m_instance = 0;
 
@@ -33,17 +34,27 @@ KVTranslator* KVTranslator::instance() {
 
 
 KVTranslator::KVTranslator(QObject *parent):
-	QObject(parent), state(created) {
+	QObject(parent),
+	reportUntranslated(kDefaultReportUntranslated),
+	state(created)
+{
 	cacheFile.setFileName(QDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).filePath("translation.json"));
+
+	QFile reportBlacklistFile(":/report_blacklist.json");
+	if(reportBlacklistFile.open(QIODevice::ReadOnly)) {
+		QJsonParseError error;
+		reportBlacklist = QJsonDocument::fromJson(reportBlacklistFile.readAll(), &error).toVariant().toMap();
+		if(error.error != QJsonParseError::NoError) qDebug() << "Couldn't load Report Blacklist:" << error.errorString();
+	}
+	else qWarning() << "Couldn't open resource report_blacklist.json!";
 }
 
-KVTranslator::~KVTranslator() {
+KVTranslator::~KVTranslator()
+{
 
 }
 
-bool KVTranslator::isLoaded() {
-	return state == loaded;
-}
+bool KVTranslator::isLoaded() { return state == loaded; }
 
 void KVTranslator::loadTranslation(QString language) {
 	state = loading;
@@ -106,44 +117,75 @@ bool KVTranslator::parseTranslationData(const QByteArray &data) {
 	return true;
 }
 
-QString KVTranslator::translate(const QString &line) const {
+QString KVTranslator::translate(const QString &line, QString lastPathComponent, QString key) {
 	// Block until translation is loaded
 	QEventLoop loop;
-	switch(state){
+	switch(state)
+	{
 	case created:
-	case failed: return line;
+	case failed:
+		return line;
 	case loading:
 		loop.connect(this, SIGNAL(loadFinished()), SLOT(quit()));
 		loop.connect(this, SIGNAL(loadFailed(QString)), SLOT(quit()));
 		loop.exec();
-	case loaded: break;
+	case loaded:
+		break;
 	}
 
 	QString realLine = unescape(line);
+
+	// Check if the string is empty
+	if(realLine.isEmpty())
+		return line;
+
+	// Check if the line is numeric
+	bool isNumber = false;
+	realLine.toFloat(&isNumber);
+	if(isNumber)
+		return line;
+
+	// Check if the line is blacklisted
+	QVariantList endpointBlacklist = reportBlacklist.value(lastPathComponent).toList();
+	qDebug() << "Endpoint Blacklist:" << endpointBlacklist;
+	if(endpointBlacklist.contains(key))
+	{
+		qDebug() << "-> Blacklisted Line:" << lastPathComponent << "->" << key << "=" << realLine;
+		return line;
+	}
+
+	// Translate it if it's translatable
 	QByteArray utf8 = realLine.toUtf8();
 	quint32 crc = crc32(0, utf8.constData(), utf8.size());
+	QVariant value = translation.value(QString::number(crc));
 
-	QString key = QString::number(crc);
-	QVariant value = translation.value(key);
-	if(value.isValid()) {
-		//qDebug() << "TL:" << realLine << "->" << value.toString();
+	// Validate the translation
+	if(value.isValid() && !value.isNull())
+	{
+		qDebug() << "TL:" << realLine << "->" << value.toString();
 		return value.toString();
+	}
+	else if(!value.isValid())
+	{
+		qDebug() << "No TL:" << realLine;
+		// The !reportBlacklist.isEmpty() part is to prevent failures to load the blacklist
+		// from spamming the translation servers (not that they should ever happen)
+		if(reportUntranslated && !lastPathComponent.isEmpty() && !reportBlacklist.isEmpty())
+		{
+			qDebug() << "Reporting untranslated line" << lastPathComponent << "->" << key << "=" << realLine;
+			/*QNetworkRequest req(QString("http://api.comeonandsl.am/report/%1").arg(lastPathComponent));
+			req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+			QByteArray body = QString("value=%1").arg(realLine).toUtf8();
+			manager.post(req, body);*/
+		}
+		return line;
 	} else {
-		//qDebug() << "No TL:" << realLine;
+		qDebug() << "UnTL'd:" << lastPathComponent << "->" << key <<"=" << realLine;
 		return line;
 	}
 }
 
-QString KVTranslator::fixTime(const QString &time) const {
-	QDateTime realTime = QDateTime::fromString(time, "yyyy-MM-dd hh:mm:ss");
-	if(!realTime.isValid()) return time;
-	realTime.addSecs(-32400);
-	realTime = realTime.toLocalTime();
-	//qDebug() << "fix time" << time << "to" << realTime.toString("yyyy-MM-dd hh:mm:ss");
-	return realTime.toString("yyyy-MM-dd hh:mm:ss");
-}
-
-QByteArray KVTranslator::translateJson(QByteArray json) const
+QByteArray KVTranslator::translateJson(QByteArray json, QString lastPathComponent)
 {
 	// Skip BOM if present
 	if(json.length() >= 3 && (unsigned char)json.at(0) == 0xEF && (unsigned char)json.at(1) == 0xBB && (unsigned char)json.at(2) == 0xBF)
@@ -152,7 +194,7 @@ QByteArray KVTranslator::translateJson(QByteArray json) const
 	bool hasPrefix = json.startsWith("svdata=");
 
 	QJsonDocument doc = QJsonDocument::fromJson(json.mid(hasPrefix ? 7 : 0));
-	QJsonValue val = this->_walk(QJsonValue(doc.object()));
+	QJsonValue val = this->_walk(QJsonValue(doc.object()), lastPathComponent);
 	//qDebug() << val;
 	doc = QJsonDocument(val.toObject());
 
@@ -311,26 +353,35 @@ QByteArray KVTranslator::translateJson(QByteArray json) const
 	return ret;*/
 }
 
-QJsonValue KVTranslator::_walk(QJsonValue value, QString key) const {
+QString KVTranslator::fixTime(const QString &time) {
+	QDateTime realTime = QDateTime::fromString(time, "yyyy-MM-dd hh:mm:ss");
+	if(!realTime.isValid()) return time;
+	realTime.addSecs(-32400);
+	realTime = realTime.toLocalTime();
+	//qDebug() << "fix time" << time << "to" << realTime.toString("yyyy-MM-dd hh:mm:ss");
+	return realTime.toString("yyyy-MM-dd hh:mm:ss");
+}
+
+QJsonValue KVTranslator::_walk(QJsonValue value, QString lastPathComponent, QString key) {
 	switch(value.type()) {
 		case QJsonValue::Object:
 		{
 			QJsonObject obj = value.toObject();
 			for(QJsonObject::iterator it = obj.begin(); it != obj.end(); it++)
-				*it = this->_walk(*it, it.key());
+				*it = this->_walk(*it, lastPathComponent, it.key());
 			return obj;
 		}
 		case QJsonValue::Array:
 		{
 			QJsonArray arr = value.toArray();
 			for(QJsonArray::iterator it = arr.begin(); it != arr.end(); it++)
-				*it = this->_walk(*it);
+				*it = this->_walk(*it, lastPathComponent, key);
 			return arr;
 		}
 		case QJsonValue::String:
 			if(key == "api_complete_time_str")
 				return this->fixTime(value.toString());
-			return this->translate(value.toString());
+			return this->translate(value.toString(), lastPathComponent, key);
 		default:
 			return value;
 	}

@@ -11,12 +11,14 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->setupUi(this);
 
 	ui->translationCheckbox->setChecked(settings.value("viewerTranslation", kDefaultTranslation).toBool());
+	ui->reportUntranslatedCheckbox->setChecked(settings.value("reportUntranslated", kDefaultReportUntranslated).toBool());
 	ui->taskbarProgressCheckbox->setChecked(settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool());
 	ui->proxyCheckbox->setChecked(settings.value("proxy", kDefaultProxy).toBool());
 	ui->proxyServerEdit->setText(settings.value("proxyServer", kDefaultProxyServer).toString());
 	ui->proxyPortBox->setValue(settings.value("proxyPort", kDefaultProxyPort).toInt());
 	ui->proxyUserEdit->setText(settings.value("proxyUser", kDefaultProxyUser).toString());
 	ui->proxyPassEdit->setText(settings.value("proxyPass", kDefaultProxyPass).toString());
+
 	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
 	case QNetworkProxy::Socks5Proxy:
@@ -36,6 +38,7 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 #endif
 
 	this->on_proxyCheckbox_stateChanged(ui->proxyCheckbox->checkState());
+	this->on_translationCheckbox_stateChanged(ui->translationCheckbox->checkState());
 
 	this->adjustSize();
 	this->setFixedSize(this->size());
@@ -53,6 +56,7 @@ void KVSettingsDialog::accept() {
 
 void KVSettingsDialog::applySettings() {
 	settings.setValue("viewerTranslation", ui->translationCheckbox->isChecked());
+	settings.setValue("reportUntranslated", ui->reportUntranslatedCheckbox->isChecked());
 	settings.setValue("taskbarProgress", ui->taskbarProgressCheckbox->isChecked());
 	settings.setValue("proxy", ui->proxyCheckbox->isChecked());
 	settings.setValue("proxyServer", ui->proxyServerEdit->text());
@@ -74,4 +78,8 @@ void KVSettingsDialog::on_buttonBox_clicked(QAbstractButton *button) {
 
 void KVSettingsDialog::on_proxyCheckbox_stateChanged(int state) {
 	ui->proxyContainer->setEnabled(state == Qt::Checked);
+}
+
+void KVSettingsDialog::on_translationCheckbox_stateChanged(int state) {
+	ui->reportUntranslatedCheckbox->setEnabled(state == Qt::Checked);
 }

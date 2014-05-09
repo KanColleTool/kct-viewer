@@ -76,7 +76,7 @@ void KVNetworkReply::handleResponse() {
 	d->manager->post(toolReq, data);
 
 	if(d->translate)
-		data = KVTranslator::instance()->translateJson(data);
+		data = KVTranslator::instance()->translateJson(data, d->copied->url().path().split("/").last());
 
 	d->content = data;
 	d->offset = 0;

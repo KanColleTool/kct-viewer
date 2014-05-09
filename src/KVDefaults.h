@@ -4,6 +4,7 @@
 #include <QNetworkProxy>
 
 static const bool kDefaultTranslation = false;
+static const bool kDefaultReportUntranslated = true;
 static const bool kDefaultTaskbarProgress = true;
 static const bool kDefaultProxy = false;
 static const QString kDefaultProxyServer = "localhost";
