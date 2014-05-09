@@ -147,40 +147,45 @@ QString KVTranslator::translate(const QString &line, QString lastPathComponent, 
 
 	// Check if the line is blacklisted
 	QVariantList endpointBlacklist = reportBlacklist.value(lastPathComponent).toList();
-	qDebug() << "Endpoint Blacklist:" << endpointBlacklist;
 	if(endpointBlacklist.contains(key))
 	{
-		qDebug() << "-> Blacklisted Line:" << lastPathComponent << "->" << key << "=" << realLine;
+		qDebug() << "Blacklisted Line:" << lastPathComponent << "->" << key << "=" << realLine;
 		return line;
 	}
 
 	// Translate it if it's translatable
 	QByteArray utf8 = realLine.toUtf8();
 	quint32 crc = crc32(0, utf8.constData(), utf8.size());
-	QVariant value = translation.value(QString::number(crc));
+	QString crcString = QString::number(crc);
+	if(translation.contains(crcString))
+	{
+		QVariant value = translation.value(crcString);
 
-	// Validate the translation
-	if(value.isValid() && !value.isNull())
-	{
-		qDebug() << "TL:" << realLine << "->" << value.toString();
-		return value.toString();
+		// Validate the translation
+		if(!value.isNull())
+		{
+			qDebug() << "TL:" << lastPathComponent << "::" << key << "=" << realLine << "->" << value.toString();
+			return value.toString();
+		}
+		else
+		{
+			qDebug() << "UnTL'd:" << lastPathComponent << "::" << key <<"=" << realLine;
+			return line;
+		}
 	}
-	else if(!value.isValid())
+	else
 	{
-		qDebug() << "No TL:" << realLine;
+		qDebug() << "No TL:" << lastPathComponent << "::" << key << "=" << realLine;
 		// The !reportBlacklist.isEmpty() part is to prevent failures to load the blacklist
 		// from spamming the translation servers (not that they should ever happen)
 		if(reportUntranslated && !lastPathComponent.isEmpty() && !reportBlacklist.isEmpty())
 		{
 			qDebug() << "Reporting untranslated line" << lastPathComponent << "->" << key << "=" << realLine;
-			/*QNetworkRequest req(QString("http://api.comeonandsl.am/report/%1").arg(lastPathComponent));
+			QNetworkRequest req(QString("http://api.comeonandsl.am/report/%1").arg(lastPathComponent));
 			req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 			QByteArray body = QString("value=%1").arg(realLine).toUtf8();
-			manager.post(req, body);*/
+			manager.post(req, body);
 		}
-		return line;
-	} else {
-		qDebug() << "UnTL'd:" << lastPathComponent << "->" << key <<"=" << realLine;
 		return line;
 	}
 }
