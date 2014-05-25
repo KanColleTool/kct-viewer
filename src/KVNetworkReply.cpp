@@ -4,6 +4,7 @@
 #include <QSslConfiguration>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QUrlQuery>
 #include <QBuffer>
 #include <QTimer>
 #include <QFileInfo>
@@ -74,19 +75,9 @@ void KVNetworkReply::handleResponse() {
 	d->copied->abort();
 
 	//qDebug() << "content:" << data;
-
-	QNetworkRequest toolReq(QUrl("http://localhost:54321").resolved(url().path()));
-	toolReq.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("text/json"));
-	d->manager->post(toolReq, data);
 	
-	QString cacheDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/userdata");
-	QFileInfo fileInfo(cacheDir + url().path());
-	fileInfo.absoluteDir().mkpath(".");
-	QFile file(fileInfo.absoluteFilePath());
-	if(file.open(QIODevice::WriteOnly))
-		file.write(data);
-	else
-		qWarning() << "Couldn't write reply data to" << fileInfo.absoluteFilePath() << "(" << file.error() << ")";
+	this->postToTool(data);
+	this->writeToDisk(data);
 
 	if(d->translate)
 		data = KVTranslator::instance()->translateJson(data, d->copied->url().path().split("/").last());
@@ -102,6 +93,36 @@ void KVNetworkReply::handleResponse() {
 
 	emit finished();
 	emit readChannelFinished();
+}
+
+void KVNetworkReply::postToTool(const QByteArray &body) {
+	QNetworkRequest toolReq(QUrl("http://localhost:54321").resolved(url().path()));
+	toolReq.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("text/json"));
+	d->manager->post(toolReq, body);
+}
+
+void KVNetworkReply::writeToDisk(const QByteArray &body) {
+	int page = 0;
+	if(body.size() <= 1024)
+	{
+		QUrlQuery query(body);
+		page = query.queryItemValue("api_page_no").toInt();
+	}
+	
+	QString cacheDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/userdata");
+	QString path(cacheDir + url().path());
+	if(page > 0)
+		path += "__" + QString::number(page);
+	path += ".json";
+	
+	QFileInfo fileInfo(path);
+	fileInfo.absoluteDir().mkpath(".");
+	
+	QFile file(fileInfo.absoluteFilePath());
+	if(file.open(QIODevice::WriteOnly))
+		file.write(body);
+	else
+		qWarning() << "Couldn't write reply data to" << fileInfo.absoluteFilePath() << "(" << file.error() << ")";
 }
 
 qint64 KVNetworkReply::bytesAvailable() const {

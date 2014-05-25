@@ -31,6 +31,8 @@ public:
 
 protected slots:
 	void handleResponse();
+	void postToTool(const QByteArray &body);
+	void writeToDisk(const QByteArray &body);
 
 protected:
 	qint64 readData(char *data, qint64 maxSize);
