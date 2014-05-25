@@ -41,6 +41,8 @@ OTHER_FILES += \
 
 FORMS += ../resources/KVSettingsDialog.ui ../resources/KVMainWindow.ui
 
+RESOURCES += ../resources/resources.qrc
+
 UI_DIR = ../build/uics
 RCC_DIR = ../build/rccs
 MOC_DIR = ../build/mocs

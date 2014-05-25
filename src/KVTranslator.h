@@ -8,28 +8,23 @@
 #include <QFile>
 #include <QJsonValue>
 
-/*
- * I had to copypaste this into the tool as "KCTranslator", because sharing the
- * same source file between two projects seems to break everything for some
- * reason.
- *
- * Please keep the two classes synchronized!
- */
-
 class KVTranslator : public QObject
 {
+	friend class KCTViewerTest;
+	
 	Q_OBJECT
 
 public:
 	static KVTranslator* instance();
 	bool isLoaded();
-
+	
 	bool reportUntranslated;
+	QVariantMap translation, reportBlacklist;
 
 public slots:
 	void loadTranslation(QString language = "en");
 
-	QString translate(const QString &line, QString lastPathComponent, QString key);
+	QString translate(const QString &line, QString lastPathComponent = "", QString key = "");
 	QByteArray translateJson(QByteArray json, QString lastPathComponent = "");
 	QString fixTime(const QString &time);
 
@@ -46,7 +41,7 @@ signals:
 private slots:
 	void translationRequestFinished();
 
-private:
+protected:
 	enum JsonContext {
 		Start, End,
 		Object, Array,
@@ -75,9 +70,7 @@ private:
 	enum { created, loading, loaded, failed } state;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
-	QVariantMap translation, reportBlacklist;
 
-private:
 	// Singleton stuff
 	static KVTranslator *m_instance;
 
