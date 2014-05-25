@@ -3,7 +3,7 @@ TEMPLATE = app
 
 include(../KCTViewer.pri)
 
-ICON = ../resources/icons/KCTViewer.ico
+ICON = ../resources/KCTViewer.ico
 RC_FILE = ../KCTViewer.rc
 
 macx: TARGET = "KCT Viewer"
