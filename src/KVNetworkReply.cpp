@@ -1,10 +1,14 @@
 #include "KVNetworkReply.h"
 
+#include <QStandardPaths>
+#include <QSslConfiguration>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QBuffer>
 #include <QTimer>
-#include <QNetworkReply>
-#include <QSslConfiguration>
+#include <QFileInfo>
+#include <QFile>
+#include <QDir>
 
 #include "KVNetworkAccessManager.h"
 #include "KVTranslator.h"
@@ -74,6 +78,15 @@ void KVNetworkReply::handleResponse() {
 	QNetworkRequest toolReq(QUrl("http://localhost:54321").resolved(url().path()));
 	toolReq.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("text/json"));
 	d->manager->post(toolReq, data);
+	
+	QString cacheDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/userdata");
+	QFileInfo fileInfo(cacheDir + url().path());
+	fileInfo.absoluteDir().mkpath(".");
+	QFile file(fileInfo.absoluteFilePath());
+	if(file.open(QIODevice::WriteOnly))
+		file.write(data);
+	else
+		qWarning() << "Couldn't write reply data to" << fileInfo.absoluteFilePath() << "(" << file.error() << ")";
 
 	if(d->translate)
 		data = KVTranslator::instance()->translateJson(data, d->copied->url().path().split("/").last());
