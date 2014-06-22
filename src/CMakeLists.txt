@@ -16,6 +16,8 @@ set(VERSION_PATCH 2)
 
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
+configure_file(version.h.in version.h)
+
 
 
 #
