@@ -1,8 +1,7 @@
 #include "KVNetworkAccessManager.h"
+#include "KVNetworkReply.h"
 
 #include <QDebug>
-
-#include "KVNetworkReply.h"
 
 KVNetworkAccessManager::KVNetworkAccessManager(QObject *parent) :
 	QNetworkAccessManager(parent),

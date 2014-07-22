@@ -1,4 +1,6 @@
 #include "KVNetworkReply.h"
+#include "KVNetworkAccessManager.h"
+#include "KVTranslator.h"
 
 #include <QStandardPaths>
 #include <QSslConfiguration>
@@ -10,9 +12,6 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
-
-#include "KVNetworkAccessManager.h"
-#include "KVTranslator.h"
 
 struct KVNetworkReplyPrivate {
 	QNetworkReply *copied;

@@ -1,8 +1,9 @@
+#include "KVMainWindow.h"
+#include "version.h"
+
 #include <QApplication>
 #include <QWebSettings>
 #include <QDebug>
-#include "KVMainWindow.h"
-#include "version.h"
 
 int main(int argc, char *argv[])
 {

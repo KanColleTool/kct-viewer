@@ -1,9 +1,9 @@
-#include <QAbstractButton>
-
 #include "KVSettingsDialog.h"
 #include "ui_KVSettingsDialog.h"
 #include "KVMainWindow.h"
 #include "KVDefaults.h"
+
+#include <QAbstractButton>
 
 KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	QDialog(parent, f),

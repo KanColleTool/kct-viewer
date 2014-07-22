@@ -1,4 +1,7 @@
 #include "KVTranslator.h"
+#include "KVUtil.h"
+#include "KVDefaults.h"
+
 #include <QMutex>
 #include <QUrl>
 #include <QStandardPaths>
@@ -14,8 +17,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>
-#include "KVUtil.h"
-#include "KVDefaults.h"
 
 KVTranslator* KVTranslator::m_instance = 0;
 

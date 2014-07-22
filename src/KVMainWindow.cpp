@@ -1,5 +1,10 @@
 #include "KVMainWindow.h"
 #include "ui_KVMainWindow.h"
+#include "KVDefaults.h"
+#include "KVSettingsDialog.h"
+#include "KVNetworkAccessManager.h"
+#include "KVTranslator.h"
+
 #include <QMenuBar>
 #include <QMenu>
 #include <QWebFrame>
@@ -15,11 +20,6 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QTimer>
-
-#include "KVDefaults.h"
-#include "KVSettingsDialog.h"
-#include "KVNetworkAccessManager.h"
-#include "KVTranslator.h"
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
