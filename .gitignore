@@ -35,4 +35,5 @@ ui_*.h
 
 /build/
 /bin/
+*.dir
 
