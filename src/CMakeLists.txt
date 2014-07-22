@@ -61,11 +61,11 @@ set_source_files_properties(${KCTViewer_EXTRA_FILES} PROPERTIES HEADER_FILE_ONLY
 #
 # --> Build the common library
 #
-add_library(KCTVBase ${KCTViewer_SOURCES} ${KCTViewer_UIHEADERS})
-target_link_libraries(KCTVBase Qt5::Core Qt5::Widgets Qt5::WebKitWidgets Qt5::Network)
+add_library(KVBase ${KCTViewer_SOURCES} ${KCTViewer_UIHEADERS})
+target_link_libraries(KVBase Qt5::Core Qt5::Widgets Qt5::WebKitWidgets Qt5::Network)
 
 if(WIN32)
-	target_link_libraries(KCTVBase Qt5::WinExtras wsock32 ws2_32)
+	target_link_libraries(KVBase Qt5::WinExtras wsock32 ws2_32)
 endif(WIN32)
 
 
@@ -74,7 +74,7 @@ endif(WIN32)
 # --> Build the main application
 #
 add_executable(KCTViewer WIN32 ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES})
-target_link_libraries(KCTViewer KCTVBase)
+target_link_libraries(KCTViewer KVBase)
 
 
 

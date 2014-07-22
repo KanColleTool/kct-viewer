@@ -29,5 +29,5 @@ endif()
 
 
 set_property(TARGET KCTViewer PROPERTY FOLDER "Viewer")
-set_property(TARGET KCTVBase PROPERTY FOLDER "Viewer")
+set_property(TARGET KVBase PROPERTY FOLDER "Viewer")
 set_property(TARGET KCTViewerTest PROPERTY FOLDER "Tests")

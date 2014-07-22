@@ -23,4 +23,4 @@ if(WIN32)
 endif(WIN32)
 
 add_executable(KCTViewerTest KCTViewerTest.cpp KCTViewerTest.h)
-target_link_libraries(KCTViewerTest KCTVBase Qt5::Test)
+target_link_libraries(KCTViewerTest KVBase Qt5::Test)
