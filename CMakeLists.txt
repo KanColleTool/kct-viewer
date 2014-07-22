@@ -28,6 +28,6 @@ endif()
 
 
 
-set_property(TARGET KCTViewer PROPERTY FOLDER "Executables")
-set_property(TARGET KCTVBase PROPERTY FOLDER "Libraries")
+set_property(TARGET KCTViewer PROPERTY FOLDER "Viewer")
+set_property(TARGET KCTVBase PROPERTY FOLDER "Viewer")
 set_property(TARGET KCTViewerTest PROPERTY FOLDER "Tests")
