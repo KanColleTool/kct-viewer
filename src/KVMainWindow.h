@@ -1,13 +1,13 @@
 #ifndef KVMAINWINDOW_H
 #define KVMAINWINDOW_H
 
+#include "KVWebView.h"
+#include "KVNetworkAccessManager.h"
+
 #include <QMainWindow>
 #include <QWebView>
 #include <QMessageBox>
 #include <QNetworkDiskCache>
-
-#include "KVWebView.h"
-#include "KVNetworkAccessManager.h"
 
 #ifdef Q_OS_WIN
 	#include <QtWinExtras>
