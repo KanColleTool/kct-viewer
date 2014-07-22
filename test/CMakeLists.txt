@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
@@ -11,10 +9,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -fPIE")
 include_directories("${PROJECT_SOURCE_DIR}/bin")
 
 find_package(Qt5Core)
-find_package(Qt5Test)
+find_package(Qt5Widgets)
+find_package(Qt5WebKitWidgets)
 find_package(Qt5Network)
-include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Test_INCLUDE_DIRS} ${Qt5Network_INCLUDE_DIRS})
-add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Test_DEFINITIONS} ${Qt5Network_DEFINITIONS})
+find_package(Qt5Test)
+
+if(WIN32)
+	find_package(Qt5WinExtras)
+endif(WIN32)
 
 add_executable(KCTViewerTest KCTViewerTest.cpp KCTViewerTest.h)
-target_link_libraries(KCTViewerTest KCTVBase Qt5::Test Qt5::Network)
+target_link_libraries(KCTViewerTest KCTVBase Qt5::Core Qt5::Widgets Qt5::WebKitWidgets Qt5::Network Qt5::Test)
+
+if(WIN32)
+	target_link_libraries(KCTViewerTest Qt5::WinExtras wsock32 ws2_32)
+endif(WIN32)

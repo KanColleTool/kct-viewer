@@ -13,6 +13,9 @@ xcuserdata
 *.swp
 [#]*[#]
 .\#*
+*.vcxproj
+*.vcxproj.*
+*.sln
 
 # CMake stuff
 CMakeCache.txt
