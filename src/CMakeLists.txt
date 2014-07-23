@@ -73,7 +73,7 @@ endif(WIN32)
 #
 # --> Build the main application
 #
-add_executable(KCTViewer WIN32 ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES})
+add_executable(KCTViewer WIN32 ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES} KCTViewer.rc)
 target_link_libraries(KCTViewer KVBase)
 
 
