@@ -16,8 +16,6 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 9)
 set(VERSION_PATCH 2)
 
-set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
-
 configure_file(version.h.in version.h)
 
 
@@ -43,7 +41,8 @@ file(GLOB_RECURSE KCTViewer_FORMS ../forms/*.ui)
 file(GLOB_RECURSE KCTViewer_SOURCES *.cpp *.h)
 file(GLOB_RECURSE KCTViewer_RESOURCES ../resources/*.qrc)
 file(GLOB KCTViewer_MAIN_CPP main.cpp)
-list(REMOVE_ITEM KCTViewer_SOURCES ${KCTViewer_MAIN_CPP})
+file(GLOB KCTViewer_VERSION_H version.h)
+list(REMOVE_ITEM KCTViewer_SOURCES ${KCTViewer_MAIN_CPP} ${KCTViewer_VERSION_H})
 
 # Remove moc and uic files from the source list
 file(GLOB KCTViewer_MOCS moc_*.cpp *_automoc.cpp ui_*.h)

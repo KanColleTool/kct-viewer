@@ -30,10 +30,11 @@ __/
 Makefile*
 moc_*.cpp
 qrc_*.cpp
-ui_*.h
+*.qm
+ui_*
+moc_*
 /src/version.h
 
 /build/
 /bin/
 *.dir
-
