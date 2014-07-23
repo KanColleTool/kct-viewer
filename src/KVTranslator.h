@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QVariant>
+#include <QList>
 #include <QString>
 #include <QFile>
 #include <QJsonValue>
@@ -32,6 +33,7 @@ protected:
 	bool parseTranslationData(const QByteArray &data);
 	QJsonValue _walk(QJsonValue value, QString lastPathComponent, QString key="");
 	static QString jsonEscape(const QString &str);
+	void report(const QString &line, const QString &lastPathComponent, const QString &key);
 
 signals:
 	void loadFinished();
@@ -40,6 +42,7 @@ signals:
 
 private slots:
 	void translationRequestFinished();
+	void blacklistRequestFinished();
 
 protected:
 	enum JsonContext {
@@ -67,9 +70,12 @@ protected:
 		const QByteArray readAll();
 	};
 
-	enum { created, loading, loaded, failed } state;
+	enum { created, loading, loaded, failed } state, blacklistState;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
+
+	struct ReportQueueEntry { QString line, lastPathComponent, key; };
+	QList<ReportQueueEntry> reportQueue;
 
 	// Singleton stuff
 	static KVTranslator *m_instance;

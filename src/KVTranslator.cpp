@@ -40,14 +40,6 @@ KVTranslator::KVTranslator(QObject *parent):
 	state(created)
 {
 	cacheFile.setFileName(QDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).filePath("translation.json"));
-
-	QFile reportBlacklistFile(":/report_blacklist.json");
-	if(reportBlacklistFile.open(QIODevice::ReadOnly)) {
-		QJsonParseError error;
-		reportBlacklist = QJsonDocument::fromJson(reportBlacklistFile.readAll(), &error).toVariant().toMap();
-		if(error.error != QJsonParseError::NoError) qDebug() << "Couldn't load Report Blacklist:" << error.errorString();
-	}
-	else qWarning() << "Couldn't open resource report_blacklist.json!";
 }
 
 KVTranslator::~KVTranslator()
@@ -59,6 +51,7 @@ bool KVTranslator::isLoaded() { return state == loaded; }
 
 void KVTranslator::loadTranslation(QString language) {
 	state = loading;
+	blacklistState = loading;
 
 	if(cacheFile.exists()) {
 		cacheFile.open(QIODevice::ReadOnly | QIODevice::Unbuffered);
@@ -66,8 +59,11 @@ void KVTranslator::loadTranslation(QString language) {
 		cacheFile.close();
 	}
 
-	QNetworkReply *reply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
-	connect(reply, SIGNAL(finished()), this, SLOT(translationRequestFinished()));
+	QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
+	connect(tlReply, SIGNAL(finished()), this, SLOT(translationRequestFinished()));
+
+	QNetworkReply *blReply = manager.get(QNetworkRequest(QString("http://kancolletool.github.io/report_blacklist.json")));
+	connect(blReply, SIGNAL(finished()), this, SLOT(blacklistRequestFinished()));
 }
 
 void KVTranslator::translationRequestFinished() {
@@ -88,6 +84,28 @@ void KVTranslator::translationRequestFinished() {
 		} else {
 			qDebug() << "Couldn't write to cache file";
 		}
+	}
+}
+
+void KVTranslator::blacklistRequestFinished() {
+	QNetworkReply *reply(qobject_cast<QNetworkReply*>(QObject::sender()));
+	if(reply->error() != QNetworkReply::NoError)
+	{
+		blacklistState = failed;
+		return;
+	}
+
+	QJsonParseError error;
+	reportBlacklist = QJsonDocument::fromJson(reply->readAll(), &error).toVariant().toMap();
+	if(error.error != QJsonParseError::NoError)
+	{
+		qDebug() << "Couldn't load Report Blacklist:" << error.errorString();
+		blacklistState = failed;
+	}
+	else
+	{
+		qDebug() << "Blacklist Loaded";
+		blacklistState = loaded;
 	}
 }
 
@@ -180,17 +198,13 @@ QString KVTranslator::translate(const QString &line, QString lastPathComponent, 
 
 		// The !reportBlacklist.isEmpty() part is to prevent failures to load the blacklist
 		// from spamming the translation servers (not that they should ever happen)
-		if(reportUntranslated && !lastPathComponent.isEmpty() && !reportBlacklist.isEmpty())
+		if(reportUntranslated && !lastPathComponent.isEmpty())
 		{
 			qDebug() << "Reporting untranslated line" << lastPathComponent << "::" << key << "=" << realLine;
-
-			QNetworkRequest req(QString("http://api.comeonandsl.am/report/%1").arg(lastPathComponent));
-			req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-			QByteArray body = QString("value=%1").arg(realLine).toUtf8();
-			manager.post(req, body);
-
-			translation.insert(crcString, QVariant::Invalid);
+			report(realLine, lastPathComponent, key);
 		}
+
+		translation.insert(crcString, QVariant::Invalid);
 
 		return line;
 	}
@@ -395,5 +409,18 @@ QJsonValue KVTranslator::_walk(QJsonValue value, QString lastPathComponent, QStr
 			return this->translate(value.toString(), lastPathComponent, key);
 		default:
 			return value;
+	}
+}
+
+void KVTranslator::report(const QString &line, const QString &lastPathComponent, const QString &key)
+{
+	if(blacklistState == loading)
+		reportQueue.append({line, lastPathComponent, key});
+	else if(blacklistState == loaded)
+	{
+		QNetworkRequest req(QString("http://api.comeonandsl.am/report/%1").arg(lastPathComponent));
+		req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		QByteArray body = QString("value=%1").arg(line).toUtf8();
+		manager.post(req, body);
 	}
 }
