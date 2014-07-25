@@ -1,8 +1,5 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8.12)
 project(KCTViewer)
-
-cmake_policy(SET CMP0020 NEW)
-cmake_policy(SET CMP0028 NEW)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
@@ -31,3 +28,4 @@ endif()
 set_property(TARGET KCTViewer PROPERTY FOLDER "Viewer")
 set_property(TARGET KVBase PROPERTY FOLDER "Viewer")
 set_property(TARGET KCTViewerTest PROPERTY FOLDER "Tests")
+
