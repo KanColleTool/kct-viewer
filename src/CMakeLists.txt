@@ -80,7 +80,7 @@ target_link_libraries(KCTViewer KVBase)
 #
 # --> Installation
 #
-install(TARGETS KCTViewer RUNTIME DESTINATION bin COMPONENT Viewer)
+install(TARGETS KCTViewer RUNTIME DESTINATION bin)
 
 
 
