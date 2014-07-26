@@ -75,6 +75,10 @@ endif(WIN32)
 add_executable(KCTViewer WIN32 ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES} KCTViewer.rc)
 target_link_libraries(KCTViewer KVBase)
 
+if(UNIX AND NOT APPLE)
+    set_property(TARGET KCTViewer PROPERTY OUTPUT_NAME "kancolletool-viewer")
+endif()
+
 
 
 #
