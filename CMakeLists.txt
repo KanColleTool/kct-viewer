@@ -5,8 +5,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
+add_subdirectory(resources)
 add_subdirectory(src)
 add_subdirectory(test)
+
 enable_testing()
 add_test(NAME KCTViewerTest COMMAND KCTViewerTest)
 
@@ -28,4 +30,3 @@ endif()
 set_property(TARGET KCTViewer PROPERTY FOLDER "Viewer")
 set_property(TARGET KVBase PROPERTY FOLDER "Viewer")
 set_property(TARGET KCTViewerTest PROPERTY FOLDER "Tests")
-

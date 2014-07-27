@@ -4,6 +4,6 @@ Encoding=UTF-8
 Name=KanColleTool Viewer
 Comment=A viewer for KanColle
 Exec=/usr/bin/kancolletool-viewer
-Icon=KCTViewer
+Icon=kancolletool-viewer
 Terminal=false
 Categories=Game;
