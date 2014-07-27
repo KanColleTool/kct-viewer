@@ -18,7 +18,7 @@ xcuserdata
 *.sln
 
 # CMake stuff
-CMakeList.txt.user
+CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CTestTestfile.cmake
