@@ -4,7 +4,7 @@
 #include "KVSettingsDialog.h"
 #include "KVNetworkAccessManager.h"
 #include "KVTranslator.h"
-#include "KVScreenshot.h"
+#include "KVScreenshoter.h"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -385,6 +385,6 @@ void KVMainWindow::setHTMLAPILink()
 
 void KVMainWindow::screenshot()
 {
-    KVScreenshot *screenshoter = new KVScreenshot(this);
+    KVScreenshoter *screenshoter = new KVScreenshoter(this);
     screenshoter->takeScreenshot(webView);
 }

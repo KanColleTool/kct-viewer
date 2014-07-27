@@ -12,11 +12,11 @@
 #include <QBuffer>
 #include <QWebView>
 
-class KVScreenshot : public QObject
+class KVScreenshoter : public QObject
 {
     Q_OBJECT
 public:
-    explicit KVScreenshot(QObject *parent = 0);
+    explicit KVScreenshoter(QObject *parent = 0);
     void takeScreenshot(QWebView *view);
 
 private:
