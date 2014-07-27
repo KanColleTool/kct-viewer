@@ -1,6 +1,20 @@
 #include "KVScreenshooter.h"
 #include "KVDefaults.h"
+#include "KVNotificationCenter.h"
 
+#include <QWidget>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QApplication>
+#include <QBuffer>
+#include <QStandardPaths>
+#include <QPainter>
+#include <QDateTime>
+#include <QFile>
+#include <QDir>
+#include <QSettings>
 #include <QDebug>
 
 KVScreenshooter::KVScreenshooter(QObject *parent) :
@@ -86,9 +100,10 @@ void KVScreenshooter::takeScreenshot(QWidget *widget)
 	QSettings settings;
 
 	QImage image = KVScreenshooter::captureScreenshot(widget);
-	KVScreenshooter::saveScreenshot(image);
 
-	if (settings.value("uploadeScreenshot", kScreenshotUploading).toBool()) {
+	if (settings.value("uploadeScreenshot", kDefaultUploadScreenshots).toBool()) {
 		KVScreenshooter::uploadScreenshot(image);
+	} else {
+		KVScreenshooter::saveScreenshot(image);
 	}
 }

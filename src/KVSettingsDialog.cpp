@@ -18,7 +18,7 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->proxyPortBox->setValue(settings.value("proxyPort", kDefaultProxyPort).toInt());
 	ui->proxyUserEdit->setText(settings.value("proxyUser", kDefaultProxyUser).toString());
 	ui->proxyPassEdit->setText(settings.value("proxyPass", kDefaultProxyPass).toString());
-	ui->screenshotBox->setChecked(settings.value("uploadeScreenshot", kScreenshotUploading).toBool());
+	ui->screenshotBox->setChecked(settings.value("uploadeScreenshot", kDefaultUploadScreenshots).toBool());
 
 	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
