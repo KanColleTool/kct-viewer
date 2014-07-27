@@ -22,8 +22,8 @@ public:
 private:
     QNetworkAccessManager *manager;
     QClipboard *clipboard;
-    QByteArray capture(QWidget *widget);
-    void upload(QByteArray base64Data);
+    QImage capture(QWidget *widget);
+    void upload(QImage image);
 
 signals:
 

@@ -9,7 +9,7 @@ KVScreenshoter::KVScreenshoter(QObject *parent) :
     clipboard = QApplication::clipboard();
 }
 
-QByteArray KVScreenshoter::capture(QWidget *widget)
+QImage KVScreenshoter::capture(QWidget *widget)
 {
     QImage image(widget->size(), QImage::Format_ARGB32);
     image.fill(Qt::transparent);
@@ -18,6 +18,11 @@ QByteArray KVScreenshoter::capture(QWidget *widget)
     widget->render(&painter);
     painter.end();
 
+    return image;
+}
+
+void KVScreenshoter::upload(QImage image)
+{
     QByteArray rawData;
     QBuffer buffer(&rawData);
     buffer.open(QBuffer::WriteOnly);
@@ -25,17 +30,12 @@ QByteArray KVScreenshoter::capture(QWidget *widget)
     image.save(&buffer, "PNG");
     buffer.close();
 
-    return rawData.toBase64();
-}
-
-void KVScreenshoter::upload(QByteArray base64Data)
-{
     QNetworkRequest request(QUrl("https://api.imgur.com/3/image.json"));
     request.setRawHeader("Authorization", "Client-ID ef6bd901726e8b7");
 
     QByteArray requestBody;
     requestBody.append(QString("image=").toUtf8());
-    requestBody.append(QUrl::toPercentEncoding(base64Data));
+    requestBody.append(QUrl::toPercentEncoding(rawData.toBase64()));
 
     manager->post(request, requestBody);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
@@ -62,6 +62,6 @@ void KVScreenshoter::onFinished(QNetworkReply *reply)
 
 void KVScreenshoter::takeScreenshot(QWidget *widget)
 {
-    QByteArray base64Data = KVScreenshoter::capture(widget);
-    KVScreenshoter::upload(base64Data);
+    QImage image = KVScreenshoter::capture(widget);
+    KVScreenshoter::upload(image);
 }
