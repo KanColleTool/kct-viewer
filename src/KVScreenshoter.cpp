@@ -9,13 +9,13 @@ KVScreenshoter::KVScreenshoter(QObject *parent) :
     clipboard = QApplication::clipboard();
 }
 
-QByteArray KVScreenshoter::capture(QWebView* view)
+QByteArray KVScreenshoter::capture(QWidget *widget)
 {
-    QImage image(view->size(), QImage::Format_ARGB32);
+    QImage image(widget->size(), QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    view->render(&painter);
+    widget->render(&painter);
     painter.end();
 
     QByteArray rawData;
@@ -60,8 +60,8 @@ void KVScreenshoter::onFinished(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-void KVScreenshoter::takeScreenshot(QWebView *view)
+void KVScreenshoter::takeScreenshot(QWidget *widget)
 {
-    QByteArray base64Data = KVScreenshoter::capture(view);
+    QByteArray base64Data = KVScreenshoter::capture(widget);
     KVScreenshoter::upload(base64Data);
 }

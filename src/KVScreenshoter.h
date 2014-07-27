@@ -17,12 +17,12 @@ class KVScreenshoter : public QObject
     Q_OBJECT
 public:
     explicit KVScreenshoter(QObject *parent = 0);
-    void takeScreenshot(QWebView *view);
+    void takeScreenshot(QWidget *widget);
 
 private:
     QNetworkAccessManager *manager;
     QClipboard *clipboard;
-    QByteArray capture(QWebView *view);
+    QByteArray capture(QWidget *widget);
     void upload(QByteArray base64Data);
 
 signals:
