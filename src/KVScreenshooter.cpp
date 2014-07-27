@@ -1,6 +1,5 @@
 #include "KVScreenshooter.h"
 #include "KVDefaults.h"
-#include "KVNotificationCenter.h"
 
 #include <QWidget>
 #include <QNetworkReply>
