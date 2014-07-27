@@ -111,7 +111,7 @@
     <string>Screenshot</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
