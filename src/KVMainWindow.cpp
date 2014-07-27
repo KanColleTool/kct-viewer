@@ -4,7 +4,7 @@
 #include "KVSettingsDialog.h"
 #include "KVNetworkAccessManager.h"
 #include "KVTranslator.h"
-#include "KVScreenshoter.h"
+#include "KVScreenshooter.h"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -35,7 +35,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-    connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
+	connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -385,6 +385,6 @@ void KVMainWindow::setHTMLAPILink()
 
 void KVMainWindow::screenshot()
 {
-    KVScreenshoter *screenshoter = new KVScreenshoter(this);
-    screenshoter->takeScreenshot(webView);
+	KVScreenshooter *screenshoter = new KVScreenshooter(this);
+	screenshoter->takeScreenshot(webView);
 }

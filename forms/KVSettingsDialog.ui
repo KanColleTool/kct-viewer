@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>324</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -135,6 +135,31 @@ If you would like to provide an alternate translation, contact us and we'll work
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="screenshotContainer">
+     <item>
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="screenshotBox">
+       <property name="text">
+        <string>Upload screenshots on imgur.com</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Upload captured screenshot on imgur and copy to clipboard the url for uploaded picture.</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="Line" name="line_2">

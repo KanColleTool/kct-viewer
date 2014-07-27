@@ -40,7 +40,7 @@ public slots:
 	void implementSettings(bool start=false);
 	void clearCache();
 	void showAbout();
-    void screenshot();
+	void screenshot();
 
 private slots:
 	void onVersionCheckFinished();
