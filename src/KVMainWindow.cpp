@@ -218,6 +218,8 @@ void KVMainWindow::implementSettings(bool start)
 	} else {
 		wvManager->setProxy(QNetworkProxy());
 	}
+
+    KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
 }
 
 void KVMainWindow::clearCache()
@@ -385,6 +387,5 @@ void KVMainWindow::setHTMLAPILink()
 
 void KVMainWindow::screenshot()
 {
-	KVScreenshooter *screenshoter = new KVScreenshooter(this);
-	screenshoter->takeScreenshot(webView);
+	KVScreenshooter::instance().takeScreenshot(webView);
 }

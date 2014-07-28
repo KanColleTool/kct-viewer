@@ -1,20 +1,28 @@
-#ifndef UPLOADER_H
-#define UPLOADER_H
+#ifndef KVSCREENSHOOTER_H
+#define KVSCREENSHOOTER_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
-#include <QClipboard>
 
 class KVScreenshooter : public QObject
 {
 	Q_OBJECT
+
 public:
-	explicit KVScreenshooter(QObject *parent = 0);
+	static KVScreenshooter& instance();
+
 	void takeScreenshot(QWidget *widget);
+
+    bool uploadScreenshots;
+
+private:
+	KVScreenshooter(QObject *parent = 0);
+	KVScreenshooter(const KVScreenshooter&);
+	KVScreenshooter& operator=(const KVScreenshooter&);
+	virtual ~KVScreenshooter();
 
 protected:
 	QNetworkAccessManager *manager;
-	QClipboard *clipboard;
 
 	QImage captureScreenshot(QWidget *widget);
 	void uploadScreenshot(QImage image);
@@ -25,4 +33,4 @@ private slots:
 
 };
 
-#endif // UPLOADER_H
+#endif // KVSCREENSHOOTER_H

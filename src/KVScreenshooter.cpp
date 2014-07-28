@@ -1,5 +1,4 @@
 #include "KVScreenshooter.h"
-#include "KVDefaults.h"
 
 #include <QWidget>
 #include <QNetworkReply>
@@ -13,14 +12,24 @@
 #include <QDateTime>
 #include <QFile>
 #include <QDir>
-#include <QSettings>
+#include <QClipboard>
+
 #include <QDebug>
+
+KVScreenshooter& KVScreenshooter::instance() {
+    static KVScreenshooter _instance;
+    return _instance;
+}
 
 KVScreenshooter::KVScreenshooter(QObject *parent) :
 	QObject(parent)
 {
-	manager = new QNetworkAccessManager(this);
-	clipboard = QApplication::clipboard();
+    manager = new QNetworkAccessManager(this);
+}
+
+KVScreenshooter::~KVScreenshooter()
+{
+
 }
 
 QImage KVScreenshooter::captureScreenshot(QWidget *widget)
@@ -40,14 +49,14 @@ void KVScreenshooter::saveScreenshot(QImage image)
 	QDateTime currentTime = currentTime.currentDateTime();
 	QString currentTimeString = currentTime.toString("yyyy-MM-dd hh:mm:ss");
 
-	QString picName = QString("%1 %2.png").arg("Screenshot", currentTimeString);
+    QString picName = QString("KCTViewer %1.png").arg(currentTimeString);
 
 	QString picsPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 
 	int counter = 0;
-	while (QFile(QDir(picsPath).filePath(picName)).exists()) {
+	while(QFile(QDir(picsPath).filePath(picName)).exists()) {
 		counter++;
-		picName = QString("%1 %2-%3.png").arg("Screenshot", currentTimeString, QString::number(counter));
+        picName = QString("KCTViewer %1 (%2).png").arg(currentTimeString, QString::number(counter));
 	}
 
 	QString fullPath = QDir(picsPath).filePath(picName);
@@ -71,14 +80,14 @@ void KVScreenshooter::uploadScreenshot(QImage image)
 	requestBody.append(QString("image=").toUtf8());
 	requestBody.append(QUrl::toPercentEncoding(rawData.toBase64()));
 
-	manager->post(request, requestBody);
-	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
+    manager->post(request, requestBody);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
 }
 
 void KVScreenshooter::onFinished(QNetworkReply *reply)
 {
-	if (reply->error()) {
-		qDebug() << "Error:" << reply->errorString();
+	if(reply->error()) {
+        qWarning() << "Couldn't upload screenshot" << reply->errorString();
 		return;
 	}
 
@@ -89,18 +98,18 @@ void KVScreenshooter::onFinished(QNetworkReply *reply)
 
 	QString link = jsonObject["data"].toObject()["link"].toString();
 
-	clipboard->setText(link);
+	QApplication::clipboard()->setText(link);
+
+    qWarning() << link;
 
 	reply->deleteLater();
 }
 
 void KVScreenshooter::takeScreenshot(QWidget *widget)
 {
-	QSettings settings;
+    QImage image = KVScreenshooter::captureScreenshot(widget);
 
-	QImage image = KVScreenshooter::captureScreenshot(widget);
-
-	if (settings.value("uploadeScreenshot", kDefaultUploadScreenshots).toBool()) {
+    if(uploadScreenshots) {
 		KVScreenshooter::uploadScreenshot(image);
 	} else {
 		KVScreenshooter::saveScreenshot(image);

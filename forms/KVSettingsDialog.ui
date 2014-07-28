@@ -146,7 +146,7 @@ If you would like to provide an alternate translation, contact us and we'll work
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="screenshotBox">
+      <widget class="QCheckBox" name="uploadScreenshotsCheckbox">
        <property name="text">
         <string>Upload captured screenshots to Imgur (instead of saving to disk)</string>
        </property>
