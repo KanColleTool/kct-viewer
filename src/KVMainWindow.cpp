@@ -46,7 +46,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	// Set up a cache; a larger-than-normal disk cache is quite enough for our purposes
 	cache = new QNetworkDiskCache(this);
 	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-	cache->setMaximumCacheSize(1024*1024*1024);	// Max 1GB cache storage
+	cache->setMaximumCacheSize(1024*1024*1024); // Max 1GB cache storage
 	wvManager->setCache(cache);
 
 	// Can't set this up in the designer, since it doesn't like QWebView subclasses
@@ -219,7 +219,7 @@ void KVMainWindow::implementSettings(bool start)
 		wvManager->setProxy(QNetworkProxy());
 	}
 
-    KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
+	KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
 }
 
 void KVMainWindow::clearCache()

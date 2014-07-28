@@ -25,7 +25,7 @@ struct KVNetworkReplyPrivate {
 };
 
 KVNetworkReply::KVNetworkReply(QObject *parent, QNetworkReply *toCopy,
-                               QNetworkAccessManager *mgr, bool translate) :
+							   QNetworkAccessManager *mgr, bool translate) :
 	QNetworkReply(parent) {
 	d = new KVNetworkReplyPrivate;
 	d->finished = false;

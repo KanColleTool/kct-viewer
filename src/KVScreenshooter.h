@@ -13,7 +13,7 @@ public:
 
 	void takeScreenshot(QWidget *widget);
 
-    bool uploadScreenshots;
+	bool uploadScreenshots;
 
 private:
 	KVScreenshooter(QObject *parent = 0);
@@ -29,7 +29,7 @@ protected:
 	void saveScreenshot(QImage image);
 
 private slots:
-	void onFinished(QNetworkReply* reply);
+	void uploadingFinished(QNetworkReply* reply);
 
 };
 
