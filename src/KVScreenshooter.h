@@ -11,8 +11,15 @@ class KVScreenshooter : public QObject
 public:
 	static KVScreenshooter& instance();
 
+    /**
+     * @brief Function for taking screenshot of the passed widget
+     * @param widget Widget that will be captured
+     */
 	void takeScreenshot(QWidget *widget);
 
+    /**
+     * @brief Upload screenshot on imgur instead of saving it locally
+     */
 	bool uploadScreenshots;
 
 private:
@@ -24,8 +31,23 @@ private:
 protected:
 	QNetworkAccessManager *manager;
 
+    /**
+     * @brief Function for capturing screenshots
+     * @param widget Widget that will be captured
+     * @return Captured screenshot in Qimage objest
+     */
 	QImage captureScreenshot(QWidget *widget);
+
+    /**
+     * @brief Function for uploading screenshots
+     * @param image Captured screenshot in Qimage objest
+     */
 	void uploadScreenshot(QImage image);
+
+    /**
+     * @brief Function for saving screenshots
+     * @param image Captured screenshot in Qimage objest
+     */
 	void saveScreenshot(QImage image);
 
 private slots:
