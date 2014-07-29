@@ -16,6 +16,7 @@ xcuserdata
 *.vcxproj
 *.vcxproj.*
 *.sln
+*.cbp
 
 # CMake stuff
 CMakeLists.txt.user

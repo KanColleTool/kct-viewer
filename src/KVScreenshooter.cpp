@@ -25,7 +25,6 @@ KVScreenshooter::KVScreenshooter(QObject *parent) :
 	QObject(parent)
 {
 	manager = new QNetworkAccessManager(this);
-	//connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(uploadingFinished(QNetworkReply*)));
 }
 
 KVScreenshooter::~KVScreenshooter()
@@ -76,7 +75,7 @@ void KVScreenshooter::uploadScreenshot(QImage image)
 
 	QNetworkRequest request(QUrl("https://api.imgur.com/3/image.json"));
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-	request.setRawHeader(QByteArray("Authorization"), QByteArray("Client-ID ef6bd901726e8b7"));
+	request.setRawHeader("Authorization", "Client-ID ef6bd901726e8b7");
 
 	QByteArray requestBody;
 	requestBody.append(QString("image=").toUtf8());
