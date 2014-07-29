@@ -50,7 +50,7 @@ protected:
 	void saveScreenshot(QImage image);
 
 private slots:
-	void uploadingFinished(QNetworkReply* reply);
+	void uploadingFinished();
 
 };
 
