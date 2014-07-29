@@ -90,14 +90,16 @@ void KVScreenshooter::uploadingFinished(QNetworkReply *reply)
 	if(reply->error() == QNetworkReply::NoError) {
 		QString textData = QString::fromUtf8(reply->readAll());
 
-		QJsonDocument jsonDocument = QJsonDocument::fromJson(textData.toUtf8());
-		QJsonObject jsonObject = jsonDocument.object();
+		if(!textData.isEmpty()) {
+			QJsonDocument jsonDocument = QJsonDocument::fromJson(textData.toUtf8());
+			QJsonObject jsonObject = jsonDocument.object();
 
-		QString link = jsonObject["data"].toObject()["link"].toString();
+			QString link = jsonObject["data"].toObject()["link"].toString();
 
-		QApplication::clipboard()->setText(link);
+			QApplication::clipboard()->setText(link);
 
-		qWarning() << textData;
+			qWarning() << textData;
+		}
 	} else {
 		qWarning() << "Couldn't upload screenshot" << reply->errorString();
 	}
