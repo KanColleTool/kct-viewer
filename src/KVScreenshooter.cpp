@@ -110,9 +110,5 @@ void KVScreenshooter::takeScreenshot(QWidget *widget)
 {
 	QImage image = KVScreenshooter::captureScreenshot(widget);
 
-	if(uploadScreenshots) {
-		KVScreenshooter::uploadScreenshot(image);
-	} else {
-		KVScreenshooter::saveScreenshot(image);
-	}
+    (uploadScreenshots)? KVScreenshooter::uploadScreenshot(image) : KVScreenshooter::saveScreenshot(image);
 }
