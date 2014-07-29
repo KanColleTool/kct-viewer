@@ -18,6 +18,7 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->proxyPortBox->setValue(settings.value("proxyPort", kDefaultProxyPort).toInt());
 	ui->proxyUserEdit->setText(settings.value("proxyUser", kDefaultProxyUser).toString());
 	ui->proxyPassEdit->setText(settings.value("proxyPass", kDefaultProxyPass).toString());
+	ui->uploadScreenshotsCheckbox->setChecked(settings.value("uploadScreenshots", kDefaultUploadScreenshots).toBool());
 
 	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
@@ -65,6 +66,7 @@ void KVSettingsDialog::applySettings() {
 		settings.setValue("proxyType", QNetworkProxy::Socks5Proxy);
 	else if(ui->httpProxyRadio->isChecked())
 		settings.setValue("proxyType", QNetworkProxy::HttpProxy);
+	settings.setValue("uploadScreenshots", ui->uploadScreenshotsCheckbox->isChecked());
 
 	settings.sync();
 

@@ -12,5 +12,6 @@ static const int kDefaultProxyPort = 8080;
 static const int kDefaultProxyType = QNetworkProxy::Socks5Proxy;
 static const QString kDefaultProxyUser = "";
 static const QString kDefaultProxyPass = "";
+static const bool kDefaultUploadScreenshots = false;
 
 #endif // KVDEFAULTS_H

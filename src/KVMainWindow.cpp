@@ -4,6 +4,7 @@
 #include "KVSettingsDialog.h"
 #include "KVNetworkAccessManager.h"
 #include "KVTranslator.h"
+#include "KVScreenshooter.h"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -34,6 +35,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+	connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -44,7 +46,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	// Set up a cache; a larger-than-normal disk cache is quite enough for our purposes
 	cache = new QNetworkDiskCache(this);
 	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-	cache->setMaximumCacheSize(1024*1024*1024);	// Max 1GB cache storage
+	cache->setMaximumCacheSize(1024*1024*1024); // Max 1GB cache storage
 	wvManager->setCache(cache);
 
 	// Can't set this up in the designer, since it doesn't like QWebView subclasses
@@ -216,6 +218,8 @@ void KVMainWindow::implementSettings(bool start)
 	} else {
 		wvManager->setProxy(QNetworkProxy());
 	}
+
+	KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
 }
 
 void KVMainWindow::clearCache()
@@ -380,3 +384,8 @@ void KVMainWindow::setHTMLAPILink()
 
 	QMessageBox::critical(this, QString("Errorcat (Code %1)").arg((int)error), readableError);
 }*/
+
+void KVMainWindow::screenshot()
+{
+	KVScreenshooter::instance().takeScreenshot(webView);
+}
