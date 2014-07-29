@@ -16,8 +16,10 @@ xcuserdata
 *.vcxproj
 *.vcxproj.*
 *.sln
+*.cbp
 
 # CMake stuff
+CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CTestTestfile.cmake

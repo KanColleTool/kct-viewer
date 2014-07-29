@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuViewer">
@@ -51,6 +51,7 @@
     <addaction name="actionEnterAPILink"/>
     <addaction name="actionClearCache"/>
     <addaction name="actionReset"/>
+    <addaction name="actionScreenshot"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="actionExit"/>
@@ -103,6 +104,14 @@
   <action name="actionCheckForUpdates">
    <property name="text">
     <string>Check for Updates</string>
+   </property>
+  </action>
+  <action name="actionScreenshot">
+   <property name="text">
+    <string>Screenshot</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
