@@ -25,6 +25,7 @@ KVScreenshooter::KVScreenshooter(QObject *parent) :
 	QObject(parent)
 {
 	manager = new QNetworkAccessManager(this);
+	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(uploadingFinished(QNetworkReply*)));
 }
 
 KVScreenshooter::~KVScreenshooter()
@@ -82,7 +83,6 @@ void KVScreenshooter::uploadScreenshot(QImage image)
 	requestBody.append(QUrl::toPercentEncoding(rawData.toBase64()));
 
 	manager->post(request, requestBody);
-	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(uploadingFinished(QNetworkReply*)));
 }
 
 void KVScreenshooter::uploadingFinished(QNetworkReply *reply)
@@ -90,16 +90,13 @@ void KVScreenshooter::uploadingFinished(QNetworkReply *reply)
 	if(reply->error() == QNetworkReply::NoError) {
 		QString textData = QString::fromUtf8(reply->readAll());
 
-		if(!textData.isEmpty()) {
-			QJsonDocument jsonDocument = QJsonDocument::fromJson(textData.toUtf8());
-			QJsonObject jsonObject = jsonDocument.object();
+		QJsonDocument jsonDocument = QJsonDocument::fromJson(textData.toUtf8());
+		QJsonObject jsonObject = jsonDocument.object();
 
-			QString link = jsonObject["data"].toObject()["link"].toString();
+		QString link = jsonObject["data"].toObject()["link"].toString();
 
-			QApplication::clipboard()->setText(link);
-
-			qWarning() << textData;
-		}
+		QApplication::clipboard()->setText(link);
+		qWarning() << link;
 	} else {
 		qWarning() << "Couldn't upload screenshot" << reply->errorString();
 	}
@@ -107,7 +104,7 @@ void KVScreenshooter::uploadingFinished(QNetworkReply *reply)
 	reply->deleteLater();
 }
 
-void KVScreenshooter::takeScreenshot(QWidget *widget)
+void KVScreenshooter::takeScreenshot(QWidget *widget, bool uploadScreenshots)
 {
 	QImage image = KVScreenshooter::captureScreenshot(widget);
 

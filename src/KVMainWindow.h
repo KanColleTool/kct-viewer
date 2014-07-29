@@ -69,6 +69,8 @@ protected:
 
 	bool showTaskbarProgress;
 
+	bool uploadScreenshots;
+
 #ifdef Q_OS_WIN
 	QWinTaskbarButton *taskbarButton;
 #endif
