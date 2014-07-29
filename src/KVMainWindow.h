@@ -67,9 +67,7 @@ protected:
 	QString server, apiToken;
 	QUrl apiLink;
 
-	bool showTaskbarProgress;
-
-	bool uploadScreenshots;
+    bool showTaskbarProgress;
 
 #ifdef Q_OS_WIN
 	QWinTaskbarButton *taskbarButton;

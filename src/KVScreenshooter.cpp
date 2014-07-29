@@ -106,7 +106,7 @@ void KVScreenshooter::uploadingFinished()
 	reply->deleteLater();
 }
 
-void KVScreenshooter::takeScreenshot(QWidget *widget, bool uploadScreenshots)
+void KVScreenshooter::takeScreenshot(QWidget *widget)
 {
 	QImage image = KVScreenshooter::captureScreenshot(widget);
 
