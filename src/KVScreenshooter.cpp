@@ -51,7 +51,7 @@ void KVScreenshooter::saveScreenshot(QImage image)
 
 	QString picName = QString("KCTViewer %1.png").arg(currentTimeString);
 
-    QString picsPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+	QString picsPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
 	int counter = 0;
 	while(QFile(QDir(picsPath).filePath(picName)).exists()) {
@@ -110,5 +110,5 @@ void KVScreenshooter::takeScreenshot(QWidget *widget)
 {
 	QImage image = KVScreenshooter::captureScreenshot(widget);
 
-    (uploadScreenshots)? KVScreenshooter::uploadScreenshot(image) : KVScreenshooter::saveScreenshot(image);
+	(uploadScreenshots)? KVScreenshooter::uploadScreenshot(image) : KVScreenshooter::saveScreenshot(image);
 }

@@ -25,7 +25,7 @@ struct KVNetworkReplyPrivate {
 };
 
 KVNetworkReply::KVNetworkReply(QObject *parent, QNetworkReply *toCopy,
-                               QNetworkAccessManager *mgr, bool translate) :
+	                           QNetworkAccessManager *mgr, bool translate) :
 	QNetworkReply(parent) {
 	d = new KVNetworkReplyPrivate;
 	d->finished = false;
@@ -74,7 +74,7 @@ void KVNetworkReply::handleResponse() {
 	d->copied->abort();
 
 	//qDebug() << "content:" << data;
-	
+
 	this->postToTool(data);
 	this->writeToDisk(data);
 
@@ -107,16 +107,16 @@ void KVNetworkReply::writeToDisk(const QByteArray &body) {
 		QUrlQuery query(body);
 		page = query.queryItemValue("api_page_no").toInt();
 	}
-	
+
 	QString cacheDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/userdata");
 	QString path(cacheDir + url().path());
 	if(page > 0)
 		path += "__" + QString::number(page);
 	path += ".json";
-	
+
 	QFileInfo fileInfo(path);
 	fileInfo.absoluteDir().mkpath(".");
-	
+
 	QFile file(fileInfo.absoluteFilePath());
 	if(file.open(QIODevice::WriteOnly))
 		file.write(body);

@@ -19,9 +19,9 @@ public:
 	 * @param widget Widget that will be captured
 	 * @param uploadScreenshots Upload screenshot on imgur instead of saving it locally
 	 */
-    void takeScreenshot(QWidget *widget);
+	void takeScreenshot(QWidget *widget);
 
-    bool uploadScreenshots;
+	bool uploadScreenshots;
 
 protected:
 	QNetworkAccessManager *manager;
@@ -49,10 +49,10 @@ private slots:
 	void uploadingFinished();
 
 private:
-    KVScreenshooter(QObject *parent = 0);
-    KVScreenshooter(const KVScreenshooter&);
-    KVScreenshooter& operator=(const KVScreenshooter&);
-    virtual ~KVScreenshooter();
+	KVScreenshooter(QObject *parent = 0);
+	KVScreenshooter(const KVScreenshooter&);
+	KVScreenshooter& operator=(const KVScreenshooter&);
+	virtual ~KVScreenshooter();
 
 };
 

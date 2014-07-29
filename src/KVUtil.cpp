@@ -11,7 +11,7 @@ QString unescape(QString str) {
 	QRegularExpression re("\\\\u([0-9a-fA-F]{4})");
 	for(auto match = re.match(str); match.hasMatch(); match = re.match(str)) {
 		str.replace(match.capturedStart(), match.capturedLength(),
-					QChar(match.captured(1).toUShort(0, 16)));
+		            QChar(match.captured(1).toUShort(0, 16)));
 	}
 
 	return str;
