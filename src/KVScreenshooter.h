@@ -23,12 +23,6 @@ public:
 
     bool uploadScreenshots;
 
-private:
-	KVScreenshooter(QObject *parent = 0);
-	KVScreenshooter(const KVScreenshooter&);
-	KVScreenshooter& operator=(const KVScreenshooter&);
-	virtual ~KVScreenshooter();
-
 protected:
 	QNetworkAccessManager *manager;
 
@@ -53,6 +47,12 @@ protected:
 
 private slots:
 	void uploadingFinished();
+
+private:
+    KVScreenshooter(QObject *parent = 0);
+    KVScreenshooter(const KVScreenshooter&);
+    KVScreenshooter& operator=(const KVScreenshooter&);
+    virtual ~KVScreenshooter();
 
 };
 
