@@ -6,3 +6,7 @@ KanColleTool Viewer
 **KanColleTool Viewer** (aka **KCTV**) is a wrapper around KanColle, and a part of [KanColleTool](https://github.com/KanColleTool/KanColleTool).
 
 It's basically a less shitty Flash Player Standalone (aka Flash Projector) with KanColle-specific optimizations and some extra features, the main ones being on-the-fly translation of in-game text and data collection for the [tool](https://github.com/KanColleTool/kct-tool).
+
+---
+
+No issues can be opened on specific modules, please use the [main issue tracker](https://github.com/KanColleTool/KanColleTool/issues).
