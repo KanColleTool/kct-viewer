@@ -3,8 +3,6 @@ KanColleTool Viewer
 
 [![Build Status](https://travis-ci.org/KanColleTool/kct-viewer.png?branch=master)](https://travis-ci.org/KanColleTool/kct-viewer)
 
-This is the viewer for [KanColleTool](/KanColleTool/tool).
+**KanColleTool Viewer** (aka **KCTV**) is a wrapper around KanColle, and a part of [KanColleTool](https://github.com/KanColleTool/KanColleTool).
 
-It allows players to stream data directly from the client instead of getting information from the DMM servers directly, which could lead to a ban.
-
-The viewer can also translate the game on-the-fly by modifying server response text
+It's basically a less shitty Flash Player Standalone (aka Flash Projector) with KanColle-specific optimizations and some extra features, the main ones being on-the-fly translation of in-game text and data collection for the [tool](https://github.com/KanColleTool/kct-tool).
