@@ -47,7 +47,7 @@ QImage KVScreenshooter::captureScreenshot(QWidget *widget)
 void KVScreenshooter::saveScreenshot(QImage image)
 {
 	QDateTime currentTime = currentTime.currentDateTime();
-	QString currentTimeString = currentTime.toString("yyyy-MM-dd hh:mm:ss");
+	QString currentTimeString = currentTime.toString("yyyy-MM-dd hh-mm-ss");
 
 	QString picName = QString("KCTViewer %1.png").arg(currentTimeString);
 
