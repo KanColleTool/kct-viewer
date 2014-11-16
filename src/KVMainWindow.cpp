@@ -220,6 +220,7 @@ void KVMainWindow::implementSettings(bool start)
 	}
 
 	KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
+	KVScreenshooter::instance().screenshotsPath = settings.value("screenshotsPath").toString();
 }
 
 void KVMainWindow::clearCache()

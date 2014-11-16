@@ -2,6 +2,7 @@
 #define KVDEFAULTS_H
 
 #include <QNetworkProxy>
+#include <QStandardPaths>
 
 static const bool kDefaultTranslation = false;
 static const bool kDefaultReportUntranslated = true;
@@ -13,5 +14,6 @@ static const int kDefaultProxyType = QNetworkProxy::Socks5Proxy;
 static const QString kDefaultProxyUser = "";
 static const QString kDefaultProxyPass = "";
 static const bool kDefaultUploadScreenshots = false;
+static const QString kDefaultScreenshotsPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
 #endif // KVDEFAULTS_H

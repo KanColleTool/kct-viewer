@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>368</height>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,16 +60,7 @@ If you would like to provide an alternate translation, contact us and we'll work
    <item>
     <widget class="QWidget" name="windowsOnlyContainer" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
@@ -137,20 +128,23 @@ If you would like to provide an alternate translation, contact us and we'll work
     </spacer>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="screenshotContainer">
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="uploadScreenshotsCheckbox">
+     <property name="text">
+      <string>Upload captured screenshots to Imgur (instead of saving to disk)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="screenshotsPathContainer">
      <item>
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="uploadScreenshotsCheckbox">
-       <property name="text">
-        <string>Upload captured screenshots to Imgur (instead of saving to disk)</string>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="screenshotsPathEdit"/>
      </item>
     </layout>
    </item>
@@ -177,6 +171,16 @@ If you would like to provide an alternate translation, contact us and we'll work
       </size>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Password</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="5">
        <widget class="QLineEdit" name="proxyPassEdit"/>
       </item>
@@ -212,16 +216,6 @@ If you would like to provide an alternate translation, contact us and we'll work
       </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="proxyUserEdit"/>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Password</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </item>
       <item row="1" column="6">
        <widget class="QLabel" name="label_4">

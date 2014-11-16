@@ -7,7 +7,6 @@
 #include <QJsonObject>
 #include <QApplication>
 #include <QBuffer>
-#include <QStandardPaths>
 #include <QPainter>
 #include <QDateTime>
 #include <QFile>
@@ -50,17 +49,14 @@ void KVScreenshooter::saveScreenshot(QImage image)
 	QString currentTimeString = currentTime.toString("yyyy-MM-dd hh.mm.ss");
 
 	QString picName = QString("KCTViewer %1.png").arg(currentTimeString);
-
-	QString picsPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-
 	int counter = 0;
-	while(QFile(QDir(picsPath).filePath(picName)).exists()) {
+	while(QFile(QDir(screenshotsPath).filePath(picName)).exists())
+	{
 		counter++;
 		picName = QString("KCTViewer %1 (%2).png").arg(currentTimeString, QString::number(counter));
 	}
 
-	QString fullPath = QDir(picsPath).filePath(picName);
-
+	QString fullPath = QDir(screenshotsPath).filePath(picName);
 	image.save(fullPath, "PNG");
 }
 

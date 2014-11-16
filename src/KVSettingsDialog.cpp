@@ -19,6 +19,7 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->proxyUserEdit->setText(settings.value("proxyUser", kDefaultProxyUser).toString());
 	ui->proxyPassEdit->setText(settings.value("proxyPass", kDefaultProxyPass).toString());
 	ui->uploadScreenshotsCheckbox->setChecked(settings.value("uploadScreenshots", kDefaultUploadScreenshots).toBool());
+	ui->screenshotsPathEdit->setText(settings.value("screenshotsPath", kDefaultScreenshotsPath).toString());
 
 	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
@@ -67,6 +68,7 @@ void KVSettingsDialog::applySettings() {
 	else if(ui->httpProxyRadio->isChecked())
 		settings.setValue("proxyType", QNetworkProxy::HttpProxy);
 	settings.setValue("uploadScreenshots", ui->uploadScreenshotsCheckbox->isChecked());
+	settings.setValue("screenshotsPath", ui->screenshotsPathEdit->text());
 
 	settings.sync();
 
@@ -84,4 +86,9 @@ void KVSettingsDialog::on_proxyCheckbox_stateChanged(int state) {
 
 void KVSettingsDialog::on_translationCheckbox_stateChanged(int state) {
 	ui->reportUntranslatedCheckbox->setEnabled(state == Qt::Checked);
+}
+
+void KVSettingsDialog::on_uploadScreenshotsCheckbox_stateChanged(int state)
+{
+	ui->screenshotsPathEdit->setEnabled(state != Qt::Checked);
 }

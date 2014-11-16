@@ -22,6 +22,7 @@ public:
 	void takeScreenshot(QWidget *widget);
 
 	bool uploadScreenshots;
+	QString screenshotsPath;
 
 protected:
 	QNetworkAccessManager *manager;
