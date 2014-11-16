@@ -142,11 +142,20 @@ If you would like to provide an alternate translation, contact us and we'll work
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="screenshotsPathContainer">
-     <item>
-      <widget class="QLineEdit" name="screenshotsPathEdit"/>
-     </item>
-    </layout>
+    <widget class="QWidget" name="screenshotsPathContainer" native="true">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="screenshotsPathEdit"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="browseButton">
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="Line" name="line_2">

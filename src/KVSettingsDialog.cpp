@@ -4,6 +4,7 @@
 #include "KVDefaults.h"
 
 #include <QAbstractButton>
+#include <QFileDialog>
 
 KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	QDialog(parent, f),
@@ -90,5 +91,18 @@ void KVSettingsDialog::on_translationCheckbox_stateChanged(int state) {
 
 void KVSettingsDialog::on_uploadScreenshotsCheckbox_stateChanged(int state)
 {
-	ui->screenshotsPathEdit->setEnabled(state != Qt::Checked);
+	ui->screenshotsPathContainer->setEnabled(state != Qt::Checked);
+}
+
+void KVSettingsDialog::on_browseButton_pressed()
+{
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::Directory);
+	dialog.setOption(QFileDialog::ShowDirsOnly);
+	dialog.setDirectory(ui->screenshotsPathEdit->text());
+
+	if (dialog.exec())
+	{
+		ui->screenshotsPathEdit->setText(dialog.directory().absolutePath());
+	}
 }
