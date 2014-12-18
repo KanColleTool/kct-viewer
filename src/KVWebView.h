@@ -12,6 +12,12 @@ public:
 
 protected:
 	virtual void mousePressEvent(QMouseEvent *ev);
+
+signals:
+	void gameFrameFinished(QUrl url);
+
+private slots:
+	void onFrameCreated(QWebFrame *frame);
 };
 
 #endif // KVWEBVIEW_H
