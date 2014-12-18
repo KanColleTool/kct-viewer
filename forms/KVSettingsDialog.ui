@@ -154,7 +154,28 @@ If you would like to provide an alternate translation, contact us and we'll work
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cookieHackcheckBox">
+     <property name="text">
+      <string>Enble cookie hack</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Enable cookie hack that help you get new API link without Japanese proxy/VPN</string>
+     </property>
     </widget>
    </item>
    <item>

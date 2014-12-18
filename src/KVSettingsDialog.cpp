@@ -21,6 +21,7 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->proxyPassEdit->setText(settings.value("proxyPass", kDefaultProxyPass).toString());
 	ui->uploadScreenshotsCheckbox->setChecked(settings.value("uploadScreenshots", kDefaultUploadScreenshots).toBool());
 	ui->screenshotsPathEdit->setText(settings.value("screenshotsPath", kDefaultScreenshotsPath).toString());
+	ui->cookieHackcheckBox->setChecked(settings.value("cookieHack", kDefaultCookieHack).toBool());
 
 	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
@@ -70,6 +71,7 @@ void KVSettingsDialog::applySettings() {
 		settings.setValue("proxyType", QNetworkProxy::HttpProxy);
 	settings.setValue("uploadScreenshots", ui->uploadScreenshotsCheckbox->isChecked());
 	settings.setValue("screenshotsPath", ui->screenshotsPathEdit->text());
+	settings.setValue("cookieHack", ui->cookieHackcheckBox->isChecked());
 
 	settings.sync();
 
