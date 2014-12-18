@@ -27,7 +27,7 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	else if(op == GetOperation)
 	{
 		// If the request addressed to DMM - create hacked cookies
-		if(request.url().host().contains(".dmm.com"))
+		if(request.url().host().contains(".dmm.com") && cookieHack)
 		{
 			QNetworkCookie lang;
 			lang.setDomain(".dmm.com");
