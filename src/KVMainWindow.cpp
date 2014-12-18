@@ -69,7 +69,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 
 	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
 	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
-	connect(webView, &KVWebView::gameFrameFinished, this, &KVMainWindow::onGameFrameFinished);
+	connect(webView, SIGNAL(gameFrameFinished(QUrl)), this, SLOT(onGameFrameFinished(QUrl)));
 
 	// Auto-adjust the window to fit its contents, and lock it to that size
 	// As the web view is locked to 800x480, this will simply account for
