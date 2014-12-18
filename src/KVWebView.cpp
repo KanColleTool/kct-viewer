@@ -27,7 +27,7 @@ void KVWebView::mousePressEvent(QMouseEvent *ev)
 
 void KVWebView::onFrameCreated(QWebFrame *frame)
 {
-	if(frame->frameName() == QLatin1String("game_frame"))
+	if(frame->frameName() == "game_frame")
 	{
 		connect(frame, &QWebFrame::loadFinished, [=]{
 			qDebug() << "Game frame loaded!";
