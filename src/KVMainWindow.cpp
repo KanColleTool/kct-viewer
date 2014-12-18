@@ -214,11 +214,11 @@ void KVMainWindow::implementSettings(bool start)
 
 	if(settings.value("proxy", kDefaultProxy).toBool()) {
 		wvManager->setProxy(QNetworkProxy(
-								static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", kDefaultProxyType).toInt()),
-								settings.value("proxyServer", kDefaultProxyServer).toString(),
-								settings.value("proxyPort", kDefaultProxyPort).toInt(),
-								settings.value("proxyUser", kDefaultProxyUser).toString(),
-								settings.value("proxyPass", kDefaultProxyPass).toString()));
+			static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", kDefaultProxyType).toInt()),
+			settings.value("proxyServer", kDefaultProxyServer).toString(),
+			settings.value("proxyPort", kDefaultProxyPort).toInt(),
+			settings.value("proxyUser", kDefaultProxyUser).toString(),
+			settings.value("proxyPass", kDefaultProxyPass).toString()));
 	} else {
 		wvManager->setProxy(QNetworkProxy());
 	}
@@ -237,12 +237,12 @@ void KVMainWindow::clearCache()
 void KVMainWindow::showAbout()
 {
 	QMessageBox::about(this, "About KCTViewer",
-					   QString(
-						   "<h1>KCTViewer&nbsp;<small>%1</small></h1>"
-						   ).arg(
-						   QCoreApplication::applicationVersion()
-						   )
-					   );
+		QString(
+			"<h1>KCTViewer&nbsp;<small>%1</small></h1>"
+		).arg(
+			QCoreApplication::applicationVersion()
+		)
+	);
 }
 
 void KVMainWindow::onVersionCheckFinished()

@@ -14,7 +14,7 @@
 #endif
 
 namespace Ui {
-class KVMainWindow;
+	class KVMainWindow;
 }
 
 class KVMainWindow : public QMainWindow
