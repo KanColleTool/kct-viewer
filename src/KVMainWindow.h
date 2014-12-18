@@ -41,7 +41,7 @@ public slots:
 	void clearCache();
 	void showAbout();
 	void screenshot();
-	void getAPILink();
+	void fetchAPILink();
 
 private slots:
 	void onVersionCheckFinished();

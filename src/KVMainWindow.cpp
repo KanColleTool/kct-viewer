@@ -38,7 +38,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
 	connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
-	connect(ui->actionGetAPILink, SIGNAL(triggered()), this, SLOT(getAPILink()));
+	connect(ui->actionGetAPILink, SIGNAL(triggered()), this, SLOT(fetchAPILink()));
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -396,7 +396,7 @@ void KVMainWindow::screenshot()
 	KVScreenshooter::instance().takeScreenshot(webView);
 }
 
-void KVMainWindow::getAPILink()
+void KVMainWindow::fetchAPILink()
 {
 	webView->setUrl(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/"));
 }
