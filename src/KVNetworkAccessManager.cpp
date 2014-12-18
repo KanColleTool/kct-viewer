@@ -30,18 +30,18 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 		if(request.url().host().contains(".dmm.com"))
 		{
 			QNetworkCookie languageCookie;
-			lang.setDomain(".dmm.com");
-			lang.setPath("/");
-			lang.setName("cklg");
-			lang.setValue("ja");
-			lang.setExpirationDate(QDateTime::currentDateTime().addYears(1));
+			languageCookie.setDomain(".dmm.com");
+			languageCookie.setPath("/");
+			languageCookie.setName("cklg");
+			languageCookie.setValue("ja");
+			languageCookie.setExpirationDate(QDateTime::currentDateTime().addYears(1));
 
 			QNetworkCookie locationCookie;
-			loc.setDomain(".dmm.com");
-			loc.setPath("/");
-			loc.setName("ckcy");
-			loc.setValue("1");
-			loc.setExpirationDate(QDateTime::currentDateTime().addYears(1));
+			locationCookie.setDomain(".dmm.com");
+			locationCookie.setPath("/");
+			locationCookie.setName("ckcy");
+			locationCookie.setValue("1");
+			locationCookie.setExpirationDate(QDateTime::currentDateTime().addYears(1));
 
 			if(cookieHack)
 			{
