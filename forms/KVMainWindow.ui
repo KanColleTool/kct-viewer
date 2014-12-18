@@ -21,16 +21,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
    </layout>
@@ -41,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuViewer">
@@ -49,6 +40,7 @@
      <string>Game</string>
     </property>
     <addaction name="actionEnterAPILink"/>
+    <addaction name="actionGetAPILink"/>
     <addaction name="actionClearCache"/>
     <addaction name="actionReset"/>
     <addaction name="actionScreenshot"/>
@@ -112,6 +104,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionGetAPILink">
+   <property name="text">
+    <string>Get API Link</string>
    </property>
   </action>
  </widget>
