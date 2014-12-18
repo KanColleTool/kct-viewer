@@ -8,7 +8,7 @@
 KVWebView::KVWebView(QWidget *parent) :
 	QWebView(parent)
 {
-	connect(this->page(), &QWebPage::frameCreated, this, &KVWebView::onFrameCreated);
+	connect(this->page(), SIGNAL(frameCreated(QWebFrame*)), this, SLOT(onFrameCreated(QWebFrame*)));
 }
 
 void KVWebView::mousePressEvent(QMouseEvent *ev)
@@ -29,14 +29,14 @@ void KVWebView::onFrameCreated(QWebFrame *frame)
 {
 	if(frame->frameName() == "game_frame")
 	{
-		connect(frame, &QWebFrame::loadFinished, [=]{
-			qDebug() << "Game frame loaded!";
+		connect(frame, &QWebFrame::loadFinished, [=](bool ok){
+			qDebug() << "Game frame loaded!" << ok;
 
 			QTimer *timer = new QTimer(this);
 			connect(timer, &QTimer::timeout, [=]{
 				if(!frame->findFirstElement("embed#externalswf").isNull())
 				{
-					// Make an URL and a Query
+					// Make an URL
 					QUrl url(frame->findFirstElement("embed#externalswf").attribute("src"));
 					emit gameFrameFinished(url);
 
@@ -45,7 +45,7 @@ void KVWebView::onFrameCreated(QWebFrame *frame)
 				}
 				else
 				{
-					qDebug() << "nope, no externalswf yet";
+					qDebug() << " -> nope, no externalswf yet";
 				}
 			});
 			timer->start(100);
