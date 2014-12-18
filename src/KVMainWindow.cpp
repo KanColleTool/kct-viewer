@@ -9,6 +9,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QWebFrame>
+#include <QWebPage>
 #include <QInputDialog>
 #include <QFile>
 #include <QUrl>
@@ -21,6 +22,7 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QTimer>
+#include <QWebElement>
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
@@ -36,6 +38,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
 	connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
+	connect(ui->actionGetAPILink, SIGNAL(triggered()), this, SLOT(getAPILink()));
 
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
@@ -66,6 +69,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 
 	connect(webView, SIGNAL(loadStarted()), this, SLOT(onLoadStarted()));
 	connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(onLoadFinished(bool)));
+	connect(webView, &KVWebView::gameFrameFinished, this, &KVMainWindow::onGameFrameFinished);
 
 	// Auto-adjust the window to fit its contents, and lock it to that size
 	// As the web view is locked to 800x480, this will simply account for
@@ -210,11 +214,11 @@ void KVMainWindow::implementSettings(bool start)
 
 	if(settings.value("proxy", kDefaultProxy).toBool()) {
 		wvManager->setProxy(QNetworkProxy(
-			static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", kDefaultProxyType).toInt()),
-			settings.value("proxyServer", kDefaultProxyServer).toString(),
-			settings.value("proxyPort", kDefaultProxyPort).toInt(),
-			settings.value("proxyUser", kDefaultProxyUser).toString(),
-			settings.value("proxyPass", kDefaultProxyPass).toString()));
+								static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", kDefaultProxyType).toInt()),
+								settings.value("proxyServer", kDefaultProxyServer).toString(),
+								settings.value("proxyPort", kDefaultProxyPort).toInt(),
+								settings.value("proxyUser", kDefaultProxyUser).toString(),
+								settings.value("proxyPass", kDefaultProxyPass).toString()));
 	} else {
 		wvManager->setProxy(QNetworkProxy());
 	}
@@ -232,12 +236,12 @@ void KVMainWindow::clearCache()
 void KVMainWindow::showAbout()
 {
 	QMessageBox::about(this, "About KCTViewer",
-		QString(
-			"<h1>KCTViewer&nbsp;<small>%1</small></h1>"
-		).arg(
-			QCoreApplication::applicationVersion()
-		)
-	);
+					   QString(
+						   "<h1>KCTViewer&nbsp;<small>%1</small></h1>"
+						   ).arg(
+						   QCoreApplication::applicationVersion()
+						   )
+					   );
 }
 
 void KVMainWindow::onVersionCheckFinished()
@@ -389,4 +393,29 @@ void KVMainWindow::setHTMLAPILink()
 void KVMainWindow::screenshot()
 {
 	KVScreenshooter::instance().takeScreenshot(webView);
+}
+
+void KVMainWindow::getAPILink()
+{
+	webView->setUrl(QUrl("http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/"));
+}
+
+void KVMainWindow::onGameFrameFinished(QUrl url)
+{
+	qDebug() << "Got new API url:" << url;
+	QUrlQuery query(url);
+
+	// Extract the important bits, and generate a well-formed URL from that
+	// (It's important that nothing we're doing is noticeable to the staff!)
+	server = url.host();
+	apiToken = query.queryItemValue("api_token");
+	this->generateAPILinkURL();
+
+	// Put it in the settings and force a sync
+	QSettings settings;
+	settings.setValue("server", server);
+	settings.setValue("apiToken", apiToken);
+	settings.sync();
+
+	this->loadBundledIndex();
 }
