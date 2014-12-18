@@ -5,6 +5,7 @@
 
 #include <QAbstractButton>
 #include <QFileDialog>
+#include <QMessageBox>
 
 KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	QDialog(parent, f),
@@ -106,5 +107,19 @@ void KVSettingsDialog::on_browseButton_pressed()
 	if (dialog.exec())
 	{
 		ui->screenshotsPathEdit->setText(dialog.directory().absolutePath());
+	}
+}
+
+void KVSettingsDialog::on_cookieHackcheckBox_stateChanged(int state)
+{
+	if(state == Qt::Checked && settings.value("showCookieHackWarning", kDefaultShowCookieHackWarning).toBool())
+	{
+		QMessageBox cookieHackWarningMsgBox;
+		cookieHackWarningMsgBox.setText("Using this hack may be dangerous for your account!");
+
+		if(cookieHackWarningMsgBox.exec())
+		{
+			settings.setValue("showCookieHackWarning", false);
+		}
 	}
 }
