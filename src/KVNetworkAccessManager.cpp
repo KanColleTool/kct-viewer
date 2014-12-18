@@ -27,24 +27,32 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	else if(op == GetOperation)
 	{
 		// If the request addressed to DMM - create hacked cookies
-		if(request.url().host().contains(".dmm.com") && cookieHack)
+		if(request.url().host().contains(".dmm.com"))
 		{
-			QNetworkCookie lang;
+			QNetworkCookie languageCookie;
 			lang.setDomain(".dmm.com");
 			lang.setPath("/");
 			lang.setName("cklg");
 			lang.setValue("ja");
 			lang.setExpirationDate(QDateTime::currentDateTime().addYears(1));
 
-			QNetworkCookie loc;
+			QNetworkCookie locationCookie;
 			loc.setDomain(".dmm.com");
 			loc.setPath("/");
 			loc.setName("ckcy");
 			loc.setValue("1");
 			loc.setExpirationDate(QDateTime::currentDateTime().addYears(1));
 
-			cookieJar()->insertCookie(lang);
-			cookieJar()->insertCookie(loc);
+			if(cookieHack)
+			{
+				cookieJar()->insertCookie(languageCookie);
+				cookieJar()->insertCookie(locationCookie);
+			}
+			else
+			{
+				cookieJar()->deleteCookie(languageCookie);
+				cookieJar()->deleteCookie(locationCookie);
+			}
 		}
 	}
 
