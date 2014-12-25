@@ -29,12 +29,14 @@ void KVWebView::onFrameCreated(QWebFrame *frame)
 {
 	if(frame->frameName() == "game_frame")
 	{
-		connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(onGameFrameLoadFinished(bool, frame)));
+		connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(onGameFrameLoadFinished(bool)));
 	}
 }
 
-void KVWebView::onGameFrameLoadFinished(bool ok, QWebFrame *frame)
+void KVWebView::onGameFrameLoadFinished(bool ok)
 {
+	QWebFrame *frame = qobject_cast<QWebFrame*>(QObject::sender());
+
 	qDebug() << "Game frame loaded!" << ok;
 	if(ok)
 	{

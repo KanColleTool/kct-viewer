@@ -18,7 +18,7 @@ signals:
 
 private slots:
 	void onFrameCreated(QWebFrame *frame);
-	void onGameFrameLoadFinished(bool ok, QWebFrame *frame);
+	void onGameFrameLoadFinished(bool ok);
 };
 
 #endif // KVWEBVIEW_H
