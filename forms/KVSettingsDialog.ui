@@ -174,8 +174,7 @@ If you would like to provide an alternate translation, contact us and we'll work
    <item>
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Allows you to get an API link without a VPN.&lt;/br&gt;
-This is obviously unsupported, use on your own risk.</string>
+      <string>Allows you to get an API link without a VPN.&lt;br /&gt;This is obviously unsupported, use on your own risk.</string>
      </property>
     </widget>
    </item>
