@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>406</height>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -174,7 +174,8 @@ If you would like to provide an alternate translation, contact us and we'll work
    <item>
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Enable cookie hack that help you get new API link without Japanese proxy/VPN</string>
+      <string>Allows you to get an API link without a VPN.&lt;/br&gt;
+This is obviously unsupported, use on your own risk.</string>
      </property>
     </widget>
    </item>
