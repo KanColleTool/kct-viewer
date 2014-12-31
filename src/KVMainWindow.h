@@ -10,7 +10,7 @@
 #include <QNetworkDiskCache>
 
 #ifdef Q_OS_WIN
-	#include <QtWinExtras>
+#include <QtWinExtras>
 #endif
 
 namespace Ui {
@@ -41,6 +41,7 @@ public slots:
 	void clearCache();
 	void showAbout();
 	void screenshot();
+	void fetchAPILink();
 
 private slots:
 	void onVersionCheckFinished();
@@ -50,6 +51,7 @@ private slots:
 	void onTranslationLoaded();
 	void onTranslationLoadFailed(QString error);
 	void onTrackedProgressChanged(qint64 progress, qint64 total);
+	void onGameFrameFinished(QUrl url);
 
 	void setHTMLAPILink();
 

@@ -10,6 +10,7 @@ class KVNetworkAccessManager : public QNetworkAccessManager {
 public:
 	explicit KVNetworkAccessManager(QObject *parent = 0);
 	bool translation;
+	bool cookieHack;
 
 signals:
 	void trackedProgressChanged(qint64 progress, qint64 total);

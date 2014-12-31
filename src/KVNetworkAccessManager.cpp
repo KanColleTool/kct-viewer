@@ -1,13 +1,13 @@
 #include "KVNetworkAccessManager.h"
 #include "KVNetworkReply.h"
 
-#include <QDebug>
+#include <QNetworkCookieJar>
+#include <QNetworkCookie>
 
 KVNetworkAccessManager::KVNetworkAccessManager(QObject *parent) :
 	QNetworkAccessManager(parent),
 	trackedGETProgress(0), trackedGETTotalSize(0)
 {
-
 }
 
 QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
@@ -15,12 +15,44 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	QNetworkRequest request = req;
 	request.setRawHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0");
 
-	if(request.url().host() != "localhost" && request.url().host() != "127.0.0.1") {
-		if(op == QNetworkAccessManager::PostOperation) {
-			//qDebug() << "POST" << request.url().path();
+	if(op == PostOperation) {
+		qDebug() << "POST" << request.url().path();
+		// If the request addressed to API - translate this request
+		if(request.url().host() != "localhost" && request.url().host() != "127.0.0.1" && !request.url().host().contains(".dmm.com")) {
 			QNetworkReply *r = QNetworkAccessManager::createRequest(op, request, outgoingData);
 			KVNetworkReply *reply = new KVNetworkReply(r->parent(), r, this, translation);
 			return reply;
+		}
+	}
+	else if(op == GetOperation)
+	{
+		// If the request addressed to DMM - create hacked cookies
+		if(request.url().host().contains(".dmm.com"))
+		{
+			QNetworkCookie languageCookie;
+			languageCookie.setDomain(".dmm.com");
+			languageCookie.setPath("/");
+			languageCookie.setName("cklg");
+			languageCookie.setValue("ja");
+			languageCookie.setExpirationDate(QDateTime::currentDateTime().addYears(1));
+
+			QNetworkCookie locationCookie;
+			locationCookie.setDomain(".dmm.com");
+			locationCookie.setPath("/");
+			locationCookie.setName("ckcy");
+			locationCookie.setValue("1");
+			locationCookie.setExpirationDate(QDateTime::currentDateTime().addYears(1));
+
+			if(cookieHack)
+			{
+				cookieJar()->insertCookie(languageCookie);
+				cookieJar()->insertCookie(locationCookie);
+			}
+			else
+			{
+				cookieJar()->deleteCookie(languageCookie);
+				cookieJar()->deleteCookie(locationCookie);
+			}
 		}
 	}
 

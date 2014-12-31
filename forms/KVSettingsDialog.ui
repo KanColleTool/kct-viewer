@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>406</height>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -154,7 +154,28 @@ If you would like to provide an alternate translation, contact us and we'll work
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cookieHackcheckBox">
+     <property name="text">
+      <string>Enble cookie hack</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Allows you to get an API link without a VPN.&lt;br /&gt;This is obviously unsupported, use on your own risk.</string>
+     </property>
     </widget>
    </item>
    <item>
