@@ -53,7 +53,7 @@ void KVWebView::onGameFrameLoadFinished(bool ok)
 			}
 			else
 			{
-				qDebug() << " -> nope, no externalswf yet";
+				qDebug() << " -> Nope, no externalswf yet";
 			}
 		});
 
