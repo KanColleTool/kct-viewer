@@ -15,7 +15,8 @@
 
 #include <QDebug>
 
-KVScreenshooter& KVScreenshooter::instance() {
+KVScreenshooter& KVScreenshooter::instance()
+{
 	static KVScreenshooter _instance;
 	return _instance;
 }

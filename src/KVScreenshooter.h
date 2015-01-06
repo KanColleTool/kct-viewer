@@ -50,6 +50,7 @@ private slots:
 	void uploadingFinished();
 
 private:
+	// Singleton stuff
 	KVScreenshooter(QObject *parent = 0);
 	KVScreenshooter(const KVScreenshooter&);
 	KVScreenshooter& operator=(const KVScreenshooter&);
