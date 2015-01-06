@@ -16,7 +16,7 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	request.setRawHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0");
 
 	if(op == PostOperation) {
-		qDebug() << "POST" << request.url().path();
+		//qDebug() << "POST" << request.url().path();
 		// If the request addressed to API - translate this request
 		if(request.url().host() != "localhost" && request.url().host() != "127.0.0.1" && !request.url().host().contains(".dmm.com")) {
 			QNetworkReply *r = QNetworkAccessManager::createRequest(op, request, outgoingData);
