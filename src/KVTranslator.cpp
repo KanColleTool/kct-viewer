@@ -18,21 +18,11 @@
 #include <QNetworkReply>
 #include <QDebug>
 
-KVTranslator* KVTranslator::m_instance = 0;
-
-// -- Singleton Instance
-KVTranslator* KVTranslator::instance() {
-	static QMutex mutex;
-	if(!m_instance) {
-		mutex.lock();
-		if(!m_instance) m_instance = new KVTranslator;
-		mutex.unlock();
-	}
-
-	return m_instance;
+KVTranslator& KVTranslator::instance()
+{
+	static KVTranslator _instance;
+	return _instance;
 }
-// --
-
 
 KVTranslator::KVTranslator(QObject *parent):
 	QObject(parent),
@@ -49,34 +39,40 @@ KVTranslator::~KVTranslator()
 
 bool KVTranslator::isLoaded() { return state == loaded; }
 
-void KVTranslator::loadTranslation(QString language) {
+void KVTranslator::loadTranslation(QString language)
+{
 	state = loading;
 	blacklistState = loading;
 
-	if(cacheFile.exists()) {
+	if(cacheFile.exists())
+	{
 		cacheFile.open(QIODevice::ReadOnly | QIODevice::Unbuffered);
 		parseTranslationData(cacheFile.readAll());
 		cacheFile.close();
 	}
 
-	QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
+	//QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
+	QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("https://yukariin.github.io/%1.json").arg(language)));
 	connect(tlReply, SIGNAL(finished()), this, SLOT(translationRequestFinished()));
 
 	QNetworkReply *blReply = manager.get(QNetworkRequest(QString("http://kancolletool.github.io/report_blacklist.json")));
 	connect(blReply, SIGNAL(finished()), this, SLOT(blacklistRequestFinished()));
 }
 
-void KVTranslator::translationRequestFinished() {
+void KVTranslator::translationRequestFinished()
+{
 	// Read the response body
 	QNetworkReply *reply(qobject_cast<QNetworkReply*>(QObject::sender()));
-	if(reply->error() != QNetworkReply::NoError) {
+	if(reply->error() != QNetworkReply::NoError)
+	{
 		state = failed;
 		emit loadFailed(QString("Network Error: %1").arg(reply->errorString()));
 		return;
 	}
 	QByteArray body(reply->readAll());
 
-	if(parseTranslationData(body)) {
+	if(parseTranslationData(body))
+	{
 		qDebug() << "Network translation loaded!";
 		if(cacheFile.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
 			cacheFile.write(body);
@@ -136,7 +132,8 @@ bool KVTranslator::parseTranslationData(const QByteArray &data) {
 	return true;
 }
 
-QString KVTranslator::translate(const QString &line, QString lastPathComponent, QString key) {
+QString KVTranslator::translate(const QString &line, QString lastPathComponent, QString key)
+{
 	// Block until translation is loaded
 	QEventLoop loop;
 	switch(state)

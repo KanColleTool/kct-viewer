@@ -108,13 +108,13 @@ void KVMainWindow::checkForUpdates()
 
 void KVMainWindow::loadTranslation(QString language)
 {
-	KVTranslator *translator = KVTranslator::instance();
-	if(translator->isLoaded()) return;
+	KVTranslator &translator = KVTranslator::instance();
+	if(translator.isLoaded()) return;
 
-	connect(translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
-	connect(translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
-	connect(translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
-	translator->loadTranslation(language);
+	connect(&translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
+	connect(&translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
+	connect(&translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
+	translator.loadTranslation(language);
 }
 
 void KVMainWindow::loadBundledIndex()
@@ -208,7 +208,7 @@ void KVMainWindow::implementSettings(bool start)
 		if(!start) loadBundledIndex();
 	}
 
-	KVTranslator::instance()->reportUntranslated = settings.value("reportUntranslated", kDefaultReportUntranslated).toBool();
+	KVTranslator::instance().reportUntranslated = settings.value("reportUntranslated", kDefaultReportUntranslated).toBool();
 
 	showTaskbarProgress = settings.value("taskbarProgress", kDefaultTaskbarProgress).toBool();
 
@@ -314,7 +314,7 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 	qDebug() << "Translation failed to load:" << error;
 
 	QMessageBox::StandardButton button;
-	if(KVTranslator::instance()->isLoaded()) {
+	if(KVTranslator::instance().isLoaded()) {
 		button = QMessageBox::warning(this, "Couldn't load network translation", "This might mean that your connection is bad. However, a cached translation has been loaded. Would you like to retry loading the translation from the network?", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);
 	} else {
 		button = QMessageBox::warning(this, "Couldn't load translation", "This might mean that your connection is bad. You can continue without translation, but the game will be in Japanese.", QMessageBox::Retry|QMessageBox::Ok, QMessageBox::Ok);

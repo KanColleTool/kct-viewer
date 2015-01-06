@@ -12,11 +12,12 @@
 class KVTranslator : public QObject
 {
 	friend class KCTViewerTest;
-	
+
 	Q_OBJECT
 
 public:
-	static KVTranslator* instance();
+	static KVTranslator& instance();
+	
 	bool isLoaded();
 	
 	bool reportUntranslated;
@@ -77,14 +78,12 @@ protected:
 	struct ReportQueueEntry { QString line, lastPathComponent, key; };
 	QList<ReportQueueEntry> reportQueue;
 
+private:
 	// Singleton stuff
-	static KVTranslator *m_instance;
-
 	KVTranslator(QObject *parent = 0);
 	KVTranslator(const KVTranslator&);
-	virtual ~KVTranslator();
-
 	KVTranslator& operator=(const KVTranslator&);
+	virtual ~KVTranslator();
 };
 
 #endif

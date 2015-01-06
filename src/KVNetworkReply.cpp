@@ -78,7 +78,7 @@ void KVNetworkReply::handleResponse() {
 	this->writeToDisk(data);
 
 	if(d->translate)
-		data = KVTranslator::instance()->translateJson(data, d->copied->url().path().split("/").last());
+		data = KVTranslator::instance().translateJson(data, d->copied->url().path().split("/").last());
 
 	d->content = data;
 	d->offset = 0;
