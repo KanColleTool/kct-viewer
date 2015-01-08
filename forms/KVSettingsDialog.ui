@@ -144,6 +144,13 @@ If you would like to provide an alternate translation, contact us and we'll work
    <item>
     <widget class="QWidget" name="screenshotsPathContainer" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="openButton">
+        <property name="text">
+         <string>Open folder</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLineEdit" name="screenshotsPathEdit"/>
       </item>
@@ -154,21 +161,14 @@ If you would like to provide an alternate translation, contact us and we'll work
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="openButton">
-        <property name="text">
-         <string>Open folder</string>
-        </property>
-       </widget>
-      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </widget>
    </item>
    <item>
