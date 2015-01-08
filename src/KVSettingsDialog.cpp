@@ -5,7 +5,7 @@
 
 #include <QAbstractButton>
 #include <QFileDialog>
-#include <QMessageBox>
+#include <QDesktopServices>
 
 KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	QDialog(parent, f),
@@ -108,4 +108,9 @@ void KVSettingsDialog::on_browseButton_pressed()
 	{
 		ui->screenshotsPathEdit->setText(dialog.directory().absolutePath());
 	}
+}
+
+void KVSettingsDialog::on_openButton_pressed()
+{
+	QDesktopServices::openUrl(QUrl(ui->screenshotsPathEdit->text()));
 }

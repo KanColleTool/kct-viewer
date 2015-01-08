@@ -27,6 +27,7 @@ private slots:
 	void on_translationCheckbox_stateChanged(int state);
 	void on_uploadScreenshotsCheckbox_stateChanged(int state);
 	void on_browseButton_pressed();
+	void on_openButton_pressed();
 
 signals:
 	void apply();
