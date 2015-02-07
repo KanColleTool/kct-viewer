@@ -49,16 +49,16 @@ void KVScreenshooter::saveScreenshot(QImage image)
 	QDateTime currentTime = currentTime.currentDateTime();
 	QString currentTimeString = currentTime.toString("yyyy-MM-dd hh.mm.ss");
 
-	QString picName = QString("KCTViewer %1.png").arg(currentTimeString);
+	QString picName = QString("KCTViewer %1.%2").arg(currentTimeString, screenshotsFormat.toLower());
 	int counter = 0;
 	while(QFile(QDir(screenshotsPath).filePath(picName)).exists())
 	{
 		counter++;
-		picName = QString("KCTViewer %1 (%2).png").arg(currentTimeString, QString::number(counter));
+                picName = QString("KCTViewer %1 (%2).%3").arg(currentTimeString, QString::number(counter), screenshotsFormat.toLower());
 	}
 
 	QString fullPath = QDir(screenshotsPath).filePath(picName);
-	image.save(fullPath, "PNG");
+        image.save(fullPath, screenshotsFormat.toUtf8().constData());
 }
 
 void KVScreenshooter::uploadScreenshot(QImage image)
@@ -67,7 +67,7 @@ void KVScreenshooter::uploadScreenshot(QImage image)
 	QBuffer buffer(&rawData);
 	buffer.open(QBuffer::WriteOnly);
 
-	image.save(&buffer, "PNG");
+        image.save(&buffer, screenshotsFormat.toUtf8().constData());
 	buffer.close();
 
 	QNetworkRequest request(QUrl("https://api.imgur.com/3/image.json"));

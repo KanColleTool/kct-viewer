@@ -15,6 +15,7 @@ static const QString kDefaultProxyUser = "";
 static const QString kDefaultProxyPass = "";
 static const bool kDefaultUploadScreenshots = false;
 static const QString kDefaultScreenshotsPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+static const QString kDefaultScreenshotsFormat = "PNG";
 static const bool kDefaultCookieHack = false;
 
 #endif // KVDEFAULTS_H

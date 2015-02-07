@@ -225,6 +225,7 @@ void KVMainWindow::implementSettings(bool start)
 
 	KVScreenshooter::instance().uploadScreenshots = settings.value("uploadScreenshots").toBool();
 	KVScreenshooter::instance().screenshotsPath = settings.value("screenshotsPath").toString();
+	KVScreenshooter::instance().screenshotsFormat = settings.value("screenshotsFormat").toString();
 	wvManager->cookieHack = settings.value("cookieHack").toBool();
 }
 
