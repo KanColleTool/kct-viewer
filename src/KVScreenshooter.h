@@ -23,7 +23,7 @@ public:
 
 	bool uploadScreenshots;
 	QString screenshotsPath;
-        QString screenshotsFormat;
+	QString screenshotsFormat;
 
 protected:
 	QNetworkAccessManager *manager;

@@ -24,12 +24,12 @@ KVSettingsDialog::KVSettingsDialog(KVMainWindow *parent, Qt::WindowFlags f) :
 	ui->screenshotsPathEdit->setText(settings.value("screenshotsPath", kDefaultScreenshotsPath).toString());
 	ui->cookieHackcheckBox->setChecked(settings.value("cookieHack", kDefaultCookieHack).toBool());
 
-        if (settings.value("screenshotsFormat", kDefaultScreenshotsFormat) == "PNG")
-            ui->PngRadioButton->setChecked(true);
-        else if (settings.value("screenshotsFormat", kDefaultScreenshotsFormat) == "JPEG")
-            ui->JpegRadioButton->setChecked(true);
+	if (settings.value("screenshotsFormat", kDefaultScreenshotsFormat) == "PNG")
+		ui->PngRadioButton->setChecked(true);
+	else if (settings.value("screenshotsFormat", kDefaultScreenshotsFormat) == "JPEG")
+		ui->JpegRadioButton->setChecked(true);
 
-        switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
+	switch(settings.value("proxyType", kDefaultProxyType).toInt()) {
 	default:
 	case QNetworkProxy::Socks5Proxy:
 		ui->socksProxyRadio->setChecked(true);
@@ -72,10 +72,10 @@ void KVSettingsDialog::applySettings() {
 	settings.setValue("proxyServer", ui->proxyServerEdit->text());
 	settings.setValue("proxyPort", ui->proxyPortBox->value());
 
-        if (ui->PngRadioButton->isChecked())
-            settings.setValue("screenshotsFormat", "PNG");
-        else if (ui->JpegRadioButton->isChecked())
-            settings.setValue("screenshotsFormat", "JPEG");
+	if (ui->PngRadioButton->isChecked())
+		settings.setValue("screenshotsFormat", "PNG");
+	else if (ui->JpegRadioButton->isChecked())
+		settings.setValue("screenshotsFormat", "JPEG");
 
 	if(ui->socksProxyRadio->isChecked())
 		settings.setValue("proxyType", QNetworkProxy::Socks5Proxy);
