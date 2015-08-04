@@ -28,7 +28,7 @@ public:
 	/**
 	 * Designated constructor.
 	 */
-	KVMainWindow(QWidget *parent=0, Qt::WindowFlags flags=0);
+	KVMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
 protected slots:
 	/**
@@ -46,7 +46,7 @@ protected:
 	 * 
 	 * @param language The language code to load
 	 */
-	void loadTranslation(QString language="en");
+	void loadTranslation(QString language = "en");
 	
 	/**
 	 * Loads stored user settings.
@@ -57,7 +57,7 @@ protected:
 	 * 
 	 * @param isStarting Is the application starting?
 	 */
-	void loadSettings(bool isStarting=false);
+	void loadSettings(bool isStarting = false);
 	
 	/**
 	 * Generates an API link.
@@ -89,7 +89,7 @@ public slots:
 	 * 
 	 * @param reload Reload the game afterwards?
 	 */
-	void askForAPILink(bool reload=true);
+	void askForAPILink(bool reload = true);
 	
 	/**
 	 * Opens the settings dialogue.
@@ -104,7 +104,7 @@ public slots:
 	 * 
 	 * @param isStarting Is the application starting?
 	 */
-	void implementSettings(bool isStarting=false);
+	void implementSettings(bool isStarting = false);
 	
 	/**
 	 * Clears the cache and reloads the game.
