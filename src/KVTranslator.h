@@ -33,7 +33,6 @@ public slots:
 protected:
 	bool parseTranslationData(const QByteArray &data);
 	QJsonValue _walk(QJsonValue value, QString lastPathComponent, QString key="");
-	static QString jsonEscape(const QString &str);
 	void report(const QString &line, const QString &lastPathComponent, const QString &key);
 
 signals:
@@ -46,31 +45,6 @@ private slots:
 	void blacklistRequestFinished();
 
 protected:
-	enum JsonContext {
-		Start, End,
-		Object, Array,
-		Key, AfterKey,
-		Value, NonString, String, AfterValue,
-		Invalid
-	};
-
-	struct JsonState {
-		JsonContext context;
-		int start, arri;
-		JsonState();
-		JsonState(JsonContext c, int s, int ai=-1);
-		operator QString() const;
-	};
-
-	struct Reader {
-		int i;
-		const QByteArray &data;
-		Reader(const QByteArray &json);
-
-		const QByteArray readTo(int e);
-		const QByteArray readAll();
-	};
-
 	enum { created, loading, loaded, failed } state, blacklistState;
 	QFile cacheFile;
 	QNetworkAccessManager manager;
