@@ -5,29 +5,31 @@
 #include <QNetworkAccessManager>
 
 /**
- * @brief The class for make, save or upload screenshots
+ * The class for make, save or upload screenshots
  */
 class KVScreenshooter : public QObject
 {
 	Q_OBJECT
 
 public:
+	/**
+	 * Returns a shared instance.
+	 */
 	static KVScreenshooter& instance();
 
 	/**
-	 * @brief Function for taking screenshot of the passed widget
+	 * Function for taking screenshot of the passed widget
 	 * @param widget Widget that will be captured
-	 * @param uploadScreenshots Upload screenshot on imgur instead of saving it locally
 	 */
 	void takeScreenshot(QWidget *widget);
 
-	bool uploadScreenshots;
-	QString screenshotsPath;
-	QString screenshotsFormat;
+
+
+	bool uploadScreenshots;			///< Should screenshots be uploaded?
+	QString screenshotsPath;		///< Where should we save images?
+	QString screenshotsFormat;		///< What format should they be in? \todo Enums, dammit!
 
 protected:
-	QNetworkAccessManager *manager;
-
 	/**
 	 * @brief Function for capturing screenshots
 	 * @param widget Widget that will be captured
@@ -46,8 +48,14 @@ protected:
 	 * @param image Captured screenshot in Qimage objest
 	 */
 	void saveScreenshot(QImage image);
+	
+	/// Network access manager
+	QNetworkAccessManager *manager;
 
-private slots:
+protected slots:
+	/**
+	 * Called when an upload finishes.
+	 */
 	void uploadingFinished();
 
 private:

@@ -3,6 +3,9 @@
 
 #include <QString>
 
+/**
+ * \private Lookup table for CRC32 checksums.
+ */
 static const quint32 crc32_tab[] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
 	0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -49,7 +52,31 @@ static const quint32 crc32_tab[] = {
 	0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
+/**
+ * Unescapes the given string.
+ * 
+ * This converts a string with \uXXXX escapes into actual unicode characters.
+ * 
+ * @param  escaped The escaped string
+ * @return         The unescaped equivalent
+ */
 QString unescape(QString escaped);
+
+/**
+ * Standard CRC32 function, this particular one being copypasted from the
+ * opensource portions of the OSX Kernel, with just some formatting and
+ * a nonportable include fixed, as well as using the Qt integer types.
+ *
+ * http://www.opensource.apple.com/source/xnu/xnu-1456.1.26/bsd/libkern/crc32.c
+ * 
+ * Another good choice would be zlib's CRC32 function, but its availability
+ * needs to be confirmed first.
+ * 
+ * @param  crc  Base CRC (may be 0)
+ * @param  buf  Buffer
+ * @param  size Size
+ * @return      The buffer's CRC32 checksum
+ */
 quint32 crc32(quint32 crc, const void *buf, size_t size);
 
 #endif

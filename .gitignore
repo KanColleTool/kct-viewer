@@ -39,4 +39,6 @@ moc_*
 
 /build/
 /bin/
+/docs/
 *.dir
+

@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QDir>
 
+/// \private
 struct KVNetworkReplyPrivate {
 	QNetworkReply *copied;
 

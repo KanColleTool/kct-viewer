@@ -176,7 +176,7 @@ void KVMainWindow::openSettings()
 	settingsDialog->show();
 }
 
-void KVMainWindow::loadSettings(bool start)
+void KVMainWindow::loadSettings(bool isStarting)
 {
 	QSettings settings;
 
@@ -194,10 +194,10 @@ void KVMainWindow::loadSettings(bool start)
 	qDebug() << "API Token:" << apiToken;
 	qDebug() << "API Link:" << apiLink.toString();
 
-	this->implementSettings(start);
+	this->implementSettings(isStarting);
 }
 
-void KVMainWindow::implementSettings(bool start)
+void KVMainWindow::implementSettings(bool isStarting)
 {
 	QSettings settings;
 
@@ -205,7 +205,7 @@ void KVMainWindow::implementSettings(bool start)
 	if(translation != wvManager->translation) {
 		wvManager->translation = translation;
 		if(translation) loadTranslation();
-		if(!start) loadBundledIndex();
+		if(!isStarting) loadBundledIndex();
 	}
 
 	KVTranslator::instance().reportUntranslated = settings.value("reportUntranslated", kDefaultReportUntranslated).toBool();
