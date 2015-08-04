@@ -30,16 +30,7 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	ui(new Ui::KVMainWindow)
 {
 	ui->setupUi(this);
-
-	connect(ui->actionEnterAPILink, SIGNAL(triggered()), this, SLOT(askForAPILink()));
-	connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
-	connect(ui->actionClearCache, SIGNAL(triggered()), this, SLOT(clearCache()));
-	connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(loadBundledIndex()));
-	connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
-	connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-	connect(ui->actionScreenshot, SIGNAL(triggered()), this, SLOT(screenshot()));
-	connect(ui->actionGetAPILink, SIGNAL(triggered()), this, SLOT(fetchAPILink()));
-
+	
 	// Set a custom network access manager to let us set up a cache and proxy.
 	// Without a cache, the game takes ages to load.
 	// Without a proxy, we can't do cool things like translating the game.
@@ -420,4 +411,46 @@ void KVMainWindow::onGameFrameFinished(QUrl url)
 	settings.sync();
 
 	this->loadBundledIndex();
+}
+
+
+
+void KVMainWindow::on_actionEnterAPILink_triggered()
+{
+	this->askForAPILink();
+}
+
+void KVMainWindow::on_actionSettings_triggered()
+{
+	this->openSettings();
+}
+
+void KVMainWindow::on_actionClearCache_triggered()
+{
+	this->clearCache();
+}
+
+void KVMainWindow::on_actionReset_triggered()
+{
+	this->loadBundledIndex();
+}
+
+void KVMainWindow::on_actionExit_triggered()
+{
+	qApp->quit();
+}
+
+void KVMainWindow::on_actionAbout_triggered()
+{
+	this->showAbout();
+}
+
+void KVMainWindow::on_actionScreenshot_triggered()
+{
+	this->screenshot();
+}
+
+void KVMainWindow::on_actionGetAPILink_triggered()
+{
+	this->fetchAPILink();
 }

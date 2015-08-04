@@ -201,6 +201,16 @@ private slots:
 	// Never actually emmitted yet; I'm trying to get the proxy
 	// stable before I start poking at the responses.
 	//void onAPIError(KVProxyServer::APIStatus error);
+	
+private slots:
+	void on_actionEnterAPILink_triggered();
+	void on_actionSettings_triggered();
+	void on_actionClearCache_triggered();
+	void on_actionReset_triggered();
+	void on_actionExit_triggered();
+	void on_actionAbout_triggered();
+	void on_actionScreenshot_triggered();
+	void on_actionGetAPILink_triggered();
 
 protected:
 	/**
