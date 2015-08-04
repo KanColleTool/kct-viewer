@@ -74,6 +74,9 @@ endif(WIN32)
 # --> Build the main application
 #
 if(APPLE)
+	# Make a custom Info.plist
+	configure_file(Info.plist.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Info.plist)
+	
 	# Copy bundle resources
 	set_source_files_properties(../resources/KCTViewer.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 	list(APPEND KCTViewer_EXTRA_FILES "../resources/KCTViewer.icns")
@@ -81,16 +84,7 @@ endif(APPLE)
 
 add_executable(KCTViewer WIN32 MACOSX_BUNDLE ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES} KCTViewer.rc)
 target_link_libraries(KCTViewer KVBase)
-set_target_properties(KCTViewer PROPERTIES
-	MACOSX_BUNDLE_INFO_STRING "${VERSION}"
-	MACOSX_BUNDLE_ICON_FILE "KCTViewer.icns"
-	MACOSX_BUNDLE_GUI_IDENTIFIER "com.kancolletool.KCTViewer"
-	MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION}"
-	MACOSX_BUNDLE_BUNDLE_NAME "KanColleTool Viewer"
-	MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION}"
-	MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION}"
-	MACOSX_BUNDLE_COPYRIGHT "© 2013-2014 the KanColleTool team"
-)
+set_target_properties(KCTViewer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Info.plist)
 
 if(UNIX AND NOT APPLE)
     set_property(TARGET KCTViewer PROPERTY OUTPUT_NAME "kancolletool-viewer")
