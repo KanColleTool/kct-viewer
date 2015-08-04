@@ -52,7 +52,7 @@ void KVTranslator::loadTranslation(QString language)
 	}
 
 	//QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("http://api.comeonandsl.am/translation/%1/").arg(language)));
-	QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("https://yukariin.github.io/%1.json").arg(language)));
+	QNetworkReply *tlReply = manager.get(QNetworkRequest(QString("http://yukariin.github.io/%1.json").arg(language)));
 	connect(tlReply, SIGNAL(finished()), this, SLOT(translationRequestFinished()));
 
 	QNetworkReply *blReply = manager.get(QNetworkRequest(QString("http://kancolletool.github.io/report_blacklist.json")));
