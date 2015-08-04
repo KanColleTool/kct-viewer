@@ -378,8 +378,7 @@ QByteArray KVTranslator::translateJson(QByteArray json, QString lastPathComponen
 QString KVTranslator::fixTime(const QString &time) {
 	QDateTime realTime = QDateTime::fromString(time, "yyyy-MM-dd hh:mm:ss");
 	if(!realTime.isValid()) return time;
-	realTime.addSecs(-32400);
-	realTime = realTime.toLocalTime();
+	realTime = realTime.addSecs(-32400).toLocalTime();
 	//qDebug() << "fix time" << time << "to" << realTime.toString("yyyy-MM-dd hh:mm:ss");
 	return realTime.toString("yyyy-MM-dd hh:mm:ss");
 }
