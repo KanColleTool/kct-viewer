@@ -358,31 +358,6 @@ void KVMainWindow::setHTMLAPILink()
 	webView->page()->mainFrame()->evaluateJavaScript(QString("setCredentials(\"%1\", \"%2\"); null").arg(server, apiToken));
 }
 
-/*void KVMainWindow::onAPIError(KVProxyServer::APIStatus error)
-{
-	qDebug() << error;
-
-	QString readableError;
-
-	switch(error)
-	{
-		case KVProxyServer::OK:
-			readableError = "No Error, you shouldn't be seeing this.";
-			break;
-		case KVProxyServer::Unauthorized:
-			readableError = "Either your API Link is invalid, or it has expired. That happens sometimes.";
-			break;
-		case KVProxyServer::InvalidAPIVersion:
-		case KVProxyServer::MissingParameters:
-			readableError = "The game was updated, but you have an old client.";
-			break;
-		default:
-			readableError = "An unknown error occurred. Please tell the developers that this happened ALONG WITH THE ERROR CODE, and what you think caused it.";
-	}
-
-	QMessageBox::critical(this, QString("Errorcat (Code %1)").arg((int)error), readableError);
-}*/
-
 void KVMainWindow::screenshot()
 {
 	KVScreenshooter::instance().takeScreenshot(webView);

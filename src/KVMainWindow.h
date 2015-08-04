@@ -197,10 +197,6 @@ private slots:
 	 * \todo Give this a sane function signature.
 	 */
 	void setHTMLAPILink();
-
-	// Never actually emmitted yet; I'm trying to get the proxy
-	// stable before I start poking at the responses.
-	//void onAPIError(KVProxyServer::APIStatus error);
 	
 private slots:
 	void on_actionEnterAPILink_triggered();
