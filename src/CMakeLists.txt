@@ -15,6 +15,7 @@ endif()
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 9)
 set(VERSION_PATCH 4)
+set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 configure_file(version.h.in version.h)
 
@@ -72,8 +73,24 @@ endif(WIN32)
 #
 # --> Build the main application
 #
-add_executable(KCTViewer WIN32 ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES} KCTViewer.rc)
+if(APPLE)
+	# Copy bundle resources
+	set_source_files_properties(../resources/KCTViewer.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+	list(APPEND KCTViewer_EXTRA_FILES "../resources/KCTViewer.icns")
+endif(APPLE)
+
+add_executable(KCTViewer WIN32 MACOSX_BUNDLE ${KCTViewer_MAIN_CPP} ${KCTViewer_RESOURCE_SOURCES} ${KCTViewer_EXTRA_FILES} KCTViewer.rc)
 target_link_libraries(KCTViewer KVBase)
+set_target_properties(KCTViewer PROPERTIES
+	MACOSX_BUNDLE_INFO_STRING "${VERSION}"
+	MACOSX_BUNDLE_ICON_FILE "KCTViewer.icns"
+	MACOSX_BUNDLE_GUI_IDENTIFIER "com.kancolletool.KCTViewer"
+	MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION}"
+	MACOSX_BUNDLE_BUNDLE_NAME "KanColleTool Viewer"
+	MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION}"
+	MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION}"
+	MACOSX_BUNDLE_COPYRIGHT "© 2013-2014 the KanColleTool team"
+)
 
 if(UNIX AND NOT APPLE)
     set_property(TARGET KCTViewer PROPERTY OUTPUT_NAME "kancolletool-viewer")
@@ -84,7 +101,16 @@ endif()
 #
 # --> Installation
 #
-install(TARGETS KCTViewer RUNTIME DESTINATION bin)
+if(WIN32)
+	set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ".")
+	include(InstallRequiredSystemLibraries)
+endif()
+
+set(KCTViewer_RUNTIME_DESTINATION "bin")
+if(WIN32)
+	set(KCTViewer_RUNTIME_DESTINATION ".")
+endif()
+install(TARGETS KCTViewer RUNTIME DESTINATION ${KanColleTool_RUNTIME_DESTINATION} BUNDLE DESTINATION .)
 
 
 
