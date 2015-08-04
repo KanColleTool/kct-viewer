@@ -10,6 +10,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
+if(APPLE)
+	# Remove when Qt 5.5.1 is released
+	# https://codereview.qt-project.org/#/c/115201/
+	add_definitions(-Wno-unknown-pragmas)
+endif()
+
 add_subdirectory(src)
 add_subdirectory(test)
 
