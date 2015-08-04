@@ -29,25 +29,17 @@ public:
 	 * Designated constructor.
 	 */
 	KVMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-
-protected:
+	
+public slots:
 	/**
-	 * Starts loading a translation file.
-	 * 
-	 * @param language The language code to load
+	 * Loads stored credentials.
 	 */
-	void loadTranslation(QString language = "en");
+	void loadCredentials();
 	
 	/**
 	 * Loads stored user settings.
-	 * 
-	 * Also loads the game, unless isStarting is false.
-	 * 
-	 * \todo Stop that, that's dumb.
-	 * 
-	 * @param isStarting Is the application starting?
 	 */
-	void loadSettings(bool isStarting = false);
+	void loadSettings();
 	
 	/**
 	 * Generates an API link.
@@ -58,8 +50,7 @@ protected:
 	 * \todo Just make it take these two as parameters and return the URL.
 	 */
 	void generateAPILinkURL();
-
-public slots:
+	
 	/**
 	 * Loads the bundled index.html file into the web view.
 	 * 
@@ -85,16 +76,6 @@ public slots:
 	 * Opens the settings dialogue.
 	 */
 	void openSettings();
-	
-	/**
-	 * Applies new settings from the settings dialogue.
-	 * 
-	 * \todo Remove isStarting
-	 * \todo Rename this to something better
-	 * 
-	 * @param isStarting Is the application starting?
-	 */
-	void implementSettings(bool isStarting = false);
 	
 	/**
 	 * Clears the cache and reloads the game.

@@ -74,6 +74,31 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->checkForUpdates();
 #endif
 
+	// Load translation data
+	KVTranslator &translator = KVTranslator::instance();
+	connect(&translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
+	connect(&translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
+	connect(&translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
+	translator.loadTranslation();
+
+	// Attemot to load stored user credentials
+	this->loadCredentials();
+
+	// Ask for them if not present
+	if(server.isEmpty() || apiToken.isEmpty()) {
+		this->askForAPILink(false);
+		if(server.isEmpty() || apiToken.isEmpty())
+			exit(0);
+	}
+	else this->generateAPILinkURL();
+
+	qDebug() << "Server:" << server;
+	qDebug() << "API Token:" << apiToken;
+	qDebug() << "API Link:" << apiLink.toString();
+
+	this->loadSettings();
+	this->loadBundledIndex();
+
 #ifdef Q_OS_WIN
 	// Set up the taskbar button; this requires a window handle
 	QTimer::singleShot(0, this, [=] {
@@ -82,26 +107,12 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 		taskbarButton->progress()->setRange(0, 10000);
 	});
 #endif
-
-	this->loadSettings(true);
-	this->loadBundledIndex();
 }
 
 void KVMainWindow::checkForUpdates()
 {
 	QNetworkReply *reply = manager.get(QNetworkRequest(QUrl("http://kancolletool.github.io/VERSION")));
 	connect(reply, SIGNAL(finished()), this, SLOT(onVersionCheckFinished()));
-}
-
-void KVMainWindow::loadTranslation(QString language)
-{
-	KVTranslator &translator = KVTranslator::instance();
-	if(translator.isLoaded()) return;
-
-	connect(&translator, SIGNAL(waitingForLoad()), this, SLOT(onWaitingForTranslation()));
-	connect(&translator, SIGNAL(loadFinished()), this, SLOT(onTranslationLoaded()));
-	connect(&translator, SIGNAL(loadFailed(QString)), this, SLOT(onTranslationLoadFailed(QString)));
-	translator.loadTranslation(language);
 }
 
 void KVMainWindow::loadBundledIndex()
@@ -163,37 +174,20 @@ void KVMainWindow::openSettings()
 	settingsDialog->show();
 }
 
-void KVMainWindow::loadSettings(bool isStarting)
+void KVMainWindow::loadCredentials()
 {
 	QSettings settings;
 
 	server = settings.value("server").toString();
 	apiToken = settings.value("apiToken").toString();
-
-	if(server.isEmpty() || apiToken.isEmpty()) {
-		this->askForAPILink(false);
-		if(server.isEmpty() || apiToken.isEmpty())
-			exit(0);
-	}
-	else this->generateAPILinkURL();
-
-	qDebug() << "Server:" << server;
-	qDebug() << "API Token:" << apiToken;
-	qDebug() << "API Link:" << apiLink.toString();
-
-	this->implementSettings(isStarting);
 }
 
-void KVMainWindow::implementSettings(bool isStarting)
+void KVMainWindow::loadSettings()
 {
 	QSettings settings;
 
 	bool translation = settings.value("viewerTranslation", kDefaultTranslation).toBool();
-	if(translation != wvManager->translation) {
-		wvManager->translation = translation;
-		if(translation) loadTranslation();
-		if(!isStarting) loadBundledIndex();
-	}
+	wvManager->translation = translation;
 
 	KVTranslator::instance().reportUntranslated = settings.value("reportUntranslated", kDefaultReportUntranslated).toBool();
 
@@ -314,7 +308,7 @@ void KVMainWindow::onTranslationLoadFailed(QString error)
 
 	// To retry, just send the request again.
 	if(button == QMessageBox::Retry)
-		this->loadTranslation();
+		KVTranslator::instance().loadTranslation();
 }
 
 void KVMainWindow::onTrackedProgressChanged(qint64 progress, qint64 total)
