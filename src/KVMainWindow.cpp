@@ -74,21 +74,17 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->checkForUpdates();
 #endif
 
-	// Schedule a call to the post-constructor setup
-	QTimer::singleShot(0, this, SLOT(postConstructorSetup()));
+#ifdef Q_OS_WIN
+	// Set up the taskbar button; this requires a window handle
+	QTimer::singleShot(0, this, [=] {
+		taskbarButton = new QWinTaskbarButton(this);
+		taskbarButton->setWindow(this->windowHandle());
+		taskbarButton->progress()->setRange(0, 10000);
+	});
+#endif
 
 	this->loadSettings(true);
 	this->loadBundledIndex();
-}
-
-void KVMainWindow::postConstructorSetup()
-{
-#ifdef Q_OS_WIN
-	// This has to be done while we have a run loop, otherwise windowHandle() will return 0
-	taskbarButton = new QWinTaskbarButton(this);
-	taskbarButton->setWindow(this->windowHandle());
-	taskbarButton->progress()->setRange(0, 10000);
-#endif
 }
 
 void KVMainWindow::checkForUpdates()

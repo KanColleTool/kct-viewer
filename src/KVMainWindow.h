@@ -30,16 +30,6 @@ public:
 	 */
 	KVMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
-protected slots:
-	/**
-	 * Perform setup tasks that cannot be done within the constructor.
-	 * 
-	 * This is called on the very first timer tick within the application's run
-	 * loop, which means it will have access to things like a native window
-	 * handle.
-	 */
-	void postConstructorSetup();
-
 protected:
 	/**
 	 * Starts loading a translation file.
