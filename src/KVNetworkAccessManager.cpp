@@ -14,6 +14,7 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 {
 	QNetworkRequest request = req;
 	request.setRawHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0");
+	qDebug() << "Loading:" << req.url().toString();
 
 	if(op == PostOperation) {
 		//qDebug() << "POST" << request.url().path();
