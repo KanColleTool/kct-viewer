@@ -3,6 +3,7 @@
 #include <QWebFrame>
 #include <QSettings>
 #include <QUrlQuery>
+#include <QFile>
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
@@ -92,7 +93,12 @@ void KVMainWindow::storeCredentials()
 
 void KVMainWindow::startGame()
 {
-	this->webView->setUrl(QUrl("qrc:/index.html"));
+	QFile file(":/index.html");
+	if (!file.open(QIODevice::ReadOnly)) {
+		qFatal("Can't open compiled-in index.html");
+	}
+	
+	webView->setHtml(file.readAll(), this->apiLink());
 }
 
 
