@@ -13,7 +13,7 @@
 
 		function loadGame(link) {
 			// Append the api_starttime cache buster the web page uses9
-			link = link + "api_starttime=" + (new Date().getTime());
+			link = link + "&api_starttime=" + (new Date().getTime());
 			
 			// Remove any eventual old embeds
 			var oldEmbeds = document.getElementsByTagName("embed");
