@@ -3,6 +3,7 @@
 
 #include "KVWebView.h"
 #include <QMainWindow>
+#include <QUrl>
 
 namespace Ui {
 	class KVMainWindow;
@@ -28,8 +29,23 @@ public:
 	
 	
 	
-	QString server;		///< The user's server
-	QString apiToken;	///< The user's API token
+	/**
+	 * Generate an API link from current credentials.
+	 */
+	QUrl apiLink() const;
+	
+	/**
+	 * Sets (decodes) the API Link.
+	 * 
+	 * Note that the original string isn't saved; it's decoded into its server
+	 * and API key parts.
+	 */
+	void setApiLink(const QUrl &url);
+	
+	/**
+	 * Sets the stored credentials.
+	 */
+	void setCredentials(const QString &server, const QString &apiToken);
 	
 protected:
 	/**
@@ -57,6 +73,11 @@ public slots:
 	bool loadCredentials();
 	
 	/**
+	 * Saves credentials to the settings.
+	 */
+	void storeCredentials();
+	
+	/**
 	 * Loads the game into the web view.
 	 */
 	void startGame();
@@ -74,13 +95,16 @@ protected slots:
 	void on_actionScreenshot_triggered();
 	void on_actionGetAPILink_triggered();
 	
-public:
+protected:
 	/**
 	 * Web view hosting the game.
 	 * 
 	 * @see KVWebView
 	 */
 	KVWebView *webView;
+	
+	QString server;			///< The user's server
+	QString apiToken;		///< The user's API token
 	
 private:
 	Ui::KVMainWindow *ui;

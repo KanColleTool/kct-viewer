@@ -1,6 +1,8 @@
 #include "KVMainWindow.h"
 #include "ui_KVMainWindow.h"
 #include <QWebFrame>
+#include <QSettings>
+#include <QUrlQuery>
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
@@ -12,12 +14,31 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->autoLockWindowSize();
 	this->connectSignals();
 	
+	this->loadCredentials();
 	this->startGame();
 }
 
 KVMainWindow::~KVMainWindow()
 {
 	
+}
+
+
+
+QUrl KVMainWindow::apiLink() const
+{
+	return QUrl(QString("http://%1/kcs/mainD2.swf?api_token=%2").arg(server, apiToken));
+}
+
+void KVMainWindow::setApiLink(const QUrl &url)
+{
+	this->setCredentials(url.host(), QUrlQuery(url).queryItemValue("api_token"));
+}
+
+void KVMainWindow::setCredentials(const QString &server, const QString &apiToken)
+{
+	this->server = server;
+	this->apiToken = apiToken;
 }
 
 
@@ -59,6 +80,13 @@ bool KVMainWindow::loadCredentials()
 	return (!server.isEmpty() && !apiToken.isEmpty());
 }
 
+void KVMainWindow::storeCredentials()
+{
+	QSettings settings;
+	settings.setValue("server", server);
+	settings.setValue("apiToken", apiToken);
+}
+
 void KVMainWindow::startGame()
 {
 	this->webView->setUrl(QUrl("qrc:/index.html"));
@@ -74,6 +102,10 @@ void KVMainWindow::onWebViewLoadFinished(bool success)
 	}
 	
 	qDebug() << "Page successfully loaded";
+	
+	QUrl link = this->apiLink();
+	QString script = QString("loadGame(\"%1\");").arg(link.toString());
+	webView->page()->mainFrame()->evaluateJavaScript(script);
 }
 
 

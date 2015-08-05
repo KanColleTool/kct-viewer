@@ -11,11 +11,10 @@
 	<script type="text/javascript">
 		var useDirectRendering = false;
 
-		function setCredentials(server, token) {
-			setAPILink("http://" + server + "/kcs/mainD2.swf?api_token=" + token + "&api_starttime=" + new Date().getTime());
-		}
-
-		function setAPILink(link) {
+		function loadGame(link) {
+			// Append the api_starttime cache buster the web page uses9
+			link = link + "api_starttime=" + (new Date().getTime());
+			
 			// Remove any eventual old embeds
 			var oldEmbeds = document.getElementsByTagName("embed");
 			for (var i = 0; i < oldEmbeds.length; i++) oldEmbeds[i].parentNode.removeChild(oldEmbeds[i]);
@@ -31,8 +30,9 @@
 
 			// Note: this breaks on some platforms, including Windows
 			// We have to investigate when this can be safely enabled
-			if (useDirectRendering)
+			if (useDirectRendering) {
 				e.setAttribute("wmode", "direct");
+			}
 
 			document.body.appendChild(e);
 		}
