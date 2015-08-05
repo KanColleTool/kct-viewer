@@ -30,11 +30,6 @@ public:
 	
 	
 	/**
-	 * Generate an API link from current credentials.
-	 */
-	QUrl apiLink() const;
-	
-	/**
 	 * Sets (decodes) the API Link.
 	 * 
 	 * Note that the original string isn't saved; it's decoded into its server
@@ -43,9 +38,19 @@ public:
 	void setApiLink(const QUrl &url);
 	
 	/**
+	 * Generate an API link from current credentials.
+	 */
+	QUrl apiLink() const;
+	
+	/**
 	 * Sets the stored credentials.
 	 */
 	void setCredentials(const QString &server, const QString &apiToken);
+	
+	
+	
+	QString server;			///< The user's server
+	QString apiToken;		///< The user's API token
 	
 protected:
 	/**
@@ -102,9 +107,6 @@ protected:
 	 * @see KVWebView
 	 */
 	KVWebView *webView;
-	
-	QString server;			///< The user's server
-	QString apiToken;		///< The user's API token
 	
 private:
 	Ui::KVMainWindow *ui;
