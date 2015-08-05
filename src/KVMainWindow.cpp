@@ -130,7 +130,7 @@ void KVMainWindow::on_actionClearCache_triggered()
 
 void KVMainWindow::on_actionReset_triggered()
 {
-	
+	this->startGame();
 }
 
 void KVMainWindow::on_actionExit_triggered()
