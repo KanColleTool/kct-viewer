@@ -1,11 +1,11 @@
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
-#include <QCoreApplication>
+#include <QApplication>
 #include <QTimer>
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
+	QApplication a(argc, argv);
 	QTimer::singleShot(0, [=] {
 		int result = Catch::Session().run(argc, argv);
 		qApp->exit(result);
