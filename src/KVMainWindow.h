@@ -90,8 +90,8 @@ public slots:
 	 */
 	void startGame();
 	
-protected:
-protected slots:
+private:
+private slots:
 	void onWebViewLoadFinished(bool success);
 	
 	void on_actionEnterAPILink_triggered();
