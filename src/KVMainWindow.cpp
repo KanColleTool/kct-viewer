@@ -1,5 +1,8 @@
 #include "KVMainWindow.h"
 #include "ui_KVMainWindow.h"
+#include "KVNetworkAccessManager.h"
+#include <QStandardPaths>
+#include <QNetworkDiskCache>
 #include <QWebFrame>
 #include <QSettings>
 #include <QUrlQuery>
@@ -60,6 +63,16 @@ void KVMainWindow::setup()
 	// These are so large that they create a need for themselves >_>
 	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	
+	// Use a custom network manager for the web view
+	KVNetworkAccessManager *wvManager = new KVNetworkAccessManager(this);
+	webView->page()->setNetworkAccessManager(wvManager);
+	
+	// Use a 1GB-capped disk cache
+	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
+	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+	cache->setMaximumCacheSize(1*1024*1024*1024);
+	wvManager->setCache(cache);
 }
 
 void KVMainWindow::connectSignals()
