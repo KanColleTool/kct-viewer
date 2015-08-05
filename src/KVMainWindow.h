@@ -9,11 +9,16 @@ namespace Ui {
 	class KVMainWindow;
 }
 
+/**
+ * Main application window.
+ */
 class KVMainWindow : public QMainWindow
 {
 	Q_OBJECT
 	
+	/// The user's server
 	Q_PROPERTY(QString server READ server WRITE setServer NOTIFY serverChanged)
+	/// The user's API token
 	Q_PROPERTY(QString apiToken READ apiToken WRITE setApiToken NOTIFY apiTokenChanged)
 	
 public:
@@ -45,15 +50,15 @@ public:
 	 */
 	QUrl apiLink() const;
 	
-	QString server() const;				///< Returns the user's server
-	void setServer(const QString &v);	///< Sets the user's server
+	QString server() const;				///< Gets the server property
+	void setServer(const QString &v);	///< Sets the server property
 	
-	QString apiToken() const;			///< Returns the user's api token
-	void setApiToken(const QString &v);	///< Sets the user's api token
+	QString apiToken() const;			///< Gets the apiToken property
+	void setApiToken(const QString &v);	///< Sets the apiToken property
 	
 signals:
-	void serverChanged();				///< Emitted when server() changes
-	void apiTokenChanged();				///< Emitted when apiToken() changes
+	void serverChanged();				///< Emitted when server changes
+	void apiTokenChanged();				///< Emitted when apiToken changes
 	
 protected:
 	/**
