@@ -17,10 +17,9 @@ if(APPLE)
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
 
 enable_testing()
-add_test(NAME KCTViewerTest COMMAND KCTViewerTest)
+add_subdirectory(test)
 
 if(${CMAKE_GENERATOR} MATCHES ".* Makefiles")
 	# Add a custom 'make check' target to get output when a test fails
@@ -39,4 +38,3 @@ endif()
 
 set_property(TARGET KCTViewer PROPERTY FOLDER "Viewer")
 set_property(TARGET KVBase PROPERTY FOLDER "Viewer")
-set_property(TARGET KCTViewerTest PROPERTY FOLDER "Tests")

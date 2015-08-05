@@ -14,8 +14,6 @@
  */
 class KVTranslator : public QObject
 {
-	friend class KCTViewerTest;
-
 	Q_OBJECT
 
 public:
@@ -23,6 +21,20 @@ public:
 	 * Returns the shared instance.
 	 */
 	static KVTranslator& instance();
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent Parent object
+	 */
+	KVTranslator(QObject *parent = 0);
+	
+	/**
+	 * Destructor.
+	 */
+	virtual ~KVTranslator();
+	
+	
 	
 	/**
 	 * Is the translation loaded?
@@ -128,7 +140,7 @@ private slots:
 	 */
 	void blacklistRequestFinished();
 
-protected:
+public:
 	/**
 	 * Loading state for a resouce.
 	 * 
@@ -143,6 +155,8 @@ protected:
 	
 	State state;					///< Loading state for the translation
 	State blacklistState;			///< Loading state for the blacklist
+	
+protected:
 	QFile cacheFile;				///< Cache file for the translation
 	QNetworkAccessManager manager;	///< Network access manager
 
@@ -162,13 +176,6 @@ protected:
 	 * blacklist has been loaded, and consumed by report().
 	 */
 	QList<ReportQueueEntry> reportQueue;
-
-private:
-	// Singleton stuff
-	KVTranslator(QObject *parent = 0);
-	KVTranslator(const KVTranslator&);
-	KVTranslator& operator=(const KVTranslator&);
-	virtual ~KVTranslator();
 };
 
 #endif
