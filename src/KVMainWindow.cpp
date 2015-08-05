@@ -1,6 +1,7 @@
 #include "KVMainWindow.h"
 #include "ui_KVMainWindow.h"
 #include "KVNetworkAccessManager.h"
+#include <QMessageBox>
 #include <QStandardPaths>
 #include <QNetworkDiskCache>
 #include <QWebFrame>
@@ -144,7 +145,8 @@ void KVMainWindow::on_actionSettings_triggered()
 
 void KVMainWindow::on_actionClearCache_triggered()
 {
-	
+	webView->page()->networkAccessManager()->cache()->clear();
+	this->startGame();
 }
 
 void KVMainWindow::on_actionReset_triggered()
@@ -159,7 +161,10 @@ void KVMainWindow::on_actionExit_triggered()
 
 void KVMainWindow::on_actionAbout_triggered()
 {
+	QString body = QString("<h1>KCTViewer&nbsp;<small>%1</small></h1>")
+		.arg(QCoreApplication::applicationVersion());
 	
+	QMessageBox::about(this, "About KCTViewer", body);
 }
 
 void KVMainWindow::on_actionScreenshot_triggered()
