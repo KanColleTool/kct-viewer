@@ -13,6 +13,9 @@ class KVMainWindow : public QMainWindow
 {
 	Q_OBJECT
 	
+	Q_PROPERTY(QString server READ server WRITE setServer NOTIFY serverChanged)
+	Q_PROPERTY(QString apiToken READ apiToken WRITE setApiToken NOTIFY apiTokenChanged)
+	
 public:
 	/**
 	 * Constructor.
@@ -42,15 +45,15 @@ public:
 	 */
 	QUrl apiLink() const;
 	
-	/**
-	 * Sets the stored credentials.
-	 */
-	void setCredentials(const QString &server, const QString &apiToken);
+	QString server() const;				///< Returns the user's server
+	void setServer(const QString &v);	///< Sets the user's server
 	
+	QString apiToken() const;			///< Returns the user's api token
+	void setApiToken(const QString &v);	///< Sets the user's api token
 	
-	
-	QString server;			///< The user's server
-	QString apiToken;		///< The user's API token
+signals:
+	void serverChanged();				///< Emitted when server() changes
+	void apiTokenChanged();				///< Emitted when apiToken() changes
 	
 protected:
 	/**
@@ -110,6 +113,9 @@ protected:
 	
 private:
 	Ui::KVMainWindow *ui;
+	
+	QString m_server;
+	QString m_apiToken;
 };
 
 #endif

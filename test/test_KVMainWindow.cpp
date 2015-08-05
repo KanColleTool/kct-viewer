@@ -7,14 +7,13 @@ SCENARIO("API Links can be handled")
 	
 	GIVEN("A set of credentials")
 	{
-		QString server = "192.168.0.1";
-		QString apiToken = "abc123";
-		win.setCredentials(server, apiToken);
+		win.setServer("192.168.0.1");
+		win.setApiToken("abc123");
 		
 		THEN("The credentials should be stored")
 		{
-			REQUIRE(win.server == server);
-			REQUIRE(win.apiToken == apiToken);
+			REQUIRE(win.server() == "192.168.0.1");
+			REQUIRE(win.apiToken() == "abc123");
 		}
 		
 		THEN("The API link should be correct")
@@ -29,8 +28,8 @@ SCENARIO("API Links can be handled")
 		
 		THEN("It should be correctly parsed")
 		{
-			REQUIRE(win.server == "192.168.0.1");
-			REQUIRE(win.apiToken == "abc123");
+			REQUIRE(win.server() == "192.168.0.1");
+			REQUIRE(win.apiToken() == "abc123");
 		}
 	}
 	
@@ -40,8 +39,8 @@ SCENARIO("API Links can be handled")
 		
 		THEN("It should still make a valiant attempt")
 		{
-			REQUIRE(win.server == "google.com");
-			REQUIRE(win.apiToken == "");
+			REQUIRE(win.server() == "google.com");
+			REQUIRE(win.apiToken() == "");
 		}
 	}
 	
@@ -51,8 +50,8 @@ SCENARIO("API Links can be handled")
 		
 		THEN("It should just give up")
 		{
-			REQUIRE(win.server == "");
-			REQUIRE(win.apiToken == "");
+			REQUIRE(win.server() == "");
+			REQUIRE(win.apiToken() == "");
 		}
 	}
 }

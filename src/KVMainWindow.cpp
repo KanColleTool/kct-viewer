@@ -27,19 +27,22 @@ KVMainWindow::~KVMainWindow()
 
 QUrl KVMainWindow::apiLink() const
 {
-	return QUrl(QString("http://%1/kcs/mainD2.swf?api_token=%2").arg(server, apiToken));
+	return QUrl(QString("http://%1/kcs/mainD2.swf?api_token=%2").arg(this->server(), this->apiToken()));
 }
 
 void KVMainWindow::setApiLink(const QUrl &url)
 {
-	this->setCredentials(url.host(), QUrlQuery(url).queryItemValue("api_token"));
+	this->setServer(url.host());
+	this->setApiToken(QUrlQuery(url).queryItemValue("api_token"));
 }
 
-void KVMainWindow::setCredentials(const QString &server, const QString &apiToken)
-{
-	this->server = server;
-	this->apiToken = apiToken;
-}
+
+
+QString KVMainWindow::server() const { return m_server; }
+void KVMainWindow::setServer(const QString &v) { m_server = v; emit serverChanged(); }
+
+QString KVMainWindow::apiToken() const { return m_apiToken; }
+void KVMainWindow::setApiToken(const QString &v) { m_apiToken = v; emit apiTokenChanged(); }
 
 
 
@@ -74,17 +77,17 @@ void KVMainWindow::autoLockWindowSize()
 bool KVMainWindow::loadCredentials()
 {
 	QSettings settings;
-	server = settings.value("server").toString();
-	apiToken = settings.value("apiToken").toString();
+	setServer(settings.value("server").toString());
+	setApiToken(settings.value("apiToken").toString());
 	
-	return (!server.isEmpty() && !apiToken.isEmpty());
+	return (!server().isEmpty() && !apiToken().isEmpty());
 }
 
 void KVMainWindow::storeCredentials()
 {
 	QSettings settings;
-	settings.setValue("server", server);
-	settings.setValue("apiToken", apiToken);
+	settings.setValue("server", server());
+	settings.setValue("apiToken", apiToken());
 }
 
 void KVMainWindow::startGame()
