@@ -109,7 +109,8 @@ void KVMainWindow::startGame()
 {
 	QFile file(":/index.html");
 	if (!file.open(QIODevice::ReadOnly)) {
-		qFatal("Can't open compiled-in index.html");
+		qWarning("Can't open compiled-in index.html");
+		return;
 	}
 	
 	webView->setHtml(file.readAll(), this->apiLink());
