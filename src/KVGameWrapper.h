@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QWebPage>
 
+/**
+ * Wrapper for a game client.
+ */
 class KVGameWrapper : public QObject
 {
 	Q_OBJECT
@@ -61,6 +64,11 @@ public slots:
 	void startGame();
 	
 private slots:
+	/**
+	 * Called when the page finishes loading.
+	 * 
+	 * @param ok Did it load successfully?
+	 */
 	void onPageLoadFinished(bool ok);
 	
 private:
