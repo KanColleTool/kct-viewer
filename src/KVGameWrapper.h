@@ -6,6 +6,12 @@
 
 /**
  * Wrapper for a game client.
+ * 
+ * This encapsulates all interactions and handling of a KanColle client,
+ * decoupling it from the presenting UI.
+ * 
+ * To display it in a widget, add the wrapper's page() to a QWebView, and call
+ * startGame() to initialize and start it the game.
  */
 class KVGameWrapper : public QObject
 {
