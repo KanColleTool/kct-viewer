@@ -1,4 +1,4 @@
-#include <catch.hpp>
+#include "test_common.h"
 #include <KVMainWindow.h>
 
 SCENARIO("API Links can be handled")
