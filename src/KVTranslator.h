@@ -2,25 +2,21 @@
 #define KVTRANSLATOR_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
-#include <QVariant>
-#include <QList>
 #include <QString>
-#include <QFile>
-#include <QJsonValue>
+#include <QHash>
 
-/**
- * Translator for in-game text.
- */
 class KVTranslator : public QObject
 {
 	Q_OBJECT
-
+	
 public:
 	/**
 	 * Returns the shared instance.
 	 */
-	static KVTranslator& instance();
+	inline static KVTranslator& instance() {
+		static KVTranslator _instance;
+		return _instance;
+	}
 	
 	/**
 	 * Constructor.
@@ -34,148 +30,34 @@ public:
 	 */
 	virtual ~KVTranslator();
 	
-	
-	
-	/**
-	 * Is the translation loaded?
-	 */
-	bool isLoaded();
-	
-	bool reportUntranslated;			///< Should untranslated lines be reported?
-	QVariantMap translation;			///< Translation data
-	QVariantMap reportBlacklist;		///< Blacklist of keys to NOT report
-
 public slots:
 	/**
-	 * Starts loading the translation for the given language.
+	 * Adds the given translation to the dictionary.
 	 * 
-	 * @param language Language code to load
+	 * @param from Japanese phrase
+	 * @param to   Translated phrase
 	 */
-	void loadTranslation(QString language = "en");
-
-	/**
-	 * Translates the given string into the loaded language.
-	 * 
-	 * @param  line              Line to be translated
-	 * @param  lastPathComponent The last path component of the file's URL, for reporting
-	 * @param  key               JSON key, if any
-	 * @return                   A translated line, or the original line
-	 */
-	QString translate(const QString &line, QString lastPathComponent = "", QString key = "");
+	void addTranslation(const QString &from, const QString &to);
 	
 	/**
-	 * Translates a JSON blob.
+	 * Adds the given translation to the dictionary.
 	 * 
-	 * The given JSON may have an "svdata=" prefix, and it will be preserved
-	 * if present.
-	 * 
-	 * @param  json              JSON string to translate
-	 * @param  lastPathComponent The last path component of the file's URL, for reporting
-	 * @return                   A JSON blob with translated values
+	 * @param from CRC32 hash of the Japanese phrase
+	 * @param to   Translated phrase
 	 */
-	QByteArray translateJson(QByteArray json, QString lastPathComponent = "");
+	void addTranslation(quint32 from, const QString &to);
 	
-	/**
-	 * Fixes a timestamp to be in JST.
-	 * 
-	 * \todo Rename this.
-	 * 
-	 * @param  time Timestamp to adjust
-	 * @return      An adjusted timestamp
-	 */
-	QString fixTime(const QString &time);
-
-protected:
-	/**
-	 * Parses a loaded JSON blob of translation data.
-	 * 
-	 * @return      Was it successfully parsed?
-	 */
-	bool parseTranslationData(const QByteArray &data);
-	
-	/**
-	 * Recursively walks a JSON tree, translating it.
-	 * 
-	 * @param  value             The leaf to walk from
-	 * @param  lastPathComponent The last path component of the file's URL, for reporting
-	 * @param  key               The leaf's key
-	 * @return                   A translated leaf
-	 */
-	QJsonValue _walk(QJsonValue value, QString lastPathComponent, QString key="");
-	
-	/**
-	 * Reports an untranslated line to the server.
-	 * 
-	 * @param line              An untranslated line
-	 * @param lastPathComponent The last path component of the file's URL
-	 * @param key               JSON key for the line
-	 */
-	void report(const QString &line, const QString &lastPathComponent, const QString &key);
-
-signals:
-	/**
-	 * Emitted when the translation finishes loading.
-	 */
-	void loadFinished();
-	
-	/**
-	 * Emitted when the translation fails to load.
-	 * @param error An error mesage
-	 */
-	void loadFailed(QString error);
-	
-	/**
-	 * Emitted when the translation starts loading.
-	 */
-	void waitingForLoad();
-
-private slots:
-	/**
-	 * Called when the translation finishes loading.
-	 */
-	void translationRequestFinished();
-	
-	/**
-	 * Called when the blacklist finishes loading.
-	 */
-	void blacklistRequestFinished();
-
 public:
 	/**
-	 * Loading state for a resouce.
+	 * Translates a Japanese phrase into the loaded language.
 	 * 
-	 * \todo Capitalization.
+	 * Returns the original string if no translation is loaded, if there's no
+	 * match for the string's CRC32 sum, or if the result is a NULL variant.
 	 */
-	enum State {
-		created,		///< Created
-		loading,		///< Loading
-		loaded,			///< Loaded
-		failed,			///< Failed
-	};
-	
-	State state;					///< Loading state for the translation
-	State blacklistState;			///< Loading state for the blacklist
+	QString translate(const QString &phrase) const;
 	
 protected:
-	QFile cacheFile;				///< Cache file for the translation
-	QNetworkAccessManager manager;	///< Network access manager
-
-	/**
-	 * An entry in the report queue.
-	 */
-	struct ReportQueueEntry {
-		QString line;				///< The untranslated line
-		QString lastPathComponent;	///< The file's last path component
-		QString key;				///< THe line's JSON key
-	};
-	
-	/**
-	 * Queued lines for submission.
-	 * 
-	 * This builds up if untranslated lines are found before the report
-	 * blacklist has been loaded, and consumed by report().
-	 */
-	QList<ReportQueueEntry> reportQueue;
+	QHash<quint32, QString> dictionary;
 };
 
 #endif

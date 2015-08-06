@@ -5,16 +5,9 @@ SCENARIO("Strings can be translated")
 {
 	KVTranslator tl;
 	
-	GIVEN("Data for Naka, none for Maruyu")
+	GIVEN("A translated string")
 	{
-		tl.translation.insert(QString("124853853"), "Naka");		// 那珂 (Naka)
-		tl.translation.insert(QString("3440185848"), QVariant());	// まるゆ (Maruyu)
-		tl.state = KVTranslator::loaded;
-		
-		THEN("isLoaded() should be true")
-		{
-			REQUIRE(tl.isLoaded());
-		}
+		tl.addTranslation("那珂", "Naka");
 		
 		THEN("Naka's name should be translated")
 		{
@@ -22,15 +15,20 @@ SCENARIO("Strings can be translated")
 			REQUIRE(tl.translate("\\u90A3\\u73C2") == QString("Naka"));
 		}
 		
-		THEN("Maruyu's name should be untouched")
-		{
-			REQUIRE(tl.translate("まるゆ") == QString("まるゆ"));
-			REQUIRE(tl.translate("\\u307E\\u308B\\u3086") == QString("\\u307E\\u308B\\u3086"));
-		}
-		
 		THEN("Unknwn strings should be untouched")
 		{
 			REQUIRE(tl.translate("テスト") == QString("テスト"));
+			REQUIRE(tl.translate("\\u307E\\u308B\\u3086") == QString("\\u307E\\u308B\\u3086"));
+		}
+	}
+	
+	GIVEN("An empty translation")
+	{
+		tl.addTranslation("まるゆ", "");
+		
+		THEN("It should be treated as unknown")
+		{
+			REQUIRE(tl.translate("まるゆ") == QString("まるゆ"));
 			REQUIRE(tl.translate("\\u307E\\u308B\\u3086") == QString("\\u307E\\u308B\\u3086"));
 		}
 	}
