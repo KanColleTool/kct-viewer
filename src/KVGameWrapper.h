@@ -17,7 +17,7 @@ class KVGameWrapper : public QObject
 	Q_PROPERTY(QString apiToken READ apiToken WRITE setApiToken NOTIFY apiTokenChanged)
 	
 	/// The web page hosting the game
-	Q_PROPERTY(QWebPage* page READ page);
+	Q_PROPERTY(QWebPage *page READ page);
 	
 public:
 	/**
