@@ -32,4 +32,18 @@ SCENARIO("Strings can be translated")
 			REQUIRE(tl.translate("\\u307E\\u308B\\u3086") == QString("\\u307E\\u308B\\u3086"));
 		}
 	}
+	
+	WHEN("Trying to translate something untranslatable")
+	{
+		tl.addTranslation("-", "fail");
+		tl.addTranslation("123", "fail");
+		tl.addTranslation("", "fail");
+		
+		THEN("Don't even try")
+		{
+			CHECK(tl.translate("-") == QString("-"));
+			CHECK(tl.translate("123") == QString("123"));
+			CHECK(tl.translate("") == QString(""));
+		}
+	}
 }

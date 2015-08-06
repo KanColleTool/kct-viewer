@@ -56,6 +56,14 @@ public:
 	 */
 	QString translate(const QString &phrase) const;
 	
+	/**
+	 * Is the given phrase even translatable?
+	 * 
+	 * Examples of untranslatable strings are empty and numeric ones. This is
+	 * checked by translate() before it attempts a translation lookup.
+	 */
+	bool isTranslatable(const QString &phrase) const;
+	
 protected:
 	QHash<quint32, QString> dictionary;
 };
