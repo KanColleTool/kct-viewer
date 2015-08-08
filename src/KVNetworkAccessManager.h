@@ -3,71 +3,70 @@
 
 #include <QNetworkAccessManager>
 
-class QNetworkReply;
-
 /**
- * Modified network access manager.
- * 
- * This comes with the ability to translate strings in transit, track download
- * progress of large resources, and otherwise intercept network replies.
+ * Intercepting network adapter.
  */
 class KVNetworkAccessManager : public QNetworkAccessManager
 {
 	Q_OBJECT
-
+	
+	/// Apply translation to the data in transit?
+	Q_PROPERTY(bool useTranslation READ useTranslation WRITE setUseTranslation NOTIFY useTranslationChanged);
+	
+	/// User agent to apply to outgoing requests
+	Q_PROPERTY(QString userAgent READ userAgent WRITE setUserAgent NOTIFY userAgentChanged);
+	
 public:
 	/**
 	 * Constructor.
-	 * 
 	 * @param  parent Parent object
 	 */
 	explicit KVNetworkAccessManager(QObject *parent = 0);
 	
-	bool translation;		///< Apply translation?
-	bool cookieHack;		///< Apply cookie hack?
-
-signals:
 	/**
-	 * Progress of tracked resources changed.
+	 * Destructor.
+	 */
+	virtual ~KVNetworkAccessManager();
+	
+	
+	
+	/**
+	 * Should the given request be intercepted?
 	 * 
-	 * @param progress Bytes downloaded
-	 * @param total    Total bytes
+	 * @param  op   Method
+	 * @param  req  Request descriptor
+	 * @param  body Request body
 	 */
-	void trackedProgressChanged(qint64 progress, qint64 total);
-
-protected slots:
-	/**
-	 * Metadata for a tracked download changed.
-	 */
-	void trackedGETMetaDataChanged();
+	bool shouldIntercept(Operation op, const QNetworkRequest &req, QIODevice *body) const;
 	
-	/**
-	 * Data for a tracked download is ready to read.
-	 */
-	void trackedGETReadyRead();
 	
-	/**
-	 * A tracked download finished loading.
-	 */
-	void trackedGETFinished();
-
+	
+	bool useTranslation() const;				///< Gets the useTranslation property
+	void setUseTranslation(bool v);				///< Sets the useTranslation property
+	
+	QString userAgent() const;					///< Gets the userAgent property
+	void setUserAgent(const QString &v);		///< Sets the userAgent property
+	
+signals:
+	void useTranslationChanged(bool v);			///< Emitted when useTranslation changes
+	void userAgentChanged(const QString &v);	///< Emitted when userAgent changes
+	
 protected:
 	/**
 	 * Creates a request.
 	 * 
 	 * Overridden to attach some extra handlers to certain requests.
 	 * 
-	 * @param  op           Method
-	 * @param  req          Request descriptor
-	 * @param  outgoingData Request body
-	 * @return              A reply handle
+	 * @param  op   Method
+	 * @param  req  Request descriptor
+	 * @param  body Request body
+	 * @return      A reply handle
 	 */
-	QNetworkReply* createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData);
+	QNetworkReply* createRequest(Operation op, const QNetworkRequest &req, QIODevice *body);
 	
-	
-	
-	qint64 trackedGETTotalSize;		///< Total size of all tracked downloads
-	qint64 trackedGETProgress;		///< Tracked download progress
+private:
+	bool m_useTranslation = false;
+	QString m_userAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)";
 };
 
-#endif // KVNETWORKACCESSMANAGER_H
+#endif
