@@ -11,46 +11,118 @@ class KVNetworkReply : public QNetworkReply
 {
 	Q_OBJECT
 	
+	/// Wrapped reply doing the actual work
 	Q_PROPERTY(QNetworkReply *wrappedReply READ wrappedReply);
+	
+	/// Response body, setting it also resets the cursor to the start of it
 	Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged);
 	
 public:
+	/**
+	 * Constructor.
+	 * 
+	 * @param manager      Associated network manager
+	 * @param wrappedReply Wrapped reply that does all the work
+	 * @param parent       Parent object
+	 */
 	KVNetworkReply(KVNetworkAccessManager *manager, QNetworkReply *wrappedReply, QObject *parent = 0);
+	
+	/**
+	 * Destructor.
+	 */
 	virtual ~KVNetworkReply();
 	
+	/**
+	 * Syncs headers, attributes and properties to the wrapped reply's.
+	 * 
+	 * You normally do not have to call this yourself, unless you're doing
+	 * someting funky with the wrapped reply.
+	 */
 	void syncToWrapped();
 	
-	QNetworkReply *wrappedReply() const;
+	QNetworkReply *wrappedReply() const;		///< Getter for wrappedReply
 	
-	QByteArray data() const;
-	void setData(const QByteArray &v);
+	QByteArray data() const;					///< Getter for data
+	void setData(const QByteArray &v);			///< Setter for data
 	
 signals:
-	void dataChanged(QByteArray v);
+	void dataChanged(QByteArray v);				///< Emitted when data changes
 	
 protected slots:
+	/// Callback for the wrapped reply's downloadProgress signal
 	void wrappedReplyDownloadProgress(qint64 received, qint64 total);
+	
+	/// Callback for the wrapped reply's uploadProgress signal
 	void wrappedReplyUploadProgress(qint64 sent, qint64 total);
+	
+	/// Callback for the wrapped reply's error signal
 	void wrappedReplyError(QNetworkReply::NetworkError code);
+	
+	/// Callback for the wrapped reply's finished signal
 	void wrappedReplyFinished();
+	
+	/// Callback for the wrapped reply's encrypted signal
 	void wrappedReplyEncrypted();
+	
+	/// Callback for the wrapped reply's metaDataChanged signal
 	void wrappedReplyMetaDataChanged();
+	
+	/// Callback for the wrapped reply's preSharedKeyAuthenticationRequired signal
 	void wrappedReplyPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *auth);
+	
+	/// Callback for the wrapped reply's sslErrors signal
 	void wrappedReplySslErrors(const QList<QSslError> &errors);
 	
 public:
+	/**
+	 * Sets the wrapped reply's read buffer size.
+	 */
 	virtual void setReadBufferSize(qint64 size) override;
 	
+	/**
+	 * Opens the device and the wrapped reply.
+	 * 
+	 * You normally do not have to call this yourself.
+	 * 
+	 * @param  flags Mode flags
+	 * @return       Did it succeed?
+	 */
 	virtual bool open(OpenMode flags) override;
+	
+	/**
+	 * Closes the device and the wrapped reply.
+	 */
 	virtual void close() override;
+	
+	/**
+	 * Returns the number of bytes available for reading.
+	 */
 	virtual qint64 bytesAvailable() const override;
+	
+	/**
+	 * Replies are always sequential, put here for clarity.
+	 */
 	virtual bool isSequential() const override { return true; }
 	
 public slots:
+	/**
+	 * Aborts the request on the spot.
+	 */
 	virtual void abort() override;
+	
+	/**
+	 * Ignore the specified SSL errors.
+	 */
 	virtual void ignoreSslErrors() override;
 	
 protected:
+	/**
+	 * Reads a chunk of data from the reply.
+	 * 
+	 * @param  data Pointer to where the data should be
+	 * @param  len  Size of the destination buffer
+	 * @return      The number of bytes actually read
+	 */
 	virtual qint64 readData(char *data, qint64 len) override;
 	
 private:
