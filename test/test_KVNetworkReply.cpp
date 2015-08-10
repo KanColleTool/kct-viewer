@@ -37,4 +37,7 @@ SCENARIO("Data behaves as expected")
 			REQUIRE(reply.readAll() == QByteArray());
 		}
 	}
+	
+	// Ensure we don't accidentally send the request at any point
+	reply.abort();
 }
