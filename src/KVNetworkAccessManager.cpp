@@ -47,7 +47,7 @@ void KVNetworkAccessManager::interceptedRequestReadyToPostProcess()
 QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req_, QIODevice *body)
 {
 	QNetworkRequest req(req_);
-	req.setRawHeader("User-Agent", m_userAgent);
+	req.setRawHeader("User-Agent", m_userAgent.toUtf8());
 	
 	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, body);
 	
