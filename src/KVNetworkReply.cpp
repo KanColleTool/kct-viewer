@@ -21,6 +21,21 @@ KVNetworkReply::~KVNetworkReply()
 	
 }
 
+
+
+QNetworkReply* KVNetworkReply::wrappedReply() const { return m_wrappedReply; }
+
+const QByteArray KVNetworkReply::data() const { return m_data; }
+void KVNetworkReply::setData(const QByteArray &v)
+{
+	m_data = v;
+	m_dataOffset = 0;
+	this->syncSize();
+	emit dataChanged(v);
+}
+
+
+
 void KVNetworkReply::syncToWrapped()
 {
 	static const QList<QNetworkRequest::Attribute> syncedAttrs {
@@ -48,21 +63,6 @@ void KVNetworkReply::syncToWrapped()
 		this->setRawHeader(pair.first, pair.second);
 	}
 }
-
-
-
-QNetworkReply* KVNetworkReply::wrappedReply() const { return m_wrappedReply; }
-
-const QByteArray KVNetworkReply::data() const { return m_data; }
-void KVNetworkReply::setData(const QByteArray &v)
-{
-	m_data = v;
-	m_dataOffset = 0;
-	this->syncSize();
-	emit dataChanged(v);
-}
-
-
 
 void KVNetworkReply::syncSize()
 {

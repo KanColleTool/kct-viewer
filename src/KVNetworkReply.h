@@ -32,6 +32,12 @@ public:
 	 */
 	virtual ~KVNetworkReply();
 	
+	QNetworkReply *wrappedReply() const;		///< Getter for wrappedReply
+	
+	const QByteArray data() const;				///< Getter for data
+	void setData(const QByteArray &v);			///< Setter for data
+	
+protected:
 	/**
 	 * Syncs headers, attributes and properties to the wrapped reply's.
 	 * 
@@ -40,12 +46,6 @@ public:
 	 */
 	void syncToWrapped();
 	
-	QNetworkReply *wrappedReply() const;		///< Getter for wrappedReply
-	
-	const QByteArray data() const;				///< Getter for data
-	void setData(const QByteArray &v);			///< Setter for data
-	
-protected:
 	/**
 	 * Syncs the Content-Length header to the data buffer's size.
 	 */
