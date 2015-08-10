@@ -62,29 +62,14 @@ signals:
 	 */
 	void readyToPostProcess();
 	
-protected slots:
-	/// Callback for the wrapped reply's downloadProgress signal
+private slots:
 	void wrappedReplyDownloadProgress(qint64 received, qint64 total);
-	
-	/// Callback for the wrapped reply's uploadProgress signal
 	void wrappedReplyUploadProgress(qint64 sent, qint64 total);
-	
-	/// Callback for the wrapped reply's error signal
 	void wrappedReplyError(QNetworkReply::NetworkError code);
-	
-	/// Callback for the wrapped reply's finished signal
 	void wrappedReplyFinished();
-	
-	/// Callback for the wrapped reply's encrypted signal
 	void wrappedReplyEncrypted();
-	
-	/// Callback for the wrapped reply's metaDataChanged signal
 	void wrappedReplyMetaDataChanged();
-	
-	/// Callback for the wrapped reply's preSharedKeyAuthenticationRequired signal
 	void wrappedReplyPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *auth);
-	
-	/// Callback for the wrapped reply's sslErrors signal
 	void wrappedReplySslErrors(const QList<QSslError> &errors);
 	
 public:
