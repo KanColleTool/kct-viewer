@@ -58,6 +58,8 @@ bool KVMainWindow::loadCredentials()
 	game->setServer(settings.value("server").toString());
 	game->setApiToken(settings.value("apiToken").toString());
 	
+	qDebug() << "Loaded Credentials:" << game->server() << game->apiToken();
+	
 	return (!game->server().isEmpty() && !game->apiToken().isEmpty());
 }
 

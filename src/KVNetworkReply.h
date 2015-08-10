@@ -2,92 +2,62 @@
 #define KVNETWORKREPLY_H
 
 #include <QNetworkReply>
-
-class QSslConfiguration;
-class KVNetworkAccessManager;
+#include "KVNetworkAccessManager.h"
 
 /**
- * Modified network reply.
+ * Intercepting wrapper around a QNetworkReply.
  */
 class KVNetworkReply : public QNetworkReply
 {
 	Q_OBJECT
-
+	
+	Q_PROPERTY(QNetworkReply *wrappedReply READ wrappedReply);
+	Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged);
+	
 public:
-	/**
-	 * Constructor.
-	 * 
-	 * @param parent    Parent object
-	 * @param toCopy    Another reply to copy from
-	 * @param mgr       Parent network access manager
-	 * @param translate Translate this request in-transit?
-	 */
-	KVNetworkReply(QObject *parent, QNetworkReply *toCopy, QNetworkAccessManager *mgr, bool translate);
+	KVNetworkReply(KVNetworkAccessManager *manager, QNetworkReply *wrappedReply, QObject *parent = 0);
+	virtual ~KVNetworkReply();
 	
-	/**
-	 * Destructor.
-	 * 
-	 * \todo Shouldn't this be virtual?
-	 */
-	~KVNetworkReply();
-
-	/**
-	 * Copies attributes from another reply.
-	 */
-	void copyAttribute(QNetworkRequest::Attribute attr);
-
-	/**
-	 * Returns the number of bytes available.
-	 */
-	qint64 bytesAvailable() const;
-
-	/// Forwarded to the copy
-	void ignoreSslErrors(const QList<QSslError> &errors);
-	/// Forwarded to the copy
-	QSslConfiguration sslConfiguration() const;
-	/// Forwarded to the copy
-	void setSslConfiguration(const QSslConfiguration &config);
-	/// Forwarded to the copy
-	QNetworkAccessManager* manager() const;
-	/// Forwarded to the copy
-	bool event(QEvent *e);
-
-	/// Forwarded to the copy
-	void abort();
-	/// Forwarded to the copy
-	void ignoreSslErrors();
+	void syncToWrapped();
 	
-	/**
-	 * Always returns true.
-	 */
-	bool isSequential() const;
-
+	QNetworkReply *wrappedReply() const;
+	
+	QByteArray data() const;
+	void setData(const QByteArray &v);
+	
+signals:
+	void dataChanged(QByteArray v);
+	
 protected slots:
-	/**
-	 * Called when the copy finishes loading.
-	 */
-	void handleResponse();
+	void wrappedReplyDownloadProgress(qint64 received, qint64 total);
+	void wrappedReplyUploadProgress(qint64 sent, qint64 total);
+	void wrappedReplyError(QNetworkReply::NetworkError code);
+	void wrappedReplyFinished();
+	void wrappedReplyEncrypted();
+	void wrappedReplyMetaDataChanged();
+	void wrappedReplyPreSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator *auth);
+	void wrappedReplySslErrors(const QList<QSslError> &errors);
 	
-	/**
-	 * Forwards data to a local KanColleTool instance.
-	 * 
-	 * @param body Response body
-	 */
-	void postToTool(const QByteArray &body);
+public:
+	virtual void setReadBufferSize(qint64 size) override;
 	
-	/**
-	 * Writes the data to the local disk store.
-	 * 
-	 * @param body Response body
-	 */
-	void writeToDisk(const QByteArray &body);
-
+	virtual bool open(OpenMode flags) override;
+	virtual void close() override;
+	virtual qint64 bytesAvailable() const override;
+	virtual bool isSequential() const override { return true; }
+	
+public slots:
+	virtual void abort() override;
+	virtual void ignoreSslErrors() override;
+	
 protected:
-	/// Forwarded to the copy
-	qint64 readData(char *data, qint64 maxSize);
-
+	virtual qint64 readData(char *data, qint64 len) override;
+	
 private:
-	struct KVNetworkReplyPrivate *d;
+	QByteArray m_data;
+	qint64 m_dataOffset = 0;
+	
+	QNetworkReply *m_wrappedReply;
 };
 
-#endif // KVNETWORKREPLY_H
+#endif

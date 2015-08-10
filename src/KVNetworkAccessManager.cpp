@@ -45,7 +45,8 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, body);
 	
 	if(this->shouldIntercept(op, req, body)) {
-		reply = new KVNetworkReply(reply->parent(), reply, this, this->useTranslation());
+		// reply = new KVNetworkReply(reply->parent(), reply, this, this->useTranslation());
+		reply = new KVNetworkReply(this, reply, reply->parent());
 	}
 	
 	return reply;
