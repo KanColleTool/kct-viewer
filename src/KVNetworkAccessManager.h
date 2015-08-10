@@ -3,6 +3,8 @@
 
 #include <QNetworkAccessManager>
 
+class KVNetworkReply;
+
 /**
  * Intercepting network adapter.
  */
@@ -50,6 +52,19 @@ public:
 signals:
 	void useTranslationChanged(bool v);			///< Emitted when useTranslation changes
 	void userAgentChanged(const QString &v);	///< Emitted when userAgent changes
+	
+	/**
+	 * Forwarded from KVNetworkReply::readyToPostProcess().
+	 * 
+	 * Called right before a request finishes, to give intercepting systems a
+	 * chance to modify the returned data before it reaches its destination.
+	 * 
+	 * @param reply The reply to be processed
+	 */
+	void readyToPostProcess(KVNetworkReply *reply);
+	
+private slots:
+	void interceptedRequestReadyToPostProcess();
 	
 protected:
 	/**

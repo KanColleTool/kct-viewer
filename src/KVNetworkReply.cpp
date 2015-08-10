@@ -53,8 +53,21 @@ void KVNetworkReply::syncToWrapped()
 
 QNetworkReply* KVNetworkReply::wrappedReply() const { return m_wrappedReply; }
 
-QByteArray KVNetworkReply::data() const { return m_data; }
-void KVNetworkReply::setData(const QByteArray &v) { m_data = v; m_dataOffset = 0; emit dataChanged(v); }
+const QByteArray KVNetworkReply::data() const { return m_data; }
+void KVNetworkReply::setData(const QByteArray &v)
+{
+	m_data = v;
+	m_dataOffset = 0;
+	this->syncSize();
+	emit dataChanged(v);
+}
+
+
+
+void KVNetworkReply::syncSize()
+{
+	this->setHeader(QNetworkRequest::ContentLengthHeader, m_data.size());
+}
 
 
 
@@ -78,9 +91,10 @@ void KVNetworkReply::wrappedReplyError(QNetworkReply::NetworkError code)
 
 void KVNetworkReply::wrappedReplyFinished()
 {
-	m_data = m_wrappedReply->readAll();
+	this->setData(m_wrappedReply->readAll());
 	this->syncToWrapped();
 	
+	emit readyToPostProcess();
 	emit finished();
 }
 

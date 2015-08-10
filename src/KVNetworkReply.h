@@ -42,11 +42,25 @@ public:
 	
 	QNetworkReply *wrappedReply() const;		///< Getter for wrappedReply
 	
-	QByteArray data() const;					///< Getter for data
+	const QByteArray data() const;				///< Getter for data
 	void setData(const QByteArray &v);			///< Setter for data
+	
+protected:
+	/**
+	 * Syncs the Content-Length header to the data buffer's size.
+	 */
+	void syncSize();
 	
 signals:
 	void dataChanged(QByteArray v);				///< Emitted when data changes
+	
+	/**
+	 * Emitted right before finished().
+	 * 
+	 * If you want to postprocess the returned data in some way, this is your
+	 * chance to do so.
+	 */
+	void readyToPostProcess();
 	
 protected slots:
 	/// Callback for the wrapped reply's downloadProgress signal

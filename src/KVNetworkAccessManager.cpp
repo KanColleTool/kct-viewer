@@ -37,6 +37,13 @@ void KVNetworkAccessManager::setUserAgent(const QString &v) { m_userAgent = v; e
 
 
 
+void KVNetworkAccessManager::interceptedRequestReadyToPostProcess()
+{
+	emit readyToPostProcess(qobject_cast<KVNetworkReply*>(QObject::sender()));
+}
+
+
+
 QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req_, QIODevice *body)
 {
 	QNetworkRequest req(req_);
@@ -47,6 +54,7 @@ QNetworkReply* KVNetworkAccessManager::createRequest(Operation op, const QNetwor
 	if(this->shouldIntercept(op, req, body)) {
 		// reply = new KVNetworkReply(reply->parent(), reply, this, this->useTranslation());
 		reply = new KVNetworkReply(this, reply, reply->parent());
+		connect(reply, SIGNAL(readyToPostProcess()), this, SLOT(interceptedRequestReadyToPostProcess()));
 	}
 	
 	return reply;
