@@ -5,3 +5,8 @@
 inline std::ostream& operator<<(std::ostream& os, const QString& string) {
     return os << string.toStdString();
 }
+
+// Allow printing of QByteArrays to std::cout
+inline std::ostream& operator<<(std::ostream& os, const QByteArray& data) {
+	return os << data.toStdString();
+}
