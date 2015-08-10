@@ -115,7 +115,7 @@ void KVNetworkReply::setReadBufferSize(qint64 size)
 
 bool KVNetworkReply::open(OpenMode flags)
 {
-	return QIODevice::open(flags);
+	return m_wrappedReply->open(flags) && QIODevice::open(flags);
 }
 
 void KVNetworkReply::close()
