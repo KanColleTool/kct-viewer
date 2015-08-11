@@ -1,5 +1,8 @@
 #include "test_common.h"
 #include <KVTranslator.h>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 SCENARIO("Strings can be translated")
 {
@@ -44,6 +47,73 @@ SCENARIO("Strings can be translated")
 			CHECK(tl.translate("-") == QString("-"));
 			CHECK(tl.translate("123") == QString("123"));
 			CHECK(tl.translate("") == QString(""));
+		}
+	}
+}
+
+SCENARIO("JSON Documents can be translated")
+{
+	KVTranslator tl;
+	tl.addTranslation("那珂", "Naka");
+	tl.addTranslation("まるゆ", "Maruyu");
+	
+	GIVEN("An object")
+	{
+		QJsonDocument doc = QJsonDocument::fromJson("{\"a\": \"テスト\", \"b\": \"那珂\"}");
+		QJsonObject obj = doc.object();
+		
+		THEN("The initial state should be correct")
+		{
+			REQUIRE(obj["a"].toString() == "テスト");
+			REQUIRE(obj["b"].toString() == "那珂");
+		}
+		
+		WHEN("It's translated")
+		{
+			QJsonDocument tldoc = tl.translate(doc);
+			QJsonObject tlobj = tldoc.object();
+			
+			THEN("The original should be untouched")
+			{
+				REQUIRE(obj["a"].toString() == "テスト");
+				REQUIRE(obj["b"].toString() == "那珂");
+			}
+			
+			THEN("The result should be correct")
+			{
+				REQUIRE(tlobj["a"].toString() == "テスト");
+				REQUIRE(tlobj["b"].toString() == "Naka");
+			}
+		}
+	}
+	
+	GIVEN("An array")
+	{
+		QJsonDocument doc = QJsonDocument::fromJson("[\"テスト\", \"那珂\"]");
+		QJsonArray arr = doc.array();
+		
+		THEN("The initial state should be correct")
+		{
+			REQUIRE(arr[0].toString() == "テスト");
+			REQUIRE(arr[1].toString() == "那珂");
+		}
+		
+		WHEN("It's translated")
+		{
+			QJsonDocument tldoc = tl.translate(doc);
+			QJsonArray tlarr = tldoc.array();
+			
+			THEN("The original should be untouched")
+			{
+				REQUIRE(arr[0].toString() == "テスト");
+				REQUIRE(arr[1].toString() == "那珂");
+			}
+			
+			THEN("The result should be correct")
+			{
+				REQUIRE(arr[0].toString() == "テスト");
+				REQUIRE(arr[1].toString() == "那珂");
+			}
 		}
 	}
 }

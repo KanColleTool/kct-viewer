@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QHash>
+#include <QJsonDocument>
 
 /**
  * Translator for in-game strings.
@@ -62,6 +63,17 @@ public:
 	QString translate(const QString &phrase) const;
 	
 	/**
+	 * Translates a JSON document from Japanese.
+	 * 
+	 * This will walk through every string in the document (excluding keys) and
+	 * attempt to translate it.
+	 * 
+	 * @param  doc A JSON document
+	 * @return     A translated JSON document
+	 */
+	QJsonDocument translate(const QJsonDocument &doc) const;
+	
+	/**
 	 * Is the given phrase even translatable?
 	 * 
 	 * Examples of untranslatable strings are empty and numeric ones.
@@ -69,6 +81,17 @@ public:
 	bool isTranslatable(const QString &phrase) const;
 	
 protected:
+	/**
+	 * Recursively walks through a JSON object.
+	 * 
+	 * This will recursively call itself until it has travelled down every
+	 * possible path of the document.
+	 * 
+	 * @param key The key the item was found at
+	 * @param obj The current object
+	 */
+	void walk(QJsonValueRef value, const QString &key = "") const;
+	
 	/**
 	 * Dictionary of registered translations.
 	 * 
