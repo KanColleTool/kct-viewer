@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QWebPage>
 
+class KVNetworkReply;
+
 /**
  * Wrapper for a game client.
  * 
@@ -76,6 +78,13 @@ private slots:
 	 * @param ok Did it load successfully?
 	 */
 	void onPageLoadFinished(bool ok);
+	
+	/**
+	 * Called when an intercepted reply is ready to postprocess.
+	 * 
+	 * @param reply An intercepted reply
+	 */
+	void onInterceptedRequestReadyToPostProcess(KVNetworkReply *reply);
 	
 private:
 	QString m_server;

@@ -1,5 +1,7 @@
 #include "KVGameWrapper.h"
 #include "KVNetworkAccessManager.h"
+#include "KVNetworkReply.h"
+#include "KVTranslator.h"
 #include <QNetworkDiskCache>
 #include <QUrlQuery>
 #include <QFile>
@@ -12,6 +14,7 @@ KVGameWrapper::KVGameWrapper(QObject *parent):
 {
 	KVNetworkAccessManager *manager = new KVNetworkAccessManager(m_page);
 	m_page->setNetworkAccessManager(manager);
+	connect(manager, SIGNAL(readyToPostProcess(KVNetworkReply*)), this, SLOT(onInterceptedRequestReadyToPostProcess(KVNetworkReply*)));
 	
 	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
 	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
@@ -74,4 +77,18 @@ void KVGameWrapper::onPageLoadFinished(bool ok)
 	QUrl link = this->apiLink();
 	QString script = QString("loadGame(\"%1\");").arg(link.toString());
 	m_page->mainFrame()->evaluateJavaScript(script);
+}
+
+void KVGameWrapper::onInterceptedRequestReadyToPostProcess(KVNetworkReply *reply)
+{
+	qDebug() << "Intercepted Request:" << reply->url();
+	QByteArray data = reply->data();
+	
+	QByteArray prefix = "svdata=";
+	if(data.startsWith(prefix)) {
+		QJsonDocument doc = QJsonDocument::fromJson(data.mid(prefix.size()));
+		doc = KVTranslator::instance().translate(doc);
+		QByteArray newData = prefix + doc.toJson(QJsonDocument::Compact);
+		reply->setData(newData);
+	}
 }
