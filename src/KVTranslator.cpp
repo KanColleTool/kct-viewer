@@ -17,7 +17,8 @@ KVTranslator::~KVTranslator()
 void KVTranslator::addTranslation(const QString &from, const QString &to)
 {
 	QByteArray fromBytes = from.toUtf8();
-	this->addTranslation(crc32(0, fromBytes.data(), fromBytes.size()), to);
+	quint32 crc = crc32(0, fromBytes.data(), fromBytes.size());
+	this->addTranslation(crc, to);
 }
 
 void KVTranslator::addTranslation(quint32 from, const QString &to)
