@@ -81,7 +81,7 @@ void KVGameWrapper::onPageLoadFinished(bool ok)
 
 void KVGameWrapper::onInterceptedRequestReadyToPostProcess(KVNetworkReply *reply)
 {
-	qDebug() << "Intercepted Request:" << reply->url();
+	qDebug() << "Intercepted Request:" << reply->url().toString();
 	QByteArray data = reply->data();
 	
 	QByteArray prefix = "svdata=";
