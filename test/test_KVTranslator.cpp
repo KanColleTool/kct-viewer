@@ -116,4 +116,34 @@ SCENARIO("JSON Documents can be translated")
 			}
 		}
 	}
+	
+	GIVEN("A nested object")
+	{
+		QJsonDocument doc = QJsonDocument::fromJson("{\"a\": {\"b\": \"那珂\", \"c\": {\"d\": \"まるゆ\"}}}");
+		QJsonObject obj = doc.object();
+		
+		THEN("The initial state should be correct")
+		{
+			REQUIRE(obj["a"].toObject()["b"].toString() == "那珂");
+			REQUIRE(obj["a"].toObject()["c"].toObject()["d"] == "まるゆ");
+		}
+		
+		WHEN("It's translated")
+		{
+			QJsonDocument tldoc = tl.translate(doc);
+			QJsonObject tlobj = tldoc.object();
+			
+			THEN("The original should be untouched")
+			{
+				REQUIRE(obj["a"].toObject()["b"].toString() == "那珂");
+				REQUIRE(obj["a"].toObject()["c"].toObject()["d"] == "まるゆ");
+			}
+			
+			THEN("The result should be correct")
+			{
+				REQUIRE(tlobj["a"].toObject()["b"].toString() == "Naka");
+				REQUIRE(tlobj["a"].toObject()["c"].toObject()["d"] == "Maruyu");
+			}
+		}
+	}
 }

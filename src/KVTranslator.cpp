@@ -84,11 +84,13 @@ void KVTranslator::walk(QJsonValueRef value, const QString &key) const
 			for(auto it = obj.begin(); it != obj.end(); ++it) {
 				this->walk(*it, it.key());
 			}
+			value = obj;
 			break;
 		case QJsonValue::Array:
 			for(auto it = arr.begin(); it != arr.end(); ++it) {
 				this->walk(*it, key);
 			}
+			value = arr;
 			break;
 		case QJsonValue::String:
 			value = this->translate(value.toString());
