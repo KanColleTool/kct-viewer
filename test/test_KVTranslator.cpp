@@ -21,7 +21,7 @@ SCENARIO("Strings can be translated")
 		THEN("Unknwn strings should be untouched")
 		{
 			REQUIRE(tl.translate("テスト") == QString("テスト"));
-			REQUIRE(tl.translate("\\u307E\\u308B\\u3086") == QString("\\u307E\\u308B\\u3086"));
+			REQUIRE(tl.translate("\\u30C6\\u30B9\\u30C8") == QString("\\u30C6\\u30B9\\u30C8"));
 		}
 	}
 	
