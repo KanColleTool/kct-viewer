@@ -6,6 +6,7 @@
 #include <QSet>
 #include <QString>
 #include <QVariant>
+#include <QJsonArray>
 
 /**
  * Manager for managing lists of JSON data.
@@ -45,6 +46,11 @@ public:
 	 * Inserts a new object into the store.
 	 */
 	void add(const QVariant &v);
+	
+	/**
+	 * Builds a JSON array from the store's contents.
+	 */
+	QJsonArray toJson() const;
 	
 signals:
 	void idKeyChanged(QString v);				///< Emitted when idKey changes

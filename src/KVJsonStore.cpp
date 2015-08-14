@@ -38,6 +38,13 @@ void KVJsonStore::add(const QVariant &v)
 	this->addIdFor(v);
 }
 
+QJsonArray KVJsonStore::toJson() const
+{
+	return QJsonArray::fromVariantList(m_data);
+}
+
+
+
 void KVJsonStore::rebuildIds()
 {
 	if (m_idKey.isEmpty()) {
