@@ -87,7 +87,7 @@ void KVGameWrapper::onInterceptedRequestReadyToPostProcess(KVNetworkReply *reply
 	QByteArray prefix = "svdata=";
 	if(data.startsWith(prefix)) {
 		QJsonDocument doc = QJsonDocument::fromJson(data.mid(prefix.size()));
-		doc = KVTranslator::instance().translate(doc);
+		doc = KVTranslator::instance().translate(doc, reply->url());
 		QByteArray newData = prefix + doc.toJson(QJsonDocument::Compact);
 		reply->setData(newData);
 	}
