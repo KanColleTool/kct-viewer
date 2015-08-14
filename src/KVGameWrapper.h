@@ -49,19 +49,19 @@ public:
 	 * and API key parts.
 	 */
 	void setApiLink(const QUrl &url);
-	QUrl apiLink() const;				///< API link for current credentials
+	QUrl apiLink() const;					///< API link for current credentials
 	
-	QString server() const;				///< Gets the server property
-	void setServer(const QString &v);	///< Sets the server property
+	QString server() const;					///< Gets the server property
+	void setServer(const QString &v);		///< Sets the server property
 	
-	QString apiToken() const;			///< Gets the apiToken property
-	void setApiToken(const QString &v);	///< Sets the apiToken property
+	QString apiToken() const;				///< Gets the apiToken property
+	void setApiToken(const QString &v);		///< Sets the apiToken property
 	
-	QWebPage *page() const;				///< Getter for the page property
+	QWebPage *page() const;					///< Getter for the page property
 	
 signals:
-	void serverChanged();				///< Emitted when server changes
-	void apiTokenChanged();				///< Emitted when apiToken changes
+	void serverChanged(const QString &v);	///< Emitted when server changes
+	void apiTokenChanged(const QString &v);	///< Emitted when apiToken changes
 	
 public slots:
 	/**
