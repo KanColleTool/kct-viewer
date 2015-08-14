@@ -21,16 +21,6 @@ class KVJsonStore : QObject
 	 */
 	Q_PROPERTY(QString idKey READ idKey WRITE setIdKey NOTIFY idKeyChanged);
 	
-	/**
-	 * If a sort key is given, the list is kept sorted by it.
-	 * 
-	 * If this is blank, new items will simply be inserted at the bottom.
-	 * 
-	 * Setting this property will cause the data to be re-sorted, which can
-	 * potentially be expensive if the dataset is large.
-	 */
-	Q_PROPERTY(QList<QString> sortKeys READ sortKeys WRITE setSortKeys NOTIFY sortKeysChanged);
-	
 	/// A list of all inserted IDs
 	Q_PROPERTY(const QSet<QString>& ids READ ids NOTIFY idsChanged);
 	
@@ -48,9 +38,6 @@ public:
 	QString idKey() const;						///< Getter for idKey
 	void setIdKey(QString v);					///< Setter for idKey
 	
-	QList<QString> sortKeys() const;			///< Getter for sortKeys
-	void setSortKeys(QList<QString> v);			///< Setter for sortKeys
-	
 	const QSet<QString>& ids() const;			///< Getter for ids
 	const QList<QVariant>& data() const;		///< Getter for data
 	
@@ -61,7 +48,6 @@ public:
 	
 signals:
 	void idKeyChanged(QString v);				///< Emitted when idKey changes
-	void sortKeysChanged(QList<QString> v);		///< Emitted when sortKeys changes
 	void idsChanged(const QSet<QString>& v);	///< Emitted when ids changes
 	
 protected:
@@ -78,13 +64,6 @@ protected:
 	 * Does nothing unless idKey is set.
 	 */
 	void addIdFor(const QVariant &v);
-	
-	/**
-	 * Sorts the data() list.
-	 * 
-	 * Does nothing unless sortKeys is set.
-	 */
-	void sortData();
 	
 private:
 	QString m_idKey;
