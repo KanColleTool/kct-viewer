@@ -52,6 +52,13 @@ public:
 	 */
 	QJsonArray toJson() const;
 	
+	/**
+	 * Writes the store's contents to disk.
+	 * 
+	 * @return Whether the operation succeeded
+	 */
+	bool save(const QString &path) const;
+	
 signals:
 	void idKeyChanged(QString v);				///< Emitted when idKey changes
 	void idsChanged(const QSet<QString>& v);	///< Emitted when ids changes

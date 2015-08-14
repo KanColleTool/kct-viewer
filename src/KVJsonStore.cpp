@@ -1,6 +1,7 @@
 #include "KVJsonStore.h"
 #include "KVUtil.h"
-#include <algorithm>
+#include <QFile>
+#include <QJsonDocument>
 
 KVJsonStore::KVJsonStore(QString idKey):
 	m_idKey(idKey)
@@ -41,6 +42,16 @@ void KVJsonStore::add(const QVariant &v)
 QJsonArray KVJsonStore::toJson() const
 {
 	return QJsonArray::fromVariantList(m_data);
+}
+
+bool KVJsonStore::save(const QString &path) const
+{
+	QFile file(path);
+	if (file.open(QIODevice::WriteOnly)) {
+		file.write(QJsonDocument(this->toJson()).toJson());
+		return true;
+	}
+	return false;
 }
 
 
