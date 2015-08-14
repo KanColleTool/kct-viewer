@@ -2,6 +2,7 @@
 #define KVUTIL_H
 
 #include <QString>
+#include <QVariant>
 
 /**
  * \private Lookup table for CRC32 checksums.
@@ -78,5 +79,14 @@ QString unescape(QString escaped);
  * @return      The buffer's CRC32 checksum
  */
 quint32 crc32(quint32 crc, const void *buf, size_t size);
+
+/**
+ * Extracts a key path from a variant.
+ * 
+ * @param v   The variant to extract from
+ * @param key The key to extract
+ * @return    The value at key, or an invalid variant
+ */
+QVariant extract(const QVariant &v, const QString &key);
 
 #endif
