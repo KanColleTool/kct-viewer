@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QUrl>
 #include <QHash>
 #include <QJsonDocument>
 
@@ -34,6 +35,16 @@ public:
 	 */
 	virtual ~KVTranslator();
 	
+signals:
+	/**
+	 * Emitted when translation is attempted, but no translation can be found.
+	 * 
+	 * @param phrase Japanese phrase
+	 * @param key    Key the phrase was found at
+	 * @param source URL the phrase was found at
+	 */
+	void missingTranslation(const QString &phrase, const QString &key, const QUrl &source) const;
+	
 public slots:
 	/**
 	 * Adds the given translation to the dictionary.
@@ -59,8 +70,12 @@ public:
 	 * match for the string's CRC32 sum, or if the string is untranslatable.
 	 * 
 	 * @see isTranslatable()
+	 * 
+	 * @param phrase A phrase to translate
+	 * @param key    Key the phrase was found at
+	 * @param source URL the phrase was found at
 	 */
-	QString translate(const QString &phrase) const;
+	QString translate(const QString &phrase, const QString &key = "", const QUrl &source = QUrl()) const;
 	
 	/**
 	 * Translates a JSON document from Japanese.
@@ -68,10 +83,11 @@ public:
 	 * This will walk through every string in the document (excluding keys) and
 	 * attempt to translate it.
 	 * 
-	 * @param  doc A JSON document
-	 * @return     A translated JSON document
+	 * @param  doc    A JSON document
+	 * @param  source URL the document was loaded from
+	 * @return        A translated JSON document
 	 */
-	QJsonDocument translate(const QJsonDocument &doc) const;
+	QJsonDocument translate(const QJsonDocument &doc, const QUrl &source = QUrl()) const;
 	
 	/**
 	 * Is the given phrase even translatable?
@@ -90,7 +106,7 @@ protected:
 	 * @param key The key the item was found at
 	 * @param obj The current object
 	 */
-	void walk(QJsonValueRef value, const QString &key = "") const;
+	void walk(QJsonValueRef value, const QString &key = "", const QUrl &source = QUrl()) const;
 	
 	/**
 	 * Dictionary of registered translations.

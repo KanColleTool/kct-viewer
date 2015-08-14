@@ -26,7 +26,7 @@ void KVTranslator::addTranslation(quint32 from, const QString &to)
 	dictionary.insert(from, to);
 }
 
-QString KVTranslator::translate(const QString &phrase) const
+QString KVTranslator::translate(const QString &phrase, const QString &key, const QUrl &source) const
 {
 	if (!this->isTranslatable(phrase)) {
 		return phrase;
@@ -37,21 +37,25 @@ QString KVTranslator::translate(const QString &phrase) const
 	quint32 crc = crc32(0, realBytes.data(), realBytes.size());
 	
 	const QString &translation = dictionary.value(crc);
-	return !translation.isEmpty() ? translation : phrase;
+	if (translation.isEmpty()) {
+		emit missingTranslation(real, key, source);
+		return phrase;
+	}
+	return translation;
 }
 
-QJsonDocument KVTranslator::translate(const QJsonDocument &doc) const
+QJsonDocument KVTranslator::translate(const QJsonDocument &doc, const QUrl &source) const
 {
 	if (doc.isArray()) {
 		QJsonArray val = doc.array();
 		for(auto it = val.begin(); it != val.end(); ++it) {
-			this->walk(*it);
+			this->walk(*it, "", source);
 		}
 		return QJsonDocument(val);
 	} else {
 		QJsonObject val = doc.object();
 		for(auto it = val.begin(); it != val.end(); ++it) {
-			this->walk(*it, it.key());
+			this->walk(*it, it.key(), source);
 		}
 		return QJsonDocument(val);
 	}
@@ -75,7 +79,7 @@ bool KVTranslator::isTranslatable(const QString &phrase) const
 	return true;
 }
 
-void KVTranslator::walk(QJsonValueRef value, const QString &key) const
+void KVTranslator::walk(QJsonValueRef value, const QString &key, const QUrl &source) const
 {
 	QJsonObject obj = value.toObject();
 	QJsonArray arr = value.toArray();
@@ -83,18 +87,18 @@ void KVTranslator::walk(QJsonValueRef value, const QString &key) const
 	switch(value.type()) {
 		case QJsonValue::Object:
 			for(auto it = obj.begin(); it != obj.end(); ++it) {
-				this->walk(*it, it.key());
+				this->walk(*it, it.key(), source);
 			}
 			value = obj;
 			break;
 		case QJsonValue::Array:
 			for(auto it = arr.begin(); it != arr.end(); ++it) {
-				this->walk(*it, key);
+				this->walk(*it, key, source);
 			}
 			value = arr;
 			break;
 		case QJsonValue::String:
-			value = this->translate(value.toString());
+			value = this->translate(value.toString(), key, source);
 			break;
 		default:
 			break;

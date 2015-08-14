@@ -4,9 +4,25 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+struct Untranslated {
+	QString phrase;
+	QString key;
+	QUrl source;
+	
+	Untranslated(const QString &phrase, const QString &key, const QUrl &source):
+		phrase(phrase), key(key), source(source) {}
+};
+
 SCENARIO("Strings can be translated")
 {
 	KVTranslator tl;
+	QList<Untranslated> misses;
+	
+	QObject::connect(&tl, &KVTranslator::missingTranslation,
+		[&](const QString &phrase, const QString &key, const QUrl &source) {
+			misses.append({ phrase, key, source });
+		}
+	);
 	
 	GIVEN("A translated string")
 	{
@@ -22,6 +38,13 @@ SCENARIO("Strings can be translated")
 		{
 			REQUIRE(tl.translate("テスト") == QString("テスト"));
 			REQUIRE(tl.translate("\\u30C6\\u30B9\\u30C8") == QString("\\u30C6\\u30B9\\u30C8"));
+			
+			THEN("And they should be reported")
+			{
+				REQUIRE(misses.length() == 2);
+				CHECK(misses[0].phrase == "テスト");
+				CHECK(misses[1].phrase == "テスト");
+			}
 		}
 	}
 	
@@ -47,6 +70,10 @@ SCENARIO("Strings can be translated")
 			CHECK(tl.translate("-") == QString("-"));
 			CHECK(tl.translate("123") == QString("123"));
 			CHECK(tl.translate("") == QString(""));
+			
+			THEN("No misses should be reported either") {
+				CHECK(misses.length() == 0);
+			}
 		}
 	}
 }
@@ -54,8 +81,18 @@ SCENARIO("Strings can be translated")
 SCENARIO("JSON Documents can be translated")
 {
 	KVTranslator tl;
+	QList<Untranslated> misses;
+	
+	QObject::connect(&tl, &KVTranslator::missingTranslation,
+		[&](const QString &phrase, const QString &key, const QUrl &source) {
+			misses.append({ phrase, key, source });
+		}
+	);
+	
 	tl.addTranslation("那珂", "Naka");
 	tl.addTranslation("まるゆ", "Maruyu");
+	
+	QUrl url("http://google.com");
 	
 	GIVEN("An object")
 	{
@@ -70,7 +107,7 @@ SCENARIO("JSON Documents can be translated")
 		
 		WHEN("It's translated")
 		{
-			QJsonDocument tldoc = tl.translate(doc);
+			QJsonDocument tldoc = tl.translate(doc, url);
 			QJsonObject tlobj = tldoc.object();
 			
 			THEN("The original should be untouched")
@@ -83,6 +120,14 @@ SCENARIO("JSON Documents can be translated")
 			{
 				REQUIRE(tlobj["a"].toString() == "テスト");
 				REQUIRE(tlobj["b"].toString() == "Naka");
+			}
+			
+			THEN("The untranslated line should be reported")
+			{
+				REQUIRE(misses.length() == 1);
+				CHECK(misses[0].phrase == "テスト");
+				CHECK(misses[0].key == "a");
+				CHECK(misses[0].source == url);
 			}
 		}
 	}
@@ -100,7 +145,7 @@ SCENARIO("JSON Documents can be translated")
 		
 		WHEN("It's translated")
 		{
-			QJsonDocument tldoc = tl.translate(doc);
+			QJsonDocument tldoc = tl.translate(doc, url);
 			QJsonArray tlarr = tldoc.array();
 			
 			THEN("The original should be untouched")
@@ -114,12 +159,20 @@ SCENARIO("JSON Documents can be translated")
 				REQUIRE(arr[0].toString() == "テスト");
 				REQUIRE(arr[1].toString() == "那珂");
 			}
+			
+			THEN("The untranslated line should be reported")
+			{
+				REQUIRE(misses.length() == 1);
+				CHECK(misses[0].phrase == "テスト");
+				CHECK(misses[0].key == "");
+				CHECK(misses[0].source == url);
+			}
 		}
 	}
 	
 	GIVEN("A nested object")
 	{
-		QJsonDocument doc = QJsonDocument::fromJson("{\"a\": {\"b\": \"那珂\", \"c\": {\"d\": \"まるゆ\"}}}");
+		QJsonDocument doc = QJsonDocument::fromJson("{\"a\": {\"b\": \"那珂\", \"c\": {\"d\": \"まるゆ\", \"e\": \"テスト\"}}}");
 		QJsonObject obj = doc.object();
 		
 		THEN("The initial state should be correct")
@@ -130,19 +183,29 @@ SCENARIO("JSON Documents can be translated")
 		
 		WHEN("It's translated")
 		{
-			QJsonDocument tldoc = tl.translate(doc);
+			QJsonDocument tldoc = tl.translate(doc, url);
 			QJsonObject tlobj = tldoc.object();
 			
 			THEN("The original should be untouched")
 			{
 				REQUIRE(obj["a"].toObject()["b"].toString() == "那珂");
 				REQUIRE(obj["a"].toObject()["c"].toObject()["d"] == "まるゆ");
+				REQUIRE(obj["a"].toObject()["c"].toObject()["e"] == "テスト");
 			}
 			
 			THEN("The result should be correct")
 			{
 				REQUIRE(tlobj["a"].toObject()["b"].toString() == "Naka");
 				REQUIRE(tlobj["a"].toObject()["c"].toObject()["d"] == "Maruyu");
+				REQUIRE(tlobj["a"].toObject()["c"].toObject()["e"] == "テスト");
+			}
+			
+			THEN("The untranslated line should be reported")
+			{
+				REQUIRE(misses.length() == 1);
+				CHECK(misses[0].phrase == "テスト");
+				CHECK(misses[0].key == "e");
+				CHECK(misses[0].source == url);
 			}
 		}
 	}
