@@ -45,10 +45,10 @@ void KVGameWrapper::setApiLink(const QUrl &url)
 
 
 QString KVGameWrapper::server() const { return m_server; }
-void KVGameWrapper::setServer(const QString &v) { m_server = v; emit serverChanged(); }
+void KVGameWrapper::setServer(const QString &v) { m_server = v; emit serverChanged(v); }
 
 QString KVGameWrapper::apiToken() const { return m_apiToken; }
-void KVGameWrapper::setApiToken(const QString &v) { m_apiToken = v; emit apiTokenChanged(); }
+void KVGameWrapper::setApiToken(const QString &v) { m_apiToken = v; emit apiTokenChanged(v); }
 
 QWebPage* KVGameWrapper::page() const { return m_page; }
 
