@@ -3,6 +3,7 @@
 
 #include "KVWebView.h"
 #include "KVGameWrapper.h"
+#include "KVJsonStore.h"
 #include <QMainWindow>
 #include <QUrl>
 
@@ -67,6 +68,8 @@ private slots:
 	void on_actionScreenshot_triggered();
 	void on_actionGetAPILink_triggered();
 	
+	void onMissingTranslation(const QString &phrase, const QString &key, const QUrl &source);
+	
 protected:
 	/**
 	 * Web view hosting the game.
@@ -79,6 +82,11 @@ protected:
 	 * Wrapper for the game's state.
 	 */
 	KVGameWrapper *game;
+	
+	/**
+	 * Store for untranslated lines.
+	 */
+	KVJsonStore untranslated;
 	
 private:
 	Ui::KVMainWindow *ui;

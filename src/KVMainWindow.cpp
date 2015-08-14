@@ -1,12 +1,16 @@
 #include "KVMainWindow.h"
 #include "ui_KVMainWindow.h"
+#include "KVTranslator.h"
+#include <QStandardPaths>
 #include <QMessageBox>
 #include <QWebFrame>
 #include <QAbstractNetworkCache>
 #include <QSettings>
+#include <QDir>
 
 KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	QMainWindow(parent, flags),
+	untranslated("orig"),
 	ui(new Ui::KVMainWindow)
 {
 	ui->setupUi(this);
@@ -14,13 +18,17 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	this->setup();
 	this->autoLockWindowSize();
 	
+	connect(&KVTranslator::instance(), SIGNAL(missingTranslation(const QString&, const QString&, const QUrl&)),
+		this, SLOT(onMissingTranslation(const QString&, const QString&, const QUrl&)));
+	
 	this->loadCredentials();
 	game->startGame();
 }
 
 KVMainWindow::~KVMainWindow()
 {
-	
+	QDir cacheDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+	untranslated.save(cacheDir.absoluteFilePath("untranslated.json"));
 }
 
 
@@ -114,4 +122,14 @@ void KVMainWindow::on_actionScreenshot_triggered()
 void KVMainWindow::on_actionGetAPILink_triggered()
 {
 	
+}
+
+void KVMainWindow::onMissingTranslation(const QString &phrase, const QString &key, const QUrl &source)
+{
+	QMap<QString,QVariant> data {
+		{ "src", source.path() },
+		{ "ctx", key },
+		{ "orig", phrase },
+	};
+	untranslated.add(data);
 }
