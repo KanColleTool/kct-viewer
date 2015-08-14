@@ -2,7 +2,8 @@
 #include "KVUtil.h"
 #include <algorithm>
 
-KVJsonStore::KVJsonStore()
+KVJsonStore::KVJsonStore(QString idKey):
+	m_idKey(idKey)
 {
 	
 }

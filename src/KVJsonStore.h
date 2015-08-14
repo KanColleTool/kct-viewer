@@ -38,7 +38,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	KVJsonStore();
+	KVJsonStore(QString idKey = "");
 	
 	/**
 	 * Destructor.
