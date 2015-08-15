@@ -2,11 +2,9 @@
 #include "KVNetworkAccessManager.h"
 #include "KVNetworkReply.h"
 #include "KVTranslator.h"
-#include <QNetworkDiskCache>
 #include <QUrlQuery>
 #include <QFile>
 #include <QWebFrame>
-#include <QStandardPaths>
 
 KVGameWrapper::KVGameWrapper(QObject *parent):
 	QObject(parent),
@@ -15,11 +13,6 @@ KVGameWrapper::KVGameWrapper(QObject *parent):
 	KVNetworkAccessManager *manager = new KVNetworkAccessManager(m_page);
 	m_page->setNetworkAccessManager(manager);
 	connect(manager, SIGNAL(readyToPostProcess(KVNetworkReply*)), this, SLOT(onInterceptedRequestReadyToPostProcess(KVNetworkReply*)));
-	
-	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
-	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-	cache->setMaximumCacheSize(1*1024*1024*1024);
-	manager->setCache(cache);
 	
 	connect(m_page, SIGNAL(loadFinished(bool)), this, SLOT(onPageLoadFinished(bool)));
 }

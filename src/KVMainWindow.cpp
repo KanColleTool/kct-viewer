@@ -4,7 +4,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QWebFrame>
-#include <QAbstractNetworkCache>
+#include <QNetworkDiskCache>
 #include <QSettings>
 #include <QDir>
 
@@ -43,6 +43,12 @@ void KVMainWindow::setup()
 	// Set up the game wrapper and use its page
 	game = new KVGameWrapper(this);
 	webView->setPage(game->page());
+	
+	// Set up the cache and stuff
+	QNetworkDiskCache *cache = new QNetworkDiskCache(this);
+	cache->setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+	cache->setMaximumCacheSize(1*1024*1024*1024);
+	game->page()->networkAccessManager()->setCache(cache);
 	
 	// The context menu only contains "Reload" anyways
 	webView->setContextMenuPolicy(Qt::PreventContextMenu);
