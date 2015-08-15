@@ -7,6 +7,47 @@
 			padding: 0;
 			margin: 0;
 		}
+		
+		#instructions {
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 23px;
+			
+			padding-top: 10px;
+			padding-left: 30px;
+			padding-right: 30px;
+		}
+		
+		#instructions h1 {
+			font-family: Geneva, Tahoma, Verdana, sans-serif;
+			font-size: 23px;
+			font-weight: 500;
+			line-height: 23px;
+			margin-bottom: 20px;
+		}
+		
+		#instructions h3 {
+			font-family: Geneva, Tahoma, Verdana, sans-serif;
+			font-size: 17px;
+			font-weight: 500;
+			line-height: 23px;
+		}
+		
+		#instructions .small {
+			font-size: 11px;
+			line-height: 18px;
+		}
+		
+		#instructions a.button {
+			display: block;
+			padding: 5px;
+			margin-bottom: 10px;
+			text-align: center;
+			color: #33c;
+			border: 1px solid #99f;
+			background-color: #ccf;
+		}
 	</style>
 	<script type="text/javascript">
 		var useDirectRendering = false;
@@ -14,6 +55,9 @@
 		function loadGame(link) {
 			// Append the api_starttime cache buster the web page uses9
 			link = link + "&api_starttime=" + (new Date().getTime());
+			
+			// Hide the instructions
+			document.getElementById("instructions").style.display = "none";
 			
 			// Remove any eventual old embeds
 			var oldEmbeds = document.getElementsByTagName("embed");
@@ -36,7 +80,107 @@
 
 			document.body.appendChild(e);
 		}
+		
+		function setTab(id) {
+			var tabs = document.getElementsByClassName("tab");
+			for (var i = 0; i < tabs.length; i++) {
+				tabs[i].style.display = 'none';
+			}
+			
+			if (id) {
+				var tab = document.getElementById(id);
+				tab.style.display = 'block';
+			}
+		}
 	</script>
 </head>
-<body ondragstart="return false;" oncontextmenu="return false;"></body>
+<body ondragstart="return false;" oncontextmenu="return false;">
+	<div id="instructions">
+		<div id="start" class="tab">
+			<h1>Get started!</h1>
+			
+			<p>
+				KCT needs an <strong>API Link</strong> to work.<br />
+				This link works as login credentials.
+			</p>
+			<p>
+				There are two ways to do this:
+			</p>
+			<ol>
+				<li>You can sign into your DMM account, and let KCT automatically fetch it.</li>
+				<li>You can use a browser to get it manually, then enter it yourself.</li>
+			</ol>
+			<hr />
+			<p>
+				Click to show instructions for your preferred method:
+			</p>
+			
+			<a class="button" onclick="setTab('automatic');">Automatic</a>
+			<a class="button" onclick="setTab('manual');">Manual</a>
+			
+			<p class="small">
+				<em>
+					Caution: do not reveal your API link to anyone! It will allow anyone with it to access your account.<br />
+					If you believe it to be compromised, simply sign in to DMM's site again to invalidate the old one.
+				</em>
+			</p>
+		</div>
+		
+		<div id="automatic" class="tab" style="display:none;">
+			<h1>Automatic</h1>
+			
+			<h3>Step 1: Connect a VPN, or enable the Cookie Hack</h3>
+			<p>
+				To be able to extract the link, you need to be able to load DMM's japanese site. There are two main ways to do this:
+			</p>
+			<ol>
+				<li>
+					<strong>Connect to a Japanese VPN or proxy</strong><br />
+					This is the safest way, but may take some additional setup.
+				</li>
+				<li>
+					<strong>Use the Cookie Hack (in the settings)</strong><br />
+					This sets DMM's region cookie, which may break at any time. Use at your own risk.
+				</li>
+			</ol>
+			<p>
+				Do note that you only need this to sign in initially, not to actually play the game.
+			</p>
+			
+			<h3>Step 2: Sign in to your account</h3>
+			<p>
+				Click <strong>Game &rarr; Get API Link</strong> in the menu above to start the login process.<br />
+				Once you're logged in, KCT will extract the link for you.<br />
+				<small>(If this doesn't work, DMM may have changed how their site works. In this case, the manual method should still work.)</small>
+			</p>
+			
+			<a class="button" onclick="setTab('start');">Back</a>
+		</div>
+		
+		<div id="manual" class="tab" style="display:none;">
+			<h1>Manual</h1>
+			
+			<h3>Step 1: Sign in to DMM and launch the game</h3>
+			<p>
+				If you're outside of Japan, this requires the use of a VPN or proxy. The exact details are out of scope for this page, but do note that it's not needed to play, only for getting the link.
+			</p>
+			
+			<h3>Step 2: Inspect the Embed</h3>
+			<p>
+				The details vary between systems and browsers, but you can typically right-click anywhere on the page (outside the game, it has its own context menu) and choose "Inspect Element" to bring up the DOM Inspector.
+			</p>
+			<p>
+				This typically has a button that lets you inspect an element by clicking on it. Use it to inspect the game frame.
+			</p>
+			
+			<h3>Step 3: Copy the API Link</h3>
+			<p>
+				On this element, there should be an <code>src</code> attribute, containing an URL to a <code>mainD2.swf</code> with some parameters.<br />
+				Copy that, choose <strong>Game &rarr; Enter API Link</strong> in the menu above, and paste it in.
+			</p>
+			
+			<a class="button" onclick="setTab('start');">Back</a>
+		</div>
+	</div>
+</body>
 </html>
