@@ -3,6 +3,7 @@
 #include "KVTranslator.h"
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QWebFrame>
 #include <QNetworkDiskCache>
 #include <QSettings>
@@ -92,7 +93,18 @@ void KVMainWindow::storeCredentials()
 
 void KVMainWindow::on_actionEnterAPILink_triggered()
 {
+	QString text = QString("<p>Please enter your API Link.</p>") +
+					QString("<p>") + 
+						QString("It should look something like:<br />") + 
+						QString("<code>http://125.6.XXX.XXX/kcs/mainD2.swf?api_token=xxxxxxxxxx...</code>") +
+					QString("</p>");
+	QString link = QInputDialog::getText(this, "Enter API Link", text);
 	
+	if (!link.isEmpty()) {
+		game->setApiLink(link);
+		game->startGame();
+		this->storeCredentials();
+	}
 }
 
 void KVMainWindow::on_actionSettings_triggered()
