@@ -16,10 +16,8 @@ KVMainWindow::KVMainWindow(QWidget *parent, Qt::WindowFlags flags):
 	ui->setupUi(this);
 	
 	this->setup();
+	this->connectSignals();
 	this->autoLockWindowSize();
-	
-	connect(&KVTranslator::instance(), SIGNAL(missingTranslation(const QString&, const QString&, const QUrl&)),
-		this, SLOT(onMissingTranslation(const QString&, const QString&, const QUrl&)));
 	
 	this->loadCredentials();
 	game->startGame();
@@ -56,6 +54,12 @@ void KVMainWindow::setup()
 	// These are so large that they create a need for themselves >_>
 	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 	webView->page()->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+}
+
+void KVMainWindow::connectSignals()
+{
+	connect(&KVTranslator::instance(), SIGNAL(missingTranslation(const QString&, const QString&, const QUrl&)),
+		this, SLOT(onMissingTranslation(const QString&, const QString&, const QUrl&)));
 }
 
 void KVMainWindow::autoLockWindowSize()

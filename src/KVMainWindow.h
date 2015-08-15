@@ -39,6 +39,11 @@ protected:
 	void setup();
 	
 	/**
+	 * Connect signals.
+	 */
+	void connectSignals();
+	
+	/**
 	 * Autoresizes and locks the window size.
 	 */
 	void autoLockWindowSize();
