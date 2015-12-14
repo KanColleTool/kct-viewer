@@ -6,7 +6,7 @@
 
 KVNetworkAccessManager::KVNetworkAccessManager(QObject *parent) :
 	QNetworkAccessManager(parent),
-	trackedGETProgress(0), trackedGETTotalSize(0)
+	trackedGETTotalSize(0), trackedGETProgress(0)
 {
 }
 
